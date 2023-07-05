@@ -1,0 +1,26 @@
+﻿ul {
+    list-style-type: none
+}
+
+a {
+    text-decoration: none
+}
+
+.main-sidebar {
+    background-color: #E7E3E7;
+    position: absolute;
+    max-width: 300px;
+    height: 100%;
+}
+
+.main {
+    display: flex
+}
+
+.content {
+    margin-left: 300px;
+}
+
+header {
+    position: relative
+}

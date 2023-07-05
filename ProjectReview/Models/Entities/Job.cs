@@ -13,13 +13,13 @@
         public int Status { get; set; }
         public string FileName { get; set; }
         public string Content { get; set; }
-        public long DocumnentId { get; set; }
+        public long DocumentId { get; set; }
 
         public virtual User Host { get; set; }
         public virtual User Instructor { get; set;}
         public virtual User CreateUser { get; set; }
         public virtual Document Document { get; set; }
         public virtual ICollection<Handler> Handlers { get; set; }
-        public virtual ICollection<Opinion> Opiniones { get; set;}
+        public virtual ICollection<Opinion> Opinions { get; set;}
     }
 }
