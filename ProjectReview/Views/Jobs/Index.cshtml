@@ -4,86 +4,273 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<div class="container-fluid">
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.CreateDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Deadline)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Request)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Status)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FileName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Content)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Host)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Instructor)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CreateUser)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Document)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreateDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Deadline)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Request)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FileName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Content)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Host.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Instructor.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreateUser.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Document.Author)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+	<div class="row">
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+			<div class="card mb-3">
+				<div class="card-header inline-button">
+					<h3><i class="fas fa-table"></i> Nội dung công việc</h3>
+					<div class="workflow">
+
+						<button id="btn-addnew-Congviec" class="l-btn btn-inline-title" data-toggle="modal">
+							<span class="l-btn-left">
+								<span class="l-btn-text">Thêm công việc mới</span>
+								<span class="l-btn-icon icon-add">&nbsp;</span>
+							</span>
+						</button>
+						<div class="date_filter">
+							<label>Theo ngày</label>
+							<select class="form-control" id="strngaytaocongviec">
+								<option value="0">Tất cả</option>
+								<option value="06/07/2023">06/07/2023</option>
+								<option value="05/07/2023">05/07/2023</option>
+								<option value="04/07/2023">04/07/2023</option>
+								<option value="03/07/2023">03/07/2023</option>
+								<option value="02/07/2023">02/07/2023</option>
+								<option value="01/07/2023">01/07/2023</option>
+								<option value="30/06/2023">30/06/2023</option>
+								<option value="29/06/2023">29/06/2023</option>
+								<option value="28/06/2023">28/06/2023</option>
+								<option value="27/06/2023">27/06/2023</option>
+								<option value="26/06/2023">26/06/2023</option>
+								<option value="25/06/2023">25/06/2023</option>
+								<option value="24/06/2023">24/06/2023</option>
+								<option value="23/06/2023">23/06/2023</option>
+								<option value="22/06/2023">22/06/2023</option>
+								<option value="21/06/2023">21/06/2023</option>
+								<option value="20/06/2023">20/06/2023</option>
+								<option value="19/06/2023">19/06/2023</option>
+								<option value="18/06/2023">18/06/2023</option>
+								<option value="17/06/2023">17/06/2023</option>
+								<option value="16/06/2023">16/06/2023</option>
+								<option value="15/06/2023">15/06/2023</option>
+								<option value="14/06/2023">14/06/2023</option>
+								<option value="13/06/2023">13/06/2023</option>
+								<option value="12/06/2023">12/06/2023</option>
+								<option value="11/06/2023">11/06/2023</option>
+								<option value="10/06/2023">10/06/2023</option>
+								<option value="09/06/2023">09/06/2023</option>
+								<option value="08/06/2023">08/06/2023</option>
+								<option value="07/06/2023">07/06/2023</option>
+							</select>
+						</div>
+						<div class="status_filter">
+							<label>Tình trạng</label>
+							<select class="form-control" id="strtinhtrangxuly">
+								<option value="4">Tất cả</option>
+								<option value="1">Đã hoàn thành</option>
+								<option value="2">Đang xử lý</option>
+								<option value="3">Quá hạn</option>
+							</select>
+						</div>
+					</div>
+				</div>
+
+				<div class="card-body processtask">
+					<div class="row">
+
+						<!-- -------  List cán bộ thuộc đơn vị --------------- -->
+						<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+
+							<div class="table-responsive listTask">
+								<div id="dtListTask_wrapper" class="dataTables_wrapper dt-bootstrap4 no-footer">
+									<div class="row"><div class="col-sm-12 col-md-6"><div class="dataTables_length" id="dtListTask_length"><label>Đang xem <select name="dtListTask_length" aria-controls="dtListTask" class="custom-select custom-select-sm form-control form-control-sm"><option value="10">10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option></select> mục</label></div></div><div class="col-sm-12 col-md-6"><div id="dtListTask_filter" class="dataTables_filter"><label>Tìm kiếm:<input type="search" class="form-control form-control-sm" placeholder="" aria-controls="dtListTask"></label></div></div></div><div class="row">
+										<div class="col-sm-12">
+											<table id="dtListTask" class="table table-bordered table-hover display dataTable no-footer" style="width: 100%;" role="grid" aria-describedby="dtListTask_info">
+												<thead>
+													<tr class="first-row" role="row"><th class="text-center sorting_disabled" rowspan="1" colspan="1" style="width: 29px;" aria-label="TT">TT</th><th class="text-left sorting_disabled" rowspan="1" colspan="1" style="width: 318px;" aria-label="Nội dung công việc">Nội dung công việc</th><th class="text-left sorting_disabled" rowspan="1" colspan="1" style="width: 110px;" aria-label="Người giao">Người giao</th><th class="text-left sorting_disabled" rowspan="1" colspan="1" style="width: 135px;" aria-label="Yêu cầu xử lý">Yêu cầu xử lý</th><th class="text-left sorting_disabled" rowspan="1" colspan="1" style="width: 138px;" aria-label="Người thực hiện">Người thực hiện</th><th class="text-center sorting_disabled" rowspan="1" colspan="1" style="width: 70px;" aria-label="Ngày giao">Ngày giao</th><th class="text-center sorting_disabled" rowspan="1" colspan="1" style="width: 70px;" aria-label="Hạn xử lý">Hạn xử lý</th><th class="text-center sorting_disabled" rowspan="1" colspan="1" style="width: 57px;" aria-label="Trạng thái">Trạng thái</th><th class="text-center sorting_disabled" rowspan="1" colspan="1" style="width: 75px;" aria-label="Tác vụ">Tác vụ</th></tr>
+												</thead>
+												<tbody><tr role="row" class="odd"><td class=" text-center">1</td><td class=" text-left">Công văn số 1427/VTLTNN-HC ngày 13/5/2023 của cục về việc triển khai nghị định</td><td class=" text-left">Quản trị hệ thống</td><td class=" text-left"></td><td class=" text-left"><b>Chủ trì:</b> Nguyễn Thị Liên<br><b>Cán bộ thực hiện:</b><br>- Hà Kiều Trang<br>- Trần Văn Hùng<br></td><td class=" text-center">13/05/2023</td><td class=" text-center">15/05/2023</td><td class=" text-center"><span class="status-quahan">Quá hạn</span></td><td class=" text-center"><button type="button" name="update" id="74" class="btn edit-task" title="Sửa công việc"><img src="assets/icons/pencil.png" title="Sửa công việc"></button>  <button type="button" name="delete" id="74" class="btn delete-task" title="Xóa công việc"><img src="assets/icons/delete.gif" title="Xóa công việc"></button> </td></tr><tr role="row" class="even"><td class=" text-center">2</td><td class=" text-left"><a data-toggle="tooltip" href="?cate=Workflow&amp;idtask=73" title="xử lý yêu cầu">công văn quyết định 1234</a></td><td class=" text-left">Nguyễn Đăng Khánh</td><td class=" text-left"><span class="requestWL-hoanthanh">xử lý yêu cầu<span></span></span></td><td class=" text-left"><b>Chủ trì:</b> Nguyễn Thị Liên<br><b>Cán bộ thực hiện:</b><br>- Lê Đức Tài<br>- Nguyễn Đăng Khánh<br></td><td class=" text-center">13/05/2023</td><td class=" text-center">15/05/2023</td><td class=" text-center"><img src="assets/icons/da_xuly.gif" title="Đã thực hiện công việc"></td><td class=" text-center">   </td></tr></tbody>
+											</table><div id="dtListTask_processing" class="dataTables_processing card" style="display: none;">Đang xử lý...</div>
+										</div>
+									</div><div class="row"><div class="col-sm-12 col-md-5"><div class="dataTables_info" id="dtListTask_info" role="status" aria-live="polite">Đang xem 1 đến 2 trong tổng số 2 mục</div></div><div class="col-sm-12 col-md-7"><div class="dataTables_paginate paging_simple_numbers" id="dtListTask_paginate"><ul class="pagination"><li class="paginate_button page-item previous disabled" id="dtListTask_previous"><a href="#" aria-controls="dtListTask" data-dt-idx="0" tabindex="0" class="page-link">Trước</a></li><li class="paginate_button page-item active"><a href="#" aria-controls="dtListTask" data-dt-idx="1" tabindex="0" class="page-link">1</a></li><li class="paginate_button page-item next disabled" id="dtListTask_next"><a href="#" aria-controls="dtListTask" data-dt-idx="2" tabindex="0" class="page-link">Sau</a></li></ul></div></div></div>
+								</div>
+							</div>
+							<!-- end table-responsive-->
+						</div>
+						<!-- End -->
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+	<!-- Modal Thêm công việc mới -->
+	<div class="modal fade" role="dialog" aria-labelledby="frAddWorkFlow" aria-hidden="true" data-backdrop="static" id="frAddWorkFlow">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<form action="#" method="post" enctype="multipart/form-data" id="frmAddWorkFlow">
+					<div class="modal-header">
+						<h5 class="modal-title">Cập nhật thông tin công việc</h5>
+						<button type="button" class="close" data-dismiss="modal">
+							<span aria-hidden="true">×</span>
+							<span class="sr-only">Close</span>
+						</button>
+					</div>
+
+					<div class="modal-body">
+						<div class="row">
+							<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
+								<div class="form-group">
+									<label>Nội dung công việc</label>
+									<textarea class="form-control" rows="4" id="strWorkflow"></textarea>
+								</div>
+								<div class="row">
+									<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
+										<div class="form-group">
+											<label>Ngày tạo</label>
+											<input type="text" class="form-control" id="strngaytao">
+										</div>
+									</div>
+									<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
+										<div class="form-group">
+											<label>Ngày xử lý</label>
+											<input type="text" class="form-control" id="strngayxuly">
+										</div>
+									</div>
+								</div>
+								<div class="form-group">
+									<label>Yêu cầu xử lý</label>
+									<textarea class="form-control" rows="4" id="strYeucauWorkflow"></textarea>
+								</div>
+
+							</div>
+							<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
+								<div class="form-group">
+									<label>Chủ trì giải quyết công việc (người có thẩm quyền xử lý công việc)</label>
+									<select class="form-control select2 select2-hidden-accessible" id="strLeaderTask" name="strLeaderTask" data-select2-id="strLeaderTask" tabindex="-1" aria-hidden="true">
+										<option value="30" data-select2-id="2">Nguyễn Thị Liên - Trưởng phòng</option>
+										<option value="31">Hà Kiều Trang - Phó Trưởng phòng</option>
+										<option value="32">Lê Đức Tài - Cán bộ</option>
+										<option value="33">Nguyễn Đăng Khánh - Cán bộ</option>
+										<option value="34">Nguyễn Hương Giang - Nhân viên văn thư</option>
+										<option value="35">Nguyễn Văn Thắng - Quản trị hệ thống</option>
+										<option value="36">Vũ Hải Nguyên - Quản trị hệ thống</option>
+									</select><span class="select2 select2-container select2-container--default" dir="ltr" data-select2-id="1" style="width: 100px;"><span class="selection"><span class="select2-selection select2-selection--single" role="combobox" aria-haspopup="true" aria-expanded="false" tabindex="0" aria-labelledby="select2-strLeaderTask-container"><span class="select2-selection__rendered" id="select2-strLeaderTask-container" role="textbox" aria-readonly="true" title="Nguyễn Thị Liên - Trưởng phòng">Nguyễn Thị Liên - Trưởng phòng</span><span class="select2-selection__arrow" role="presentation"><b role="presentation"></b></span></span></span><span class="dropdown-wrapper" aria-hidden="true"></span></span>
+								</div>
+
+								<div class="form-group">
+									<label>Chỉ đạo - Theo dõi tiến độ xử lý công việc</label>
+									<select class="form-control select2 select2-hidden-accessible" id="strLeaderCmdTask" name="strLeaderCmdTask" multiple="" data-select2-id="strLeaderCmdTask" tabindex="-1" aria-hidden="true">
+										<!-- Dữ liệu load sau khi chọn chủ trì -->
+										<option value="30">Nguyễn Thị Liên - Trưởng phòng</option>
+										<option value="31">Hà Kiều Trang - Phó Trưởng phòng</option>
+										<option value="32">Lê Đức Tài - Cán bộ</option>
+										<option value="33">Nguyễn Đăng Khánh - Cán bộ</option>
+										<option value="34">Nguyễn Hương Giang - Nhân viên văn thư</option>
+										<option value="35">Nguyễn Văn Thắng - Quản trị hệ thống</option>
+										<option value="36">Vũ Hải Nguyên - Quản trị hệ thống</option>
+									</select><span class="select2 select2-container select2-container--default" dir="ltr" data-select2-id="4" style="width: 100px;"><span class="selection"><span class="select2-selection select2-selection--multiple" role="combobox" aria-haspopup="true" aria-expanded="false" tabindex="-1"><ul class="select2-selection__rendered"><li class="select2-search select2-search--inline"><input class="select2-search__field" type="search" tabindex="0" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" role="textbox" aria-autocomplete="list" placeholder="" style="width: 0.75em;"></li></ul></span></span><span class="dropdown-wrapper" aria-hidden="true"></span></span>
+								</div>
+
+								<div class="form-group">
+									<label>Cán bộ tham gia giải quyết công việc</label>
+									<select class="form-control select2 select2-hidden-accessible" id="strListPloyTask" name="strListPloyTask" multiple="" data-select2-id="strListPloyTask" tabindex="-1" aria-hidden="true">
+										<optgroup label="Ban Lãnh đạo"><option value="32">Lê Đức Tài - Cán bộ</option><option value="33">Nguyễn Đăng Khánh - Cán bộ</option><option value="35">Nguyễn Văn Thắng - Quản trị hệ thống</option></optgroup>
+										<optgroup label="Hành chính - Tổ chức"><option value="30">Nguyễn Thị Liên - Trưởng phòng</option><option value="31">Hà Kiều Trang - Phó Trưởng phòng</option><option value="36">Vũ Hải Nguyên - Quản trị hệ thống</option></optgroup>
+										<optgroup label="Kế toán - Tài vụ"><option value="34">Nguyễn Hương Giang - Nhân viên văn thư</option></optgroup>
+										<optgroup label="Tổ Chuyên môn"><option value="37">Trần Văn Hùng - Trưởng phòng</option></optgroup>
+										<optgroup label="Quản trị hệ thống"><option value="18">Quản trị hệ thống - Quản trị hệ thống</option></optgroup>
+									</select><span class="select2 select2-container select2-container--default" dir="ltr" data-select2-id="3" style="width: 100px;"><span class="selection"><span class="select2-selection select2-selection--multiple" role="combobox" aria-haspopup="true" aria-expanded="false" tabindex="-1"><ul class="select2-selection__rendered"><li class="select2-search select2-search--inline"><input class="select2-search__field" type="search" tabindex="0" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" role="textbox" aria-autocomplete="list" placeholder="" style="width: 0.75em;"></li></ul></span></span><span class="dropdown-wrapper" aria-hidden="true"></span></span>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
+								<div class="form-group">
+									<label>Tệp đính kèm</label>
+									<br>
+									<input type="file" name="fileWorkflow" id="fileWorkflow">
+									<br>
+								</div>
+								<div class="form-group">
+									<button type="button" class="btn btn-success" id="btn-attach-Workflow">
+										Đính kèm
+										<span class="btn-label btn-label-right">
+											<i class="fas fa-arrow-right"></i>
+										</span>
+									</button>
+								</div>
+							</div>
+							<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
+								<div class="button-list">
+									<ul id="list-file-attach">
+									</ul>
+								</div>
+							</div>
+
+						</div>
+
+					</div>
+
+					<div class="modal-footer">
+						<div class="modal-toolbar">
+							<div class="col-md-8 col-lg-8 col-xl-8 margin-error">
+								<span id="thong-bao-errorWorkFlow"></span>
+							</div>
+							<div class="col-md-4 col-lg-4 col-xl-4 no-margin-right">
+								<input type="hidden" name="idRecordTask" id="idRecordTask" value="0">
+								<input type="hidden" name="action" id="action" value="">
+								<input type="hidden" id="intsoden" name="intsoden" value="0">
+								<button type="button" name="save" id="saveAddNewWorkFlow" class="btn btn-primary btn-sm"><i class="far fa-save"></i> Lưu công việc </button>
+								<button type="button" class="btn btn-sm btn-danger" data-dismiss="modal"><i class="fas fa-times"></i> Hủy bỏ</button>
+							</div>
+						</div>
+
+					</div>
+				</form>
+
+			</div>
+		</div>
+	</div>
+	<!-- End modal -->
+	<!-- Modal Yes/No Cập nhật -->
+	<div class="modal fade" role="dialog" aria-labelledby="frAddWorkFlowSuccess" aria-hidden="true" data-backdrop="static" id="frAddWorkFlowSuccess">
+		<div class="modal-dialog modal-dialog-alert">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="myModalLabel">Thông báo</h5>
+					<button type="button" class="close" data-dismiss="modal">
+						<span aria-hidden="true">×</span>
+						<span class="sr-only">Close</span>
+					</button>
+
+				</div>
+				<div class="modal-body">
+					<p id="alertcontent">Cập nhật luồng xử lý công việc thành công.</p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" id="modal-btn-close-wf" class="btn btn-sm btn-danger" data-dismiss="modal"><i class="fas fa-times"></i> Đóng</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- End modal -->
+	<!-- Modal Yes/No xóa -->
+	<div class="modal fade" role="dialog" aria-labelledby="frWF_Delete" aria-hidden="true" data-backdrop="static" id="frWF_Delete">
+		<div class="modal-dialog modal-dialog-alert">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="myModalLabel">Thông báo</h5>
+					<button type="button" class="close" data-dismiss="modal">
+						<span aria-hidden="true">×</span>
+						<span class="sr-only">Close</span>
+					</button>
+
+				</div>
+				<div class="modal-body">
+					<p>
+						Bạn có chắc chắn muốn xóa luồng xử lý công việc vừa chọn (Đồng ý/Hủy bỏ)?
+					</p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" id="modal-btn-yes-delete-wf" class="btn btn-primary btn-sm"><i class="far fa-save"></i> Đồng ý </button>
+					<button type="button" id="modal-btn-no-delete-wf" class="btn btn-sm btn-danger" data-dismiss="modal"><i class="fas fa-times"></i> Hủy bỏ</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- End modal -->
+</div>

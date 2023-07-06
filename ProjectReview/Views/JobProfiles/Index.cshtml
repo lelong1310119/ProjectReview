@@ -4,74 +4,144 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+			<div class="card mb-3">
+				<div class="card-header">
+					<h3><i class="fas fa-table"></i> Danh mục hồ sơ công việc</h3>
+				</div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.StartDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.EndDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Condition)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.NumberPaper)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Status)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CreateDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CreateUser)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Profile)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.StartDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.EndDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Condition)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.NumberPaper)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreateDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreateUser.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Profile.Expiry)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+				<div class="toolbar">
+					<button id="btn-addnew-listdanhmuchosocongviec" class="l-btn" data-toggle="modal" data-target="#frUpdateListdanhmuchosocongviec">
+						<span class="l-btn-left">
+							<span class="l-btn-text">Tạo hồ sơ điện tử</span>
+							<span class="l-btn-icon icon-add">&nbsp;</span>
+						</span>
+					</button>
+					<button id="btn-print-listdanhmuchosocongviec" class="l-btn">
+						<span class="l-btn-left">
+							<span class="l-btn-text">In</span>
+							<span class="l-btn-icon icon-print">&nbsp;</span>
+						</span>
+					</button>
+					<button id="btn-excel-listdanhmuchosocongviec" class="l-btn">
+						<span class="l-btn-left">
+							<span class="l-btn-text">Excel</span>
+							<span class="l-btn-icon icon-excel">&nbsp;</span>
+						</span>
+					</button>
+
+				</div>
+
+				<div class="card-body card-content">
+					<div class="table-responsive">
+						<div id="dataTable_Listhosocongviec_wrapper" class="dataTables_wrapper dt-bootstrap4 no-footer">
+							<div class="row"><div class="col-sm-12 col-md-6"><div class="dataTables_length" id="dataTable_Listhosocongviec_length"><label>Đang xem <select name="dataTable_Listhosocongviec_length" aria-controls="dataTable_Listhosocongviec" class="custom-select custom-select-sm form-control form-control-sm"><option value="10">10</option><option value="25">25</option><option value="50">50</option><option value="-1">Tất cả</option></select> mục</label></div></div><div class="col-sm-12 col-md-6"><div id="dataTable_Listhosocongviec_filter" class="dataTables_filter"><label>Tìm kiếm:<input type="search" class="form-control form-control-sm" placeholder="" aria-controls="dataTable_Listhosocongviec"></label></div></div></div><div class="row">
+								<div class="col-sm-12">
+									<table id="dataTable_Listhosocongviec" class="table table-bordered table-hover display nowrap dataTable no-footer" style="width: 100%;" role="grid" aria-describedby="dataTable_Listhosocongviec_info">
+										<thead>
+											<tr class="first-row" role="row"><th class="text-center sorting_disabled" rowspan="1" colspan="1" style="width: 25px;" aria-label="STT">STT</th><th class="text-left sorting_disabled" rowspan="1" colspan="1" style="width: 207px;" aria-label="Tên hồ sơ điện tử">Tên hồ sơ điện tử</th><th class="text-left sorting_disabled" rowspan="1" colspan="1" style="width: 185px;" aria-label="Thuộc Danh mục hồ sơ">Thuộc Danh mục hồ sơ</th><th class="text-center sorting_disabled" rowspan="1" colspan="1" style="width: 78px;" aria-label="Ngày bắt đầu">Ngày bắt đầu</th><th class="text-center sorting_disabled" rowspan="1" colspan="1" style="width: 81px;" aria-label="Ngày kết thúc">Ngày kết thúc</th><th class="text-left sorting_disabled" rowspan="1" colspan="1" style="width: 111px;" aria-label="Tình trạng">Tình trạng</th><th class="text-center sorting_disabled" rowspan="1" colspan="1" style="width: 67px;" aria-label="Tổng số tờ">Tổng số tờ</th><th class="text-center sorting_disabled" rowspan="1" colspan="1" style="width: 71px;" aria-label="Trạng thái">Trạng thái</th><th class="text-center sorting_disabled" rowspan="1" colspan="1" style="width: 190px;" aria-label="Tác vụ">Tác vụ</th></tr>
+
+										</thead>
+										<tbody><tr role="row" class="odd"><td class=" text-center">1</td><td class=" text-left"><a href="?cate=laphoso&amp;subcat=hosocongviec&amp;idhoso=35">Hồ sơ quản lý nghiệp vụ</a></td><td class=" text-left">Hồ sơ quản lý nghiệp vụ</td><td class=" text-center">13/05/2023</td><td class=" text-center">30/06/2023</td><td class=" text-left"></td><td class=" text-center">3</td><td class=" text-center">Đang mở</td><td class=" text-center"><button type="button" name="update" id="35" class="btn edit-hosoindanhmuchoso" title="Sửa hồ sơ"><img src="assets/icons/pencil.png" title="Sửa hồ sơ"></button>  <button type="button" name="delete" id="35" class="btn delete-hosoindanhmuchoso" title="Xóa hồ sơ"><img src="assets/icons/delete.gif" title="Xóa hồ sơ"></button>  <button type="button" name="close" id="35" class="btn close-hosoindanhmuchoso" title="Đóng hồ sơ"><img src="assets/icons/lock.png" title="Đóng hồ sơ"> Đóng hồ sơ</button></td></tr><tr role="row" class="even"><td class=" text-center">2</td><td class=" text-left"><a href="?cate=laphoso&amp;subcat=hosocongviec&amp;idhoso=34">Tạo hồ sơ điện tử</a></td><td class=" text-left">Hồ sơ quản lý nghiệp vụ</td><td class=" text-center">13/05/2023</td><td class=" text-center">14/05/2023</td><td class=" text-left"></td><td class=" text-center">1</td><td class=" text-center">Đang mở</td><td class=" text-center"><button type="button" name="update" id="34" class="btn edit-hosoindanhmuchoso" title="Sửa hồ sơ"><img src="assets/icons/pencil.png" title="Sửa hồ sơ"></button>  <button type="button" name="delete" id="34" class="btn delete-hosoindanhmuchoso" title="Xóa hồ sơ"><img src="assets/icons/delete.gif" title="Xóa hồ sơ"></button>  <button type="button" name="close" id="34" class="btn close-hosoindanhmuchoso" title="Đóng hồ sơ"><img src="assets/icons/lock.png" title="Đóng hồ sơ"> Đóng hồ sơ</button></td></tr></tbody>
+									</table><div id="dataTable_Listhosocongviec_processing" class="dataTables_processing card" style="display: none;">Đang xử lý...</div>
+								</div>
+							</div><div class="row"><div class="col-sm-12 col-md-5"><div class="dataTables_info" id="dataTable_Listhosocongviec_info" role="status" aria-live="polite">Đang xem 1 đến 2 trong tổng số 2 mục</div></div><div class="col-sm-12 col-md-7"><div class="dataTables_paginate paging_simple_numbers" id="dataTable_Listhosocongviec_paginate"><ul class="pagination"><li class="paginate_button page-item previous disabled" id="dataTable_Listhosocongviec_previous"><a href="#" aria-controls="dataTable_Listhosocongviec" data-dt-idx="0" tabindex="0" class="page-link">Trước</a></li><li class="paginate_button page-item active"><a href="#" aria-controls="dataTable_Listhosocongviec" data-dt-idx="1" tabindex="0" class="page-link">1</a></li><li class="paginate_button page-item next disabled" id="dataTable_Listhosocongviec_next"><a href="#" aria-controls="dataTable_Listhosocongviec" data-dt-idx="2" tabindex="0" class="page-link">Sau</a></li></ul></div></div></div>
+						</div>
+					</div>
+					<!-- end table-responsive-->
+
+				</div>
+				<!-- end card-body-->
+
+			</div>
+			<!-- end card-->
+
+		</div>
+	</div>
+
+	<!-- Modal Thêm công văn mới -->
+	<div class="modal fade" role="dialog" aria-labelledby="frUpdateHosocongviec_DMHS" aria-hidden="true" data-backdrop="static" id="frUpdateHosocongviec_DMHS">
+		<div class="modal-dialog mini-modal">
+			<div class="modal-content">
+
+				<form action="#" method="post" enctype="multipart/form-data" id="frmUpdateHosocongviec_DMHS">
+
+					<div class="modal-header">
+						<h5 class="modal-title">Cập nhật thông tin hồ sơ công việc</h5>
+						<button type="button" class="close" data-dismiss="modal">
+							<span aria-hidden="true">×</span>
+							<span class="sr-only">Close</span>
+						</button>
+					</div>
+
+					<div class="modal-body">
+						<div class="row">
+							<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
+								<div class="form-group">
+									<label>Tiêu đề hồ sơ công việc</label>
+									<input class="form-control" id="strtieudehoso_indanhmuchoso" name="strtieudehoso_indanhmuchoso" type="text">
+								</div>
+							</div>
+
+							<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
+								<div class="form-group">
+									<label>Thuộc Danh mục hồ sơ</label>
+									<select class="form-control" id="strDanhmuchoso_INDMHS" name="strDanhmuchoso_INDMHS">
+									</select>
+								</div>
+							</div>
+
+						</div>
+						<div class="row">
+							<div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 col-xl-3">
+								<div class="form-group">
+									<label>Thời gian bắt đầu</label>
+									<input type="text" class="form-control" id="strngaybatdau_danhmuchoso">
+								</div>
+							</div>
+							<div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 col-xl-3">
+								<div class="form-group">
+									<label>Thời gian kết thúc</label>
+									<input type="text" class="form-control" id="strngayketthuc_danhmuchoso">
+								</div>
+							</div>
+							<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
+								<div class="form-group">
+									<label>Tình trạng</label>
+									<input class="form-control" id="strtinhtrang_danhmuchoso" name="strtinhtrang_danhmuchoso" type="text">
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+								<div class="form-group">
+									<label>Ghi chú</label>
+									<input type="text" class="form-control" id="strghichu_danhmuchoso">
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="modal-footer">
+						<div class="modal-toolbar">
+							<div class="col-md-8 col-lg-8 col-xl-8 margin-error">
+								<span id="thong-bao-errorHSINDMHS"></span>
+							</div>
+							<div class="col-md-4 col-lg-4 col-xl-4 no-margin-right">
+								<input type="hidden" name="idRecordHSINDMHS" id="idRecordHSINDMHS" value="0">
+								<input type="hidden" name="idRecord_INDMHS" id="idRecord_INDMHS" value="0">
+								<input type="hidden" name="action" id="actionHSINDMHS" value="">
+								<button type="button" name="save" id="saveAddNewHSINDMHS" class="btn btn-primary btn-sm"><i class="far fa-save"></i> Lưu </button>
+								<button type="button" class="btn btn-sm btn-danger" data-dismiss="modal"><i class="fas fa-times"></i> Đóng</button>
+							</div>
+						</div>
+					</div>
+
+				</form>
+
+			</div>
+		</div>
+	</div>
+</div>

@@ -4,140 +4,817 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+			<div class="card mb-3">
+				<div class="card-header">
+					<h3><i class="fas fa-table"></i> Danh mục văn bản đến</h3>
+				</div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.CreateDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Number)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Author)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Symbol)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DateIssued)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Content)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Receiver)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FileName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Density)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Urgency)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.NumberPaper)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Language)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Signer)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Position)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Note)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IsAssign)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Type)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CreateUser)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DocumentType)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreateDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Number)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Author)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Symbol)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DateIssued)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Content)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Receiver)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FileName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Density)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Urgency)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.NumberPaper)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Language)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Signer)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Position)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Note)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsAssign)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Type)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreateUser.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DocumentType.Name)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+				<div class="toolbar">
+					<button id="btn-addnew-vanbanden" class="l-btn" data-toggle="modal" data-target="#frUpdateVanbanden">
+						<span class="l-btn-left">
+							<span class="l-btn-text">Thêm</span>
+							<span class="l-btn-icon icon-add">&nbsp;</span>
+						</span>
+					</button>
+					<button id="btn-delete-vanbanden" class="l-btn" disabled="disabled">
+						<span class="l-btn-left">
+							<span class="l-btn-text">Xóa</span>
+							<span class="l-btn-icon icon-delete">&nbsp;</span>
+						</span>
+					</button>
+					<button id="btn-print-vanbanden" class="l-btn">
+						<span class="l-btn-left">
+							<span class="l-btn-text">In</span>
+							<span class="l-btn-icon icon-print">&nbsp;</span>
+						</span>
+					</button>
+					<button id="btn-excel-vanbanden" class="l-btn">
+						<span class="l-btn-left">
+							<span class="l-btn-text">Excel</span>
+							<span class="l-btn-icon icon-excel">&nbsp;</span>
+						</span>
+					</button>
+				</div>
+
+				<div class="card-body card-content">
+					<div class="table-responsive">
+						<!-- Nếu muốn không xuống dòng, thêm class nowrap vào table -->
+						<div id="dataTable_Vanbanden_wrapper" class="dataTables_wrapper dt-bootstrap4 no-footer">
+							<div class="row"><div class="col-sm-12 col-md-6"><div class="dataTables_length" id="dataTable_Vanbanden_length"><label>Đang xem <select name="dataTable_Vanbanden_length" aria-controls="dataTable_Vanbanden" class="custom-select custom-select-sm form-control form-control-sm"><option value="10">10</option><option value="25">25</option><option value="50">50</option><option value="-1">Tất cả</option></select> mục</label></div></div><div class="col-sm-12 col-md-6"><div id="dataTable_Vanbanden_filter" class="dataTables_filter"><label>Tìm kiếm:<input type="search" class="form-control form-control-sm" placeholder="" aria-controls="dataTable_Vanbanden"></label></div></div></div><div class="row">
+								<div class="col-sm-12">
+									<table id="dataTable_Vanbanden" class="table table-bordered table-hover display responsive dataTable no-footer dtr-inline" style="width: 100%;" role="grid" aria-describedby="dataTable_Vanbanden_info">
+										<thead>
+											<tr class="first-row" role="row"><th class="text-center sorting_disabled" rowspan="1" colspan="1" style="width: 0px;" aria-label=""></th><th class="text-center sorting_disabled" rowspan="1" colspan="1" style="width: 13px;" aria-label=""><input type="checkbox" class="checkall" id="checkall"></th><th class="text-center sorting_disabled" rowspan="1" colspan="1" style="width: 54px;" aria-label="Tác vụ">Tác vụ</th><th class="text-center sorting_disabled" rowspan="1" colspan="1" style="width: 70px;" aria-label="Ngày đến">Ngày đến</th><th class="text-center sorting_disabled" rowspan="1" colspan="1" style="width: 23px;" aria-label="Số đến">Số đến</th><th class="text-left sorting_disabled" rowspan="1" colspan="1" style="width: 98px;" aria-label="Tác giả">Tác giả</th><th class="text-center sorting_disabled" rowspan="1" colspan="1" style="width: 110px;" aria-label="Số, ký hiệu văn bản">Số, ký hiệu văn bản</th><th class="text-center sorting_disabled" rowspan="1" colspan="1" style="width: 70px;" aria-label="Ngày văn bản">Ngày văn bản</th><th class="text-left sorting_disabled" rowspan="1" colspan="1" style="width: 242px;" aria-label="Tên loại và trích yếu">Tên loại và trích yếu</th><th class="text-left sorting_disabled" rowspan="1" colspan="1" style="width: 143px;" aria-label="Đơn vị hoặc người nhận">Đơn vị hoặc người nhận</th><th class="text-center sorting_disabled" rowspan="1" colspan="1" style="width: 70px;" aria-label="Ngày chuyển">Ngày chuyển</th><th class="text-left sorting_disabled" rowspan="1" colspan="1" style="width: 79px;" aria-label="Ghi chú">Ghi chú</th></tr>
+
+										</thead>
+										<tbody>
+											<tr role="row" class="odd">
+												<td class=" text-center" tabindex="0"></td>
+												<td class=" text-center"><input type="checkbox" class="delete_check" id="delcheck_673" onclick="checkcheckbox();" value="673"></td><td class=" text-center"><button type="button" name="update" id="673" class="btn edit-vanbanden"><img src="assets/icons/pencil.png" title="Sửa văn bản"></button><button type="button" name="delete" id="673" class="btn delete-vanbanden"><img src="assets/icons/delete.gif" title="Xóa văn bản"></button><button type="button" name="move" id="673" class="btn chuyenxl-vanbanden"><img src="assets/icons/phanxl.png" title="Phân xử lý công việc"></button><button type="button" name="process" id="673" class="btn laphoso-vanbanden"><img src="assets/icons/folders.png" title="Chuyển văn bản vào hồ sơ"></button><button type="button" name="thuhoi" id="673" class="btn thuhoi-vanbanden"><img src="assets/icons/redo.png" title="Thu hồi văn bản"></button><button type="button" name="printChidaogiaiquyet" id="673" class="btn printChidaogiaiquyet"><img src="assets/icons/print.gif" title="In phiếu chỉ đạo giải quyết"></button></td><td class=" text-center">13/05/2023</td><td class=" text-center">1</td><td class=" text-left">Phòng HC</td><td class=" text-center">01/CONGVANMAU</td><td class=" text-center">13/05/2023</td><td class=" text-left"><span onclick="OpenVanbanden(673)">công văn quyết định 1234</span></td><td class=" text-left"><b>Theo dõi - Chỉ đạo:</b><br>- Hà Kiều Trang<br><br><b>Tham gia xử lý:</b><br>- Lê Đức Tài<br>- Nguyễn Đăng Khánh<br></td><td class=" text-center">13/05/2023</td><td class=" text-left"></td></tr>
+										</tbody>
+									</table><div id="dataTable_Vanbanden_processing" class="dataTables_processing card" style="display: none;">Đang xử lý...</div>
+								</div>
+							</div><div class="row"><div class="col-sm-12 col-md-5"><div class="dataTables_info" id="dataTable_Vanbanden_info" role="status" aria-live="polite">Đang xem 1 đến 1 trong tổng số 1 mục</div></div><div class="col-sm-12 col-md-7"><div class="dataTables_paginate paging_simple_numbers" id="dataTable_Vanbanden_paginate"><ul class="pagination"><li class="paginate_button page-item previous disabled" id="dataTable_Vanbanden_previous"><a href="#" aria-controls="dataTable_Vanbanden" data-dt-idx="0" tabindex="0" class="page-link">Trước</a></li><li class="paginate_button page-item active"><a href="#" aria-controls="dataTable_Vanbanden" data-dt-idx="1" tabindex="0" class="page-link">1</a></li><li class="paginate_button page-item next disabled" id="dataTable_Vanbanden_next"><a href="#" aria-controls="dataTable_Vanbanden" data-dt-idx="2" tabindex="0" class="page-link">Sau</a></li></ul></div></div></div>
+						</div>
+					</div>
+					<!-- end table-responsive-->
+
+				</div>
+				<!-- end card-body-->
+
+			</div>
+			<!-- end card-->
+
+		</div>
+
+	</div>
+
+	<!-- ------------------------------------------------ -->
+	<!-- Modal Thêm công văn mới -->
+	<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="frUpdateVanbanden" aria-hidden="true" data-backdrop="static" id="frUpdateVanbanden">
+		<div class="modal-dialog">
+			<div class="modal-content">
+
+				<form action="#" method="post" enctype="multipart/form-data" id="frmUpdateVanbanden">
+
+					<div class="modal-header">
+						<h5 class="modal-title">Cập nhật thông tin văn bản đến</h5>
+						<button type="button" class="close" data-dismiss="modal">
+							<span aria-hidden="true">×</span>
+							<span class="sr-only">Close</span>
+						</button>
+					</div>
+
+					<div class="modal-body">
+
+						<div class="row">
+							<div class="col-xs-12 col-sm-12 col-md-5 col-lg-5 col-xl-5">
+								<div class="form-group">
+									<label>Danh mục hồ sơ</label>
+									<select class="form-control select2 select2-hidden-accessible" id="strDanhmuchoso_vanbanden" name="strDanhmuchoso_vanbanden" multiple="" data-select2-id="strDanhmuchoso_vanbanden" tabindex="-1" aria-hidden="true">
+										<option value="34">Tạo hồ sơ điện tử</option>
+										<option value="35">Hồ sơ quản lý nghiệp vụ</option>
+									</select><span class="select2 select2-container select2-container--default" dir="ltr" data-select2-id="1" style="width: 100px;"><span class="selection"><span class="select2-selection select2-selection--multiple" role="combobox" aria-haspopup="true" aria-expanded="false" tabindex="-1"><ul class="select2-selection__rendered"><li class="select2-search select2-search--inline"><input class="select2-search__field" type="search" tabindex="0" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" role="textbox" aria-autocomplete="list" placeholder="" style="width: 0.75em;"></li></ul></span></span><span class="dropdown-wrapper" aria-hidden="true"></span></span>
+								</div>
+							</div>
+							<div class="col-xs-12 col-sm-12 col-md-1 col-lg-1 col-xl-1">
+								<div class="form-group">
+									<label>Năm</label>
+									<input class="form-control" id="intnam_vanbanden" name="intnam_vanbanden" type="number">
+								</div>
+
+							</div>
+
+							<div class="col-xs-12 col-sm-12 col-md-1 col-lg-1 col-xl-1">
+								<div class="form-group">
+									<label>Số đến</label>
+									<input class="form-control" id="intsoden" name="intsoden" type="text" readonly="">
+								</div>
+							</div>
+							<div class="col-xs-12 col-sm-12 col-md-2 col-lg-2 col-xl-2">
+								<div class="form-group">
+									<label>Ngày đến</label>
+									<input type="text" class="form-control" id="strngayden">
+								</div>
+							</div>
+							<div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 col-xl-3">
+								<div class="form-group">
+									<label>Số, ký hiệu</label>
+									<input class="form-control" id="strsokyhieu_vanbanden" name="strsokyhieu" type="text">
+								</div>
+							</div>
+						</div>
+
+						<div class="row">
+
+							<div class="col-xs-12 col-sm-12 col-md-2 col-lg-2 col-xl-2">
+								<div class="form-group">
+									<label>Ngày tháng văn bản</label>
+									<input type="text" class="form-control" id="strngaythang_vanbanden">
+								</div>
+							</div>
+							<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 col-xl-4">
+								<div class="form-group">
+									<label>Tên loại văn bản</label>
+									<select id="idloaivanban_vanbanden" class="form-control">
+										<option value="8">Công văn</option>
+										<option value="9">Báo cáo</option>
+										<option value="10">Giấy mời</option>
+										<option value="11">Quyết định</option>
+										<option value="12">Nghị định</option>
+										<option value="13">Thông báo</option>
+										<option value="14">Thông tư</option>
+										<option value="15">Tờ trình</option>
+										<option value="35">Sao lục</option>
+										<option value="38">Giấy giới thiệu</option>
+										<option value="43">Hợp đồng bốc xếp</option>
+										<option value="45">Hợp đồng kinh tế</option>
+										<option value="49">Kế hoạch</option>
+										<option value="50">Biên bản</option>
+										<option value="51">Hợp đồng kinh tế</option>
+									</select>
+								</div>
+							</div>
+							<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
+								<div class="form-group">
+									<label>Cơ quan ban hành văn bản</label>
+									<input type="text" class="form-control" id="strcoquanbanhanh_vanbanden">
+								</div>
+							</div>
+
+						</div>
+
+						<div class="row">
+							<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+								<div class="form-group">
+									<label>Trích yếu nội dung</label>
+									<textarea class="form-control" rows="2" id="strtrichyeu_vanbanden"></textarea>
+								</div>
+							</div>
+						</div>
+
+
+						<div class="row">
+							<div class="col-xs-12 col-sm-12 col-md-2 col-lg-2 col-xl-2">
+								<div class="form-group">
+									<label>Độ mật</label>
+									<select id="intmat_vanbanden" class="form-control">
+										<option value="17">  Thường</option>
+										<option value="18">Mật</option>
+										<option value="19">Tối mật</option>
+										<option value="20">Tuyệt mật</option>
+									</select>
+								</div>
+							</div>
+							<div class="col-xs-12 col-sm-12 col-md-2 col-lg-2 col-xl-2">
+								<div class="form-group">
+									<label>Độ khẩn</label>
+									<select id="intkhan_vanbanden" class="form-control">
+										<option value="0">Thường</option>
+										<option value="1">Khẩn</option>
+										<option value="15">Thượng khẩn</option>
+										<option value="16">Hỏa tốc</option>
+									</select>
+								</div>
+							</div>
+							<div class="col-xs-12 col-sm-12 col-md-1 col-lg-1 col-xl-1">
+								<div class="form-group">
+									<label>Số tờ</label>
+									<input type="number" class="form-control" id="intsotrang_vanbanden">
+								</div>
+							</div>
+							<div class="col-xs-12 col-sm-12 col-md-2 col-lg-2 col-xl-2">
+								<div class="form-group">
+									<label>Ngôn ngữ</label>
+									<input type="text" class="form-control" id="strngonngu_vanbanden">
+								</div>
+							</div>
+							<div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 col-xl-3">
+								<div class="form-group">
+									<label>Người ký</label>
+									<input type="text" class="form-control" id="strnguoiky_vanbanden">
+								</div>
+							</div>
+							<div class="col-xs-12 col-sm-12 col-md-2 col-lg-2 col-xl-2">
+								<div class="form-group">
+									<label>Chức vụ</label>
+									<input type="text" class="form-control" id="strchucvunguoiky_vanbanden">
+								</div>
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+								<div class="form-group">
+									<label>Ghi chú</label>
+									<input type="text" class="form-control" rows="1" id="strghichu_vanbanden">
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 col-xl-4">
+								<div class="form-group">
+									<label>Tệp đính kèm</label>
+									<br>
+									<input type="file" name="fileVBDen" id="fileVBDen">
+									<br>
+
+								</div>
+								<div class="form-group">
+									<button type="button" class="btn btn-success" id="btn-attach-vanbanden">
+										Đính kèm
+										<span class="btn-label btn-label-right">
+											<i class="fas fa-arrow-right"></i>
+										</span>
+									</button>
+								</div>
+							</div>
+							<div class="col-xs-12 col-sm-12 col-md-8 col-lg-8 col-xl-8">
+								<div class="button-list">
+									<ul id="list-file-attach">
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="modal-footer">
+						<div class="modal-toolbar">
+							<div class="col-md-8 col-lg-8 col-xl-8 margin-error">
+								<span id="thong-bao-errorVanbanden"></span>
+							</div>
+							<div class="col-md-4 col-lg-4 col-xl-4 no-margin-right">
+								<input type="hidden" name="idRecordVanbanden" id="idRecordVanbanden" value="0">
+								<input type="hidden" name="action" id="action" value="">
+								<button type="button" name="save" id="saveAddNewVanbanden" class="btn btn-primary btn-sm"><i class="far fa-save"></i> Lưu </button>
+								<button type="button" class="btn btn-sm btn-danger" data-dismiss="modal"><i class="fas fa-times"></i> Đóng</button>
+							</div>
+						</div>
+					</div>
+
+				</form>
+
+			</div>
+		</div>
+	</div>
+	<!-- End modal -->
+	<!-- Modal Trình công văn đến - Cách cũ -->
+	<div class="modal fade" role="dialog" aria-labelledby="frGiaiQuyetVanbanden" aria-hidden="true" data-backdrop="static" id="frGiaiQuyetVanbanden">
+		<div class="modal-dialog mini-modal">
+			<div class="modal-content">
+
+				<form action="#" method="post" enctype="multipart/form-data" id="frmGiaiQuyetVanBanden">
+
+					<div class="modal-header">
+						<h5 class="modal-title">Xử lý, giải quyết văn bản đến</h5>
+						<button type="button" class="close" data-dismiss="modal">
+							<span aria-hidden="true">×</span>
+							<span class="sr-only">Close</span>
+						</button>
+					</div>
+
+					<div class="modal-body">
+
+						<div class="row">
+							<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+								<div class="form-group">
+									<label>Chủ trì giải quyết</label>
+									<select name="strchutrigiaiquyet" id="strchutrigiaiquyet_vanbanden" class="form-control" required="">
+									</select>
+								</div>
+
+							</div>
+							<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+								<div class="form-group">
+									<label>Cá nhân, đơn vị nhận văn bản</label>
+
+									<select class="form-control select2 select2-hidden-accessible" id="strdonvinhan_vanbanden" name="state[]" multiple="" data-select2-id="strdonvinhan_vanbanden" tabindex="-1" aria-hidden="true">
+										<optgroup label="Ban Lãnh đạo"><option value="32">Lê Đức Tài - Cán bộ</option><option value="33">Nguyễn Đăng Khánh - Cán bộ</option><option value="35">Nguyễn Văn Thắng - Quản trị hệ thống</option></optgroup>
+										<optgroup label="Hành chính - Tổ chức"><option value="30">Nguyễn Thị Liên - Trưởng phòng</option><option value="31">Hà Kiều Trang - Phó Trưởng phòng</option><option value="36">Vũ Hải Nguyên - Quản trị hệ thống</option></optgroup>
+										<optgroup label="Kế toán - Tài vụ"><option value="34">Nguyễn Hương Giang - Nhân viên văn thư</option></optgroup>
+										<optgroup label="Tổ Chuyên môn"><option value="37">Trần Văn Hùng - Trưởng phòng</option></optgroup>
+										<optgroup label="Tổ Kỹ thuật"></optgroup>
+										<optgroup label="Quản trị hệ thống"><option value="18">Quản trị hệ thống - Quản trị hệ thống</option></optgroup>
+									</select><span class="select2 select2-container select2-container--default" dir="ltr" data-select2-id="2" style="width: 100px;"><span class="selection"><span class="select2-selection select2-selection--multiple" role="combobox" aria-haspopup="true" aria-expanded="false" tabindex="-1"><ul class="select2-selection__rendered"><li class="select2-search select2-search--inline"><input class="select2-search__field" type="search" tabindex="0" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" role="textbox" aria-autocomplete="list" placeholder="" style="width: 0.75em;"></li></ul></span></span><span class="dropdown-wrapper" aria-hidden="true"></span></span>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+								<div class="form-group">
+									<label>Nội dung trình</label>
+									<textarea required="" class="form-control" rows="4" id="strnoidungtrinh_vanbanden"></textarea>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="modal-footer">
+						<div class="modal-toolbar">
+							<div class="col-md-8 col-lg-8 col-xl-8 margin-error">
+								<span id="thong-bao-errorChuyenVanbanden"></span>
+							</div>
+							<div class="col-md-4 col-lg-4 col-xl-4 no-margin-right">
+								<input type="hidden" name="idRecord_MoveVanbanden" id="idRecord_MoveVanbanden" value="0">
+								<input type="hidden" name="actionMoveVanbanden" id="actionMoveVanbanden" value="">
+								<button type="button" name="save" id="saveTrinhVanban" class="btn btn-primary btn-sm"><i class="far fa-save"></i> Lưu </button>
+								<button type="button" class="btn btn-sm btn-danger" data-dismiss="modal"><i class="fas fa-times"></i> Đóng</button>
+							</div>
+						</div>
+
+					</div>
+
+				</form>
+
+			</div>
+		</div>
+	</div>
+	<!-- End modal -->
+	<!-- Modal chuyển công văn đến vào hồ sơ -->
+	<div class="modal fade" role="dialog" aria-labelledby="frLaphosoVanbanden" aria-hidden="true" data-backdrop="static" id="frLaphosoVanbanden">
+		<div class="modal-dialog mini-modal">
+			<div class="modal-content">
+
+				<form action="#" method="post" enctype="multipart/form-data" id="frmLaphosoVanbanden">
+
+					<div class="modal-header">
+						<h5 class="modal-title">Chuyển văn bản vào hồ sơ</h5>
+						<button type="button" class="close" data-dismiss="modal">
+							<span aria-hidden="true">×</span>
+							<span class="sr-only">Close</span>
+						</button>
+					</div>
+
+					<div class="modal-body">
+
+						<div class="row">
+
+							<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+								<div class="form-group">
+									<label>Chọn danh mục hồ sơ</label>
+
+									<select class="form-control select2 select2-hidden-accessible" id="strlapdanhmuchoso_vanbanden" name="state[]" multiple="" data-select2-id="strlapdanhmuchoso_vanbanden" tabindex="-1" aria-hidden="true">
+										<option value="34">Tạo hồ sơ điện tử</option>
+										<option value="35">Hồ sơ quản lý nghiệp vụ</option>
+									</select><span class="select2 select2-container select2-container--default" dir="ltr" data-select2-id="3" style="width: 100px;"><span class="selection"><span class="select2-selection select2-selection--multiple" role="combobox" aria-haspopup="true" aria-expanded="false" tabindex="-1"><ul class="select2-selection__rendered"><li class="select2-search select2-search--inline"><input class="select2-search__field" type="search" tabindex="0" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" role="textbox" aria-autocomplete="list" placeholder="" style="width: 0.75em;"></li></ul></span></span><span class="dropdown-wrapper" aria-hidden="true"></span></span>
+								</div>
+							</div>
+						</div>
+
+					</div>
+
+					<div class="modal-footer">
+						<div class="modal-toolbar">
+							<div class="col-md-8 col-lg-8 col-xl-8 margin-error">
+								<span id="thong-bao-errorLaphosoVanbanden"></span>
+							</div>
+							<div class="col-md-4 col-lg-4 col-xl-4 no-margin-right">
+								<input type="hidden" name="idRecord_LaphosoVanbanden" id="idRecord_LaphosoVanbanden" value="0">
+								<button type="button" name="save" id="saveLaphoso" class="btn btn-primary btn-sm"><i class="far fa-save"></i> Ghi nhận </button>
+								<button type="button" class="btn btn-sm btn-danger" data-dismiss="modal"><i class="fas fa-times"></i> Đóng</button>
+							</div>
+						</div>
+					</div>
+
+				</form>
+
+			</div>
+		</div>
+	</div>
+	<!-- End modal -->
+	<!-- Modal hiển thị danh sách văn bản để in -->
+	<div class="modal fade" role="dialog" aria-labelledby="ppPrint" aria-hidden="true" data-backdrop="static" id="ppPrint">
+		<div class="modal-dialog print-modal">
+			<div class="modal-content">
+
+				<div class="modal-header">
+					<h5 class="modal-title">In danh sách văn bản</h5>
+					<button type="button" class="close" data-dismiss="modal">
+						<span aria-hidden="true">×</span>
+						<span class="sr-only">Close</span>
+					</button>
+				</div>
+
+				<div class="modal-body body-print-modal">
+					<div class="row">
+						<div id="NhanDuLieu"></div><!-- Hiển thị dữ liệu -->
+					</div>
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" name="save" id="printListVanban" class="btn btn-primary btn-sm"><i class="far fa-save"></i> In danh sách </button>
+					<button type="button" class="btn btn-sm btn-danger" data-dismiss="modal"><i class="fas fa-times"></i> Đóng</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- End modal -->
+	<!-- Modal mở công văn đến -->
+	<div class="modal fade" role="dialog" aria-labelledby="frViewVanbanden" aria-hidden="true" data-backdrop="static" id="frViewVanbanden">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Thông tin chi tiết văn bản đến</h5>
+					<button type="button" class="close" data-dismiss="modal">
+						<span aria-hidden="true">×</span>
+						<span class="sr-only">Close</span>
+					</button>
+				</div>
+
+				<div class="modal-body view-detail">
+					<div class="row">
+						<div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 col-xl-3">
+							<div class="form-group">
+								<label>Ngày đến: </label>
+								<span id="txtngayden"></span>
+							</div>
+						</div>
+						<div class="col-xs-12 col-sm-12 col-md-2 col-lg-2 col-xl-2">
+							<div class="form-group">
+								<label>Số đến: </label>
+								<span id="txtsoden"></span>
+							</div>
+						</div>
+						<div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 col-xl-3">
+							<div class="form-group">
+								<label>Số ký hiệu: </label>
+								<span id="txtsokyhieuvanbanden"></span>
+							</div>
+						</div>
+						<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 col-xl-4">
+							<div class="form-group">
+								<label>Ngày tháng văn bản: </label>
+								<span id="txtngaythangvanbanden"></span>
+							</div>
+						</div>
+					</div>
+
+					<div class="row">
+
+						<div class="col-xs-12 col-sm-12 col-md-8 col-lg-8 col-xl-8">
+							<div class="form-group">
+								<label>Cơ quan ban hành văn bản: </label>
+								<span id="txtcoquanbanhanhvanbanden"></span>
+							</div>
+						</div>
+						<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 col-xl-4">
+							<div class="form-group">
+								<label>Tên loại văn bản: </label>
+								<span id="txttenloaivanbanden"></span>
+							</div>
+						</div>
+
+					</div>
+
+					<div class="row">
+						<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+							<div class="form-group">
+								<label>Trích yếu nội dung: </label>
+								<span id="txttrichyeuvanbanden"></span>
+							</div>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 col-xl-3">
+							<div class="form-group">
+								<label>Độ mật: </label>
+								<span id="txtdomatvanbanden"></span>
+							</div>
+						</div>
+						<div class="col-xs-12 col-sm-12 col-md-2 col-lg-2 col-xl-2">
+							<div class="form-group">
+								<label>Độ khẩn: </label>
+								<span id="txtdokhanvanbanden"></span>
+							</div>
+						</div>
+						<div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 col-xl-3">
+							<div class="form-group">
+								<label>Số tờ: </label>
+								<span id="txtsotrangvanbanden"></span>
+							</div>
+						</div>
+
+						<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 col-xl-4">
+
+							<div class="form-group">
+								<label>Ngày chuyển: </label>
+								<span id="txtngaychuyenvanbanden"></span>
+							</div>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-xs-12 col-sm-12 col-md-5 col-lg-5 col-xl-5">
+							<div class="form-group">
+								<label>Đơn vị hoặc người nhận: </label><br>
+								<span id="txtdonvinhanvanbanden"></span>
+							</div>
+						</div>
+						<div class="col-xs-12 col-sm-12 col-md-7 col-lg-7 col-xl-7">
+							<div class="form-group">
+								<label>Nội dung yêu cầu xử lý: </label><br>
+								<span id="txtnoidungnhiemvuvanbanden"></span>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+							<div class="form-group">
+								<label>Danh mục hồ sơ: </label>
+								<span id="txtdanhmuchosovanbanden"></span>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+							<div class="form-group">
+								<label>Tệp đính kèm: </label>
+								<div id="listfilevanbanden"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" class="btn btn-sm btn-danger" data-dismiss="modal"><i class="fas fa-times"></i> Đóng</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- End modal -->
+	<!-- Modal phân xử lý công việc -->
+	<div class="modal fade" role="dialog" aria-labelledby="frAddWorkFlowVanbanden" aria-hidden="true" data-backdrop="static" id="frAddWorkFlowVanbanden">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<form action="#" method="post" enctype="multipart/form-data" id="frmAddWorkFlowVanbanden">
+					<div class="modal-header">
+						<h5 class="modal-title">Chuyển xử lý công việc</h5>
+						<button type="button" class="close" data-dismiss="modal">
+							<span aria-hidden="true">×</span>
+							<span class="sr-only">Close</span>
+						</button>
+					</div>
+
+					<div class="modal-body">
+						<div class="row">
+							<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
+								<div class="form-group">
+									<label>Nội dung công việc</label>
+									<textarea class="form-control" rows="4" id="strWorkflowVanbanden"></textarea>
+								</div>
+								<div class="row">
+									<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
+										<div class="form-group">
+											<label>Ngày tạo</label>
+											<input type="text" class="form-control" id="strngaytaoVanbanden">
+										</div>
+									</div>
+									<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
+										<div class="form-group">
+											<label>Ngày xử lý</label>
+											<input type="text" class="form-control" id="strngayxulyVanbanden">
+										</div>
+									</div>
+								</div>
+								<div class="form-group">
+									<label>Yêu cầu xử lý</label>
+									<textarea class="form-control" rows="4" id="strYeucauWorkflowVanbanden"></textarea>
+								</div>
+
+							</div>
+							<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
+								<div class="form-group">
+									<label>Chủ trì giải quyết công việc (người có thẩm quyền xử lý công việc)</label>
+									<select class="form-control select2 select2-hidden-accessible" id="strLeaderTaskVanbanden" name="strLeaderTaskVanbanden" data-select2-id="strLeaderTaskVanbanden" tabindex="-1" aria-hidden="true">
+										<option value="30" data-select2-id="5">Nguyễn Thị Liên - Trưởng phòng</option>
+										<option value="31">Hà Kiều Trang - Phó Trưởng phòng</option>
+										<option value="32">Lê Đức Tài - Cán bộ</option>
+										<option value="33">Nguyễn Đăng Khánh - Cán bộ</option>
+										<option value="34">Nguyễn Hương Giang - Nhân viên văn thư</option>
+										<option value="35">Nguyễn Văn Thắng - Quản trị hệ thống</option>
+										<option value="36">Vũ Hải Nguyên - Quản trị hệ thống</option>
+									</select><span class="select2 select2-container select2-container--default" dir="ltr" data-select2-id="4" style="width: 100px;"><span class="selection"><span class="select2-selection select2-selection--single" role="combobox" aria-haspopup="true" aria-expanded="false" tabindex="0" aria-labelledby="select2-strLeaderTaskVanbanden-container"><span class="select2-selection__rendered" id="select2-strLeaderTaskVanbanden-container" role="textbox" aria-readonly="true" title="Nguyễn Thị Liên - Trưởng phòng">Nguyễn Thị Liên - Trưởng phòng</span><span class="select2-selection__arrow" role="presentation"><b role="presentation"></b></span></span></span><span class="dropdown-wrapper" aria-hidden="true"></span></span>
+								</div>
+								<div class="form-group">
+									<label>Chỉ đạo - Theo dõi tiến độ xử lý công việc</label>
+									<select class="form-control select2 select2-hidden-accessible" id="strLeaderCmdTaskVanbanden" name="strLeaderCmdTaskVanbanden" multiple="" data-select2-id="strLeaderCmdTaskVanbanden" tabindex="-1" aria-hidden="true">
+										<!-- Dữ liệu load sau khi chọn chủ trì -->
+										<option value="30">Nguyễn Thị Liên - Trưởng phòng</option>
+										<option value="31">Hà Kiều Trang - Phó Trưởng phòng</option>
+										<option value="32">Lê Đức Tài - Cán bộ</option>
+										<option value="33">Nguyễn Đăng Khánh - Cán bộ</option>
+										<option value="34">Nguyễn Hương Giang - Nhân viên văn thư</option>
+										<option value="35">Nguyễn Văn Thắng - Quản trị hệ thống</option>
+										<option value="36">Vũ Hải Nguyên - Quản trị hệ thống</option>
+									</select><span class="select2 select2-container select2-container--default" dir="ltr" data-select2-id="7" style="width: 100px;"><span class="selection"><span class="select2-selection select2-selection--multiple" role="combobox" aria-haspopup="true" aria-expanded="false" tabindex="-1"><ul class="select2-selection__rendered"><li class="select2-search select2-search--inline"><input class="select2-search__field" type="search" tabindex="0" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" role="textbox" aria-autocomplete="list" placeholder="" style="width: 0.75em;"></li></ul></span></span><span class="dropdown-wrapper" aria-hidden="true"></span></span>
+								</div>
+								<div class="form-group">
+									<label>Danh sách cán bộ tham gia giải quyết công việc</label>
+									<select class="form-control select2 select2-hidden-accessible" id="strListPloyTaskVanbanden" name="strListPloyTaskVanbanden" multiple="" data-select2-id="strListPloyTaskVanbanden" tabindex="-1" aria-hidden="true">
+										<optgroup label="Ban Lãnh đạo"><option value="32">Lê Đức Tài - Cán bộ</option><option value="33">Nguyễn Đăng Khánh - Cán bộ</option><option value="35">Nguyễn Văn Thắng - Quản trị hệ thống</option></optgroup>
+										<optgroup label="Hành chính - Tổ chức"><option value="30">Nguyễn Thị Liên - Trưởng phòng</option><option value="31">Hà Kiều Trang - Phó Trưởng phòng</option><option value="36">Vũ Hải Nguyên - Quản trị hệ thống</option></optgroup>
+										<optgroup label="Kế toán - Tài vụ"><option value="34">Nguyễn Hương Giang - Nhân viên văn thư</option></optgroup>
+										<optgroup label="Tổ Chuyên môn"><option value="37">Trần Văn Hùng - Trưởng phòng</option></optgroup>
+										<optgroup label="Quản trị hệ thống"><option value="18">Quản trị hệ thống - Quản trị hệ thống</option></optgroup>
+									</select><span class="select2 select2-container select2-container--default" dir="ltr" data-select2-id="6" style="width: 100px;"><span class="selection"><span class="select2-selection select2-selection--multiple" role="combobox" aria-haspopup="true" aria-expanded="false" tabindex="-1"><ul class="select2-selection__rendered"><li class="select2-search select2-search--inline"><input class="select2-search__field" type="search" tabindex="0" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" role="textbox" aria-autocomplete="list" placeholder="" style="width: 0.75em;"></li></ul></span></span><span class="dropdown-wrapper" aria-hidden="true"></span></span>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="modal-footer">
+						<div class="modal-toolbar">
+							<div class="col-md-8 col-lg-8 col-xl-8 margin-error">
+								<span id="thong-bao-errorWorkFlowVanbanden"></span>
+							</div>
+							<div class="col-md-4 col-lg-4 col-xl-4 no-margin-right">
+								<input type="hidden" name="idRecordTaskVanbanden" id="idRecordTaskVanbanden" value="0">
+								<input type="hidden" name="actionTaskVanbanden" id="actionTaskVanbanden" value="">
+
+								<button type="button" name="save" id="saveAddNewWorkFlowVanbanden" class="btn btn-primary btn-sm"><i class="far fa-save"></i> Lưu công việc </button>
+								<button type="button" class="btn btn-sm btn-danger" data-dismiss="modal"><i class="fas fa-times"></i> Hủy bỏ</button>
+							</div>
+						</div>
+
+					</div>
+				</form>
+
+			</div>
+		</div>
+	</div>
+	<!-- End modal -->
+	<!-- Modal Yes/No -->
+	<div class="modal fade" role="dialog" aria-labelledby="mi-modal-process" aria-hidden="true" data-backdrop="static" id="mi-modal-process">
+		<div class="modal-dialog modal-dialog-alert">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="myModalLabel">Thông báo</h5>
+					<button type="button" class="close" data-dismiss="modal">
+						<span aria-hidden="true">×</span>
+						<span class="sr-only">Close</span>
+					</button>
+
+				</div>
+				<div class="modal-body">
+					<p>Văn bản này đã được xử lý rồi, bạn có muốn xử lý lại không?</p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" id="modal-btn-yes" class="btn btn-primary btn-sm"><i class="far fa-save"></i> Đồng ý </button>
+					<button type="button" id="modal-btn-no" class="btn btn-sm btn-danger" data-dismiss="modal"><i class="fas fa-times"></i> Hủy bỏ</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- End modal -->
+	<!-- Modal Yes/No Thu hồi -->
+	<div class="modal fade" role="dialog" aria-labelledby="frAddWorkFlowVanbanden_Thuhoi" aria-hidden="true" data-backdrop="static" id="mi-modal-process-thuhoi-vanbanden">
+		<div class="modal-dialog modal-dialog-alert">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="myModalLabel">Thông báo</h5>
+					<button type="button" class="close" data-dismiss="modal">
+						<span aria-hidden="true">×</span>
+						<span class="sr-only">Close</span>
+					</button>
+
+				</div>
+				<div class="modal-body">
+					<p>
+						Văn bản này đã đưa vào luồng xử lý, không thể thu hồi<br>
+						Muốn thu hồi văn bản, trước tiên, hãy loại bỏ văn bản trong luồng xử lý.
+					</p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" id="modal-btn-no-thuhoi-vanbanden" class="btn btn-sm btn-danger" data-dismiss="modal"><i class="fas fa-times"></i> Đóng</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- End modal -->
+	<!-- Modal Yes/No xóa -->
+	<div class="modal fade" role="dialog" aria-labelledby="frVanbanden_Delete" aria-hidden="true" data-backdrop="static" id="frVanbanden_Delete">
+		<div class="modal-dialog modal-dialog-alert">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="myModalLabel">Thông báo</h5>
+					<button type="button" class="close" data-dismiss="modal">
+						<span aria-hidden="true">×</span>
+						<span class="sr-only">Close</span>
+					</button>
+
+				</div>
+				<div class="modal-body">
+					<p>
+						Bạn có chắc chắn muốn xóa tài liệu vừa chọn (Đồng ý/Hủy bỏ)?
+					</p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" id="modal-btn-yes-delete-vanbanden" class="btn btn-primary btn-sm"><i class="far fa-save"></i> Đồng ý </button>
+					<button type="button" id="modal-btn-no-delete-vanbanden" class="btn btn-sm btn-danger" data-dismiss="modal"><i class="fas fa-times"></i> Hủy bỏ</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- End modal -->
+	<!-- Modal hiển thị phiếu trình để in -->
+	<div class="modal fade" role="dialog" aria-labelledby="ppPrintPhieuTrinh" aria-hidden="true" data-backdrop="static" id="ppPrintPhieuTrinh">
+		<div class="modal-dialog print-modal">
+			<div class="modal-content">
+
+				<div class="modal-header">
+					<h5 class="modal-title">In phiếu trình giải quyết văn bản</h5>
+					<button type="button" class="close" data-dismiss="modal">
+						<span aria-hidden="true">×</span>
+						<span class="sr-only">Close</span>
+					</button>
+				</div>
+
+				<div class="modal-body body-print-modal">
+					<div class="row">
+						<div id="NhanDuLieuPhieuTrinh"></div><!-- Hiển thị dữ liệu -->
+					</div>
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" name="save" id="printPhieuTrinh" class="btn btn-primary btn-sm"><i class="far fa-save"></i> In phiếu </button>
+					<button type="button" class="btn btn-sm btn-danger" data-dismiss="modal"><i class="fas fa-times"></i> Đóng</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- End modal -->
+	<!-- Modal Yes/No cập nhật, thêm mới -->
+	<div class="modal fade" role="dialog" aria-labelledby="frAddVanbandenSuccess" aria-hidden="true" data-backdrop="static" id="frAddVanbandenSuccess">
+		<div class="modal-dialog modal-dialog-alert">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="myModalLabel">Thông báo</h5>
+					<button type="button" class="close" data-dismiss="modal">
+						<span aria-hidden="true">×</span>
+						<span class="sr-only">Close</span>
+					</button>
+
+				</div>
+				<div class="modal-body">
+					<p id="alertcontent">Cập nhật văn bản đến vào hệ thống thành công.</p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" id="modal-btn-close-wf" class="btn btn-sm btn-danger" data-dismiss="modal"><i class="fas fa-times"></i> Đóng</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- End modal -->
+	<!-- Modal Yes/No cập nhật, thêm mới luồng xử lý công việc-->
+	<div class="modal fade" role="dialog" aria-labelledby="frWorkflowAddVanbandenSuccess" aria-hidden="true" data-backdrop="static" id="frWorkflowAddVanbandenSuccess">
+		<div class="modal-dialog modal-dialog-alert">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="myModalLabel">Thông báo</h5>
+					<button type="button" class="close" data-dismiss="modal">
+						<span aria-hidden="true">×</span>
+						<span class="sr-only">Close</span>
+					</button>
+
+				</div>
+				<div class="modal-body">
+					<p>Hoàn thành cập nhật luồng xử lý văn bản.</p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" id="modal-btn-close-updatewf" class="btn btn-sm btn-danger" data-dismiss="modal"><i class="fas fa-times"></i> Đóng</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- End modal -->
+	<!-- ------------------------------------------------ -->
+	<style>
+		#dataTable_Vanbanden tr {
+			cursor: pointer
+		}
+	</style>
+</div>

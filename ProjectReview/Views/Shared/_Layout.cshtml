@@ -9,113 +9,30 @@
     <link rel="stylesheet" href="~/css/layout.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/font-awesome/css/all.min.css" />
     <link rel="stylesheet" href="~/ProjectReview.styles.css" asp-append-version="true" />
+    <script type="text/javascript">
+        function initMenu() {
+            var profile = document.getElementById("profile");
+            var list = document.getElementById("list-profile");
+            profile.addEventListener("click", function () {
+                list.classList.toggle("hidden");
+                profile.classList.toggle("subdrop");
+            });
+
+            var menu = document.getElementById("menu");
+            var listMenu = document.getElementById("list-menu");
+            menu.addEventListener("click", function () {
+                listMenu.classList.toggle("hidden");
+                menu.classList.toggle("subdrop");
+            });
+        }
+        document.addEventListener("DOMContentLoaded", function () {
+            initMenu();
+        });
+    </script>
 </head>
 <body>
-    @*<header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <h5>HỆ THỐNG QUẢN LÝ VĂN BẢN VÀ HỒ SƠ TÀI LIỆU</h5>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </header>*@
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow">
-            <div class="container-fluid">
-                <h5>HỆ THỐNG QUẢN LÝ VĂN BẢN VÀ HỒ SƠ TÀI LIỆU</h5>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-
-                        @*<li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>*@
-                        <li class="nav-item">
-                            <a class="nav-link text-dark dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Manage
-                            </a>
-                            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                                <a class="nav-link text-dark dropdown-item" asp-area="" asp-controller="Students" asp-action="Index">Student</a>
-                                <a class="nav-link text-dark dropdown-item" asp-area="" asp-controller="Lecturers" asp-action="Index">Lecturer</a>
-                                <a class="nav-link text-dark dropdown-item" asp-area="" asp-controller="Faculties" asp-action="Index">Facutly</a>
-                                <a class="nav-link text-dark dropdown-item" asp-area="" asp-controller="Subjects" asp-action="Index">Subject</a>
-                                <a class="nav-link text-dark dropdown-item" asp-area="" asp-controller="SubjectClasses" asp-action="Index">SubjectClass</a>
-                                <a class="nav-link text-dark dropdown-item" asp-area="" asp-controller="Scores" asp-action="Index">Score</a>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-        <!-- LOGO -->
-        @*<div class="headerbar-left">
-            <ul class="list-inline menu-left mb-0">
-                <li class="float-left">
-                    <button class="button-menu-mobile open-left">
-                        <i class="fas fa-bars"></i>
-                    </button>
-                </li>
-            </ul>
-
-        </div>
-
-        <nav class="navbar-custom">
-
-            <ul class="list-inline float-right mb-0">
-
-                <li class="list-inline-item dropdown notif">
-                    <a class="nav-link dropdown-toggle nav-user" data-toggle="dropdown" href="#" aria-haspopup="false" aria-expanded="false">
-                        <img src="assets\images\user.png" class="avatar-rounded">
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-right profile-dropdown">
-                        <!-- item-->
-                        <div class="dropdown-item noti-title">
-                            <h5 class="text-overflow">
-                                <small>Quản trị hệ thống</small>
-                            </h5>
-                            <span class="status"></span> - <span class="ml-2">Quản trị hệ thống</span>
-                        </div>
-
-                        <!-- item-->
-                        <a href="#" onclick="OpenThongtinTaikhoan('18')" class="dropdown-item notify-item">
-                            <i class="fas fa-user"></i>
-                            <span>Thông tin tài khoản</span>
-                        </a>
-                        <a href="#" onclick="ChangePassword('18')" class="dropdown-item notify-item">
-                            <i class="fas fa-user"></i>
-                            <span>Đổi mật khẩu</span>
-                        </a>
-                        <!-- item-->
-                        <a href="index.php?cate=logout" class="dropdown-item notify-item">
-                            <i class="fas fa-power-off"></i>
-                            <span>Thoát</span>
-                        </a>
-                    </div>
-                </li>
-            </ul>
-            <a href="index.php" class="logo">
-                <img alt="Logo" src="assets/images/logo.png">
-            </a>
-        </nav>*@
+        <img src="./images/logo.png" class="logo"/>
     </header>
     <div class="main">
         <div class="left main-sidebar">
@@ -130,73 +47,61 @@
                         </li>
                         <li class="submenu">
                             <a id="vanbanden" asp-area="" asp-controller="Documents" asp-action="Index">
-                                <i class="fa-solid fa-arrow-left"></i>
+                                <img src="./images/vbden.png" />
                                 <span> Quản lý Văn bản đến</span>
                             </a>
                         </li>
                         <li class="submenu">
-                            <a id="vanbandi" href="index.php?cate=vanbandi">
-                                <img src="assets/images/vbdi.png">
+                            <a id="vanbandi" asp-area="" asp-controller="Documents" asp-action="Index">
+                                <img src="./images/vbdi.png" />
                                 <span> Quản lý Văn bản đi</span>
                             </a>
                         </li>
                         <li class="submenu">
-                            <a id="system" href="#">
-                                <img src="assets/images/system.png">
+                            <a id="profile" href="#">
+                                <img src="./images/system.png">
                                 <span> Lập hồ sơ </span>
                                 <span class="menu-arrow"></span>
                             </a>
-                            <ul class="list-unstyled">
+                            <ul class="list-unstyled hidden" id="list-profile">
                                 <li>
-                                    <a href="index.php?cate=laphoso&amp;subcat=danhmuchoso"><img src="assets/images/folder.png"> Danh mục hồ sơ</a>
+                                    <a asp-area="" asp-controller="Profiles" asp-action="Index"><img src="./images/folder.png"> Danh mục hồ sơ</a>
                                 </li>
                                 <li>
-                                    <a href="index.php?cate=laphoso&amp;subcat=hosocongviec"><img src="assets/images/hosodm.png"> Hồ sơ công việc</a>
+                                    <a class="last-item" asp-area="" asp-controller="JobProfiles" asp-action="Index"><img src="./images/hosodm.png"> Hồ sơ công việc</a>
                                 </li>
                             </ul>
                         </li>
                         <li class="submenu">
-                            <a id="Workflow" href="index.php?cate=Workflow">
-                                <img src="assets/images/tkebaocao.png">
+                            <a id="Workflow" asp-area="" asp-controller="Jobs" asp-action="Index">
+                                <img src="./images/tkebaocao.png">
                                 <span> Theo dõi - Xử lý công việc </span>
                             </a>
                         </li>
                         <li class="submenu">
-                            <a id="system" href="#">
-                                <img src="assets/images/system.png">
+                            <a id="menu" href="#">
+                                <img src="./images/system.png">
                                 <span> Hệ thống - Danh mục </span>
                                 <span class="menu-arrow"></span>
                             </a>
-                            <ul class="list-unstyled">
+                            <ul class="list-unstyled hidden" id="list-menu">
                                 <li>
-                                    <a href="index.php?cate=hethong&amp;subcat=loaivanban"><img src="assets/images/loaivanban.png"> Loại văn bản</a>
+                                    <a asp-area="" asp-controller="DocumentTypes" asp-action="Index"><img src="./images/loaivanban.png"> Loại văn bản</a>
                                 </li>
                                 <li>
-                                    <a href="index.php?cate=hethong&amp;subcat=hanbaoquan"><img src="assets/images/loaivanban.png"> Thời hạn bảo quản</a>
+                                    <a asp-area="" asp-controller="Departments" asp-action="Index"><img src="./images/loaivanban.png"> Danh mục đơn vị, bộ phận</a>
                                 </li>
                                 <li>
-                                    <a href="index.php?cate=hethong&amp;subcat=donvi"><img src="assets/images/loaivanban.png"> Danh mục đơn vị, bộ phận</a>
+                                    <a asp-area="" asp-controller="Positions" asp-action="Index"><img src="./images/loaivanban.png"> Danh mục chức vụ</a>
                                 </li>
                                 <li>
-                                    <a href="index.php?cate=hethong&amp;subcat=chucvu"><img src="assets/images/loaivanban.png"> Danh mục chức vụ</a>
+                                    <a asp-area="" asp-controller="Ranks" asp-action="Index"><img src="./images/loaivanban.png"> Danh mục cấp bậc</a>
                                 </li>
                                 <li>
-                                    <a href="index.php?cate=hethong&amp;subcat=capbac"><img src="assets/images/loaivanban.png"> Danh mục cấp bậc</a>
+                                    <a asp-area="" asp-controller="Users" asp-action="Index"><img src="./images/dsnguoidung.png"> Danh sách cán bộ</a>
                                 </li>
                                 <li>
-                                    <a href="index.php?cate=hethong&amp;subcat=canbo"><img src="assets/images/dsnguoidung.png"> Danh sách cán bộ</a>
-                                </li>
-                                <li>
-                                    <a href="index.php?cate=hethong&amp;subcat=phanquyen"><img src="assets/images/phanquyen.png"> Phân quyền sử dụng</a>
-                                </li>
-                                <li>
-                                    <a href="index.php?cate=hethong&amp;subcat=config"><img src="assets/images/system.png"> Thiết lâp cấu hình</a>
-                                </li>
-                                <li>
-                                    <a href="index.php?cate=hethong&amp;subcat=backup"><img src="assets/images/backup.png"> Sao lưu dữ liệu</a>
-                                </li>
-                                <li>
-                                    <a href="index.php?cate=hethong&amp;subcat=restore"><img src="assets/images/Sync.png"> Khôi phục dữ liệu</a>
+                                    <a class="last-item" asp-area="" asp-controller="PermissionGroups" asp-action="Index"><img src="./images/phanquyen.png"> Phân quyền sử dụng</a>
                                 </li>
                             </ul>
                         </li>
@@ -212,12 +117,6 @@
             @RenderBody()
         </main>
     </div>
-
-    @*<footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2023 - ProjectReview - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>*@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

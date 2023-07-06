@@ -4,62 +4,122 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+			<div class="card mb-3">
+				<div class="card-header inline-button">
+					<h3><i class="far fa-folder-open"></i> Danh mục đơn vị, bộ phận</h3>
+					<button id="btn-addnewDonvi" class="l-btn btn-inline-title" data-toggle="modal" data-target="#modalUpdateDonvi">
+						<span class="l-btn-left">
+							<span class="l-btn-text">Cập nhật đơn vị</span>
+							<span class="l-btn-icon icon-add">&nbsp;</span>
+						</span>
+					</button>
+				</div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Address)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Phone)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Status)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CreateDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CreateUser)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Address)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Phone)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreateDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreateUser.Email)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+				<div class="card-body card-content">
+					<button id="btn-addnewDonvi" class="l-btn btn-inline-title" data-toggle="modal" data-target="#modalUpdateDonvi">
+						<span class="l-btn-left">
+							<span class="l-btn-text">Cập nhật đơn vị</span>
+							<span class="l-btn-icon icon-add">&nbsp;</span>
+						</span>
+					</button>
+					<div class="table-responsive">
+						<div id="tblListDonvi_wrapper" class="dataTables_wrapper dt-bootstrap4 no-footer">
+							<div class="row"><div class="col-sm-12 col-md-6"><div class="dataTables_length" id="tblListDonvi_length"><label>Đang xem <select name="tblListDonvi_length" aria-controls="tblListDonvi" class="custom-select custom-select-sm form-control form-control-sm"><option value="10">10</option><option value="-1">Tất cả</option></select> mục</label></div></div><div class="col-sm-12 col-md-6"><div id="tblListDonvi_filter" class="dataTables_filter"><label>Tìm kiếm:<input type="search" class="form-control form-control-sm" placeholder="" aria-controls="tblListDonvi"></label></div></div></div><div class="row">
+								<div class="col-sm-12">
+									<table id="tblListDonvi" class="table table-bordered table-hover display dataTable no-footer" style="width: 100%;" role="grid" aria-describedby="tblListDonvi_info">
+										<thead>
+											<tr class="first-row" role="row"><th class="text-center sorting_disabled" rowspan="1" colspan="1" aria-label="TT" style="width: 28px;">TT</th><th class="text-left sorting_disabled" rowspan="1" colspan="1" aria-label="Đơn vị, bộ phận" style="width: 286px;">Đơn vị, bộ phận</th><th class="text-left sorting_disabled" rowspan="1" colspan="1" aria-label="Địa chỉ, nơi làm việc" style="width: 258px;">Địa chỉ, nơi làm việc</th><th class="text-center sorting_disabled" rowspan="1" colspan="1" aria-label="Điện thoại" style="width: 173px;">Điện thoại</th><th class="text-center sorting_disabled" rowspan="1" colspan="1" aria-label="Trạng thái" style="width: 117px;">Trạng thái</th><th class="text-center sorting_disabled" rowspan="1" colspan="1" aria-label="Tác vụ" style="width: 173px;">Tác vụ</th></tr>
+										</thead>
+										<tbody><tr role="row" class="odd"><td class=" text-center">1</td><td class=" text-left">Ban Lãnh đạo</td><td class=" text-left">122 Trần Hưng Đạo, Quận Hai Bà Trưng, TP. Hà Nội</td><td class=" text-center"></td><td class=" text-center"><button type="button" name="active" id="1" class="btn btn-success btn-xs btnAn">Hiển thị</button></td><td class=" text-center"><button type="button" name="update" id="1" class="btn btn-warning btn-xs updateDonvi"><i class="fas fa-pencil-alt"></i></button> <button type="button" name="delete" id="1" class="btn btn-danger btn-xs deleteDonvi"><i class="fas fa-trash-alt"></i></button></td></tr><tr role="row" class="even"><td class=" text-center">2</td><td class=" text-left">Hành chính - Tổ chức</td><td class=" text-left">122 Trần Hưng Đạo, Quận Hai Bà Trưng, TP. Hà Nội</td><td class=" text-center"></td><td class=" text-center"><button type="button" name="active" id="2" class="btn btn-success btn-xs btnAn">Hiển thị</button></td><td class=" text-center"><button type="button" name="update" id="2" class="btn btn-warning btn-xs updateDonvi"><i class="fas fa-pencil-alt"></i></button> <button type="button" name="delete" id="2" class="btn btn-danger btn-xs deleteDonvi"><i class="fas fa-trash-alt"></i></button></td></tr><tr role="row" class="odd"><td class=" text-center">3</td><td class=" text-left">Kế toán - Tài vụ</td><td class=" text-left">122 Trần Hưng Đạo, Quận Hai Bà Trưng, TP. Hà Nội</td><td class=" text-center"></td><td class=" text-center"><button type="button" name="active" id="3" class="btn btn-success btn-xs btnAn">Hiển thị</button></td><td class=" text-center"><button type="button" name="update" id="3" class="btn btn-warning btn-xs updateDonvi"><i class="fas fa-pencil-alt"></i></button> <button type="button" name="delete" id="3" class="btn btn-danger btn-xs deleteDonvi"><i class="fas fa-trash-alt"></i></button></td></tr><tr role="row" class="even"><td class=" text-center">4</td><td class=" text-left">Tổ Chuyên môn</td><td class=" text-left">122 Trần Hưng Đạo, Quận Hai Bà Trưng, TP. Hà Nội</td><td class=" text-center"></td><td class=" text-center"><button type="button" name="active" id="4" class="btn btn-success btn-xs btnAn">Hiển thị</button></td><td class=" text-center"><button type="button" name="update" id="4" class="btn btn-warning btn-xs updateDonvi"><i class="fas fa-pencil-alt"></i></button> <button type="button" name="delete" id="4" class="btn btn-danger btn-xs deleteDonvi"><i class="fas fa-trash-alt"></i></button></td></tr><tr role="row" class="odd"><td class=" text-center">5</td><td class=" text-left">Tổ Kỹ thuật</td><td class=" text-left">122 Trần Hưng Đạo, Quận Hai Bà Trưng, TP. Hà Nội</td><td class=" text-center"></td><td class=" text-center"><button type="button" name="active" id="5" class="btn btn-success btn-xs btnAn">Hiển thị</button></td><td class=" text-center"><button type="button" name="update" id="5" class="btn btn-warning btn-xs updateDonvi"><i class="fas fa-pencil-alt"></i></button> <button type="button" name="delete" id="5" class="btn btn-danger btn-xs deleteDonvi"><i class="fas fa-trash-alt"></i></button></td></tr><tr role="row" class="even"><td class=" text-center">6</td><td class=" text-left">Quản trị hệ thống</td><td class=" text-left">122 Trần Hưng Đạo, Quận Hai Bà Trưng, TP. Hà Nội</td><td class=" text-center"></td><td class=" text-center"><button type="button" name="active" id="7" class="btn btn-success btn-xs btnAn">Hiển thị</button></td><td class=" text-center"><button type="button" name="update" id="7" class="btn btn-warning btn-xs updateDonvi"><i class="fas fa-pencil-alt"></i></button> <button type="button" name="delete" id="7" class="btn btn-danger btn-xs deleteDonvi"><i class="fas fa-trash-alt"></i></button></td></tr></tbody>
+									</table><div id="tblListDonvi_processing" class="dataTables_processing card" style="display: none;">Đang xử lý...</div>
+								</div>
+							</div><div class="row"><div class="col-sm-12 col-md-5"><div class="dataTables_info" id="tblListDonvi_info" role="status" aria-live="polite">Đang xem 1 đến 6 trong tổng số 6 mục</div></div><div class="col-sm-12 col-md-7"><div class="dataTables_paginate paging_simple_numbers" id="tblListDonvi_paginate"><ul class="pagination"><li class="paginate_button page-item previous disabled" id="tblListDonvi_previous"><a href="#" aria-controls="tblListDonvi" data-dt-idx="0" tabindex="0" class="page-link">Trước</a></li><li class="paginate_button page-item active"><a href="#" aria-controls="tblListDonvi" data-dt-idx="1" tabindex="0" class="page-link">1</a></li><li class="paginate_button page-item next disabled" id="tblListDonvi_next"><a href="#" aria-controls="tblListDonvi" data-dt-idx="2" tabindex="0" class="page-link">Sau</a></li></ul></div></div></div>
+						</div>
+					</div>
+					<!-- end table-responsive-->
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- Modal thêm, sửa -->
+	<div class="modal fade" role="dialog" aria-labelledby="modalUpdateDonvi" aria-hidden="true" data-backdrop="static" id="modalUpdateDonvi">
+		<div class="modal-dialog mini-modal-small">
+			<div class="modal-content">
+				<form action="#" method="post" enctype="multipart/form-data" id="frmUpdateDonvi" data-parsley-validate="" novalidate="">
+
+					<div class="modal-header">
+						<h5 class="modal-title">Cập nhật danh sách đơn vị</h5>
+						<button type="button" class="close" data-dismiss="modal">
+							<span aria-hidden="true">×</span>
+							<span class="sr-only">Close</span>
+						</button>
+					</div>
+
+					<div class="modal-body">
+
+						<div class="row">
+
+							<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
+								<div class="form-group">
+									<label>Tên đơn vị</label>
+									<input id="txtdonvi" type="text" class="form-control">
+								</div>
+							</div>
+
+							<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
+								<div class="form-group">
+									<label>Địa chỉ</label>
+									<input type="text" class="form-control" id="txtdiachi">
+								</div>
+							</div>
+
+						</div>
+
+						<div class="row">
+							<div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 col-xl-3">
+								<div class="form-group">
+									<label>Điện thoại</label>
+									<input id="txtdienthoaidonvi" type="text" class="form-control">
+								</div>
+							</div>
+							<div class="col-xs-12 col-sm-12 col-md-5 col-lg-5 col-xl-5">
+								<div class="form-group">
+									<label>Email</label>
+									<input id="txtemaildonvi" type="text" class="form-control email-inputmask">
+								</div>
+							</div>
+							<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 col-xl-4">
+								<div class="form-group">
+									<label>Trạng thái</label><br>
+									<label class="custom-control custom-radio custom-control-inline">
+										<input type="radio" name="radActiveCD" class="custom-control-input" value="1" data-parsley-multiple="radActiveCD">
+										<span class="custom-control-label">Hiển thị</span>
+									</label>
+									<label class="custom-control custom-radio custom-control-inline">
+										<input type="radio" name="radActiveCD" class="custom-control-input" value="0" data-parsley-multiple="radActiveCD">
+										<span class="custom-control-label">Không hiển thị</span>
+									</label>
+								</div>
+							</div>
+						</div>
+
+					</div>
+
+					<div class="modal-footer">
+						<input type="hidden" name="idRecordDonvi" id="idRecordDonvi" value="0">
+						<input type="hidden" name="actionDonvi" id="actionDonvi" value="">
+						<button type="button" name="save-continues" id="saveNewDonvi-1" class="btn btn-success btn-sm"><i class="far fa-save"></i> Lưu &amp; Tiếp </button>
+						<button type="button" name="save-close" id="saveNewDonvi-2" class="btn btn-primary btn-sm"><i class="far fa-save"></i> Lưu &amp; Đóng </button>
+						<button type="button" class="btn btn-sm btn-danger" data-dismiss="modal"><i class="fas fa-times"></i> Đóng</button>
+					</div>
+
+				</form>
+
+			</div>
+		</div>
+	</div>
+	<!-- End modal -->
+</div>

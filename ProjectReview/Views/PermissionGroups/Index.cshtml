@@ -4,50 +4,145 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+			<div class="card">
+				<div class="card-header inline-button">
+					<h3><i class="far fa-folder-open"></i> Phân quyền sử dụng theo nhóm</h3>
+				</div>
+				<div class="card-body card-phanquyen">
+					<div class="form-row">
+						<div class="col-xl-3 col-lg-3 col-md-12 col-sm-12 col-12">
+							<div class="card mb-3">
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Status)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CreateDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CreateUser)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreateDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreateUser.Email)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+								<div class="toolbar">
+									<button id="btn-addNewNhomQuyen" class="l-btn" data-toggle="modal" data-target="#mdAddNewNhomQuyen">
+										<span class="l-btn-left">
+											<span class="l-btn-text">Thêm nhóm</span>
+											<span class="l-btn-icon icon-add">&nbsp;</span>
+										</span>
+									</button>
+									<button id="btn-editNhomQuyen" class="l-btn" data-toggle="modal" data-target="#mdAddNewNhomQuyen" disabled="disabled">
+										<span class="l-btn-left">
+											<span class="l-btn-text">Sửa</span>
+											<span class="l-btn-icon icon-edit">&nbsp;</span>
+										</span>
+									</button>
+									<button id="btn-deleteNhomQuyen" class="l-btn" disabled="disabled">
+										<span class="l-btn-left">
+											<span class="l-btn-text">Xóa</span>
+											<span class="l-btn-icon icon-delete">&nbsp;</span>
+										</span>
+									</button>
+								</div>
+								<div class="card-body group-quyennhomquyen">
+
+									<ul class="list-nhomquyen"><li class="idnhomquyen" id="1"><img src="assets/images/dsnguoidung.png"> Quản trị hệ thống</li><li class="idnhomquyen" id="17"><img src="assets/images/dsnguoidung.png"> Trưởng phòng</li><li class="idnhomquyen" id="18"><img src="assets/images/dsnguoidung.png"> Phó Trưởng phòng</li><li class="idnhomquyen" id="19"><img src="assets/images/dsnguoidung.png"> Cán bộ</li><li class="idnhomquyen" id="20"><img src="assets/images/dsnguoidung.png"> Văn thư</li></ul>
+									<input type="hidden" name="idRecord_NhomQuyen" id="idRecord_NhomQuyen" value="0">
+								</div>
+							</div>
+						</div>
+
+						<div class="col-xl-9 col-lg-9 col-md-12 col-sm-12 col-12">
+							<div class="card mb-3">
+
+								<div class="toolbar">
+									<button id="btn-addSavePhanquyen" class="l-btn" disabled="disabled">
+										<span class="l-btn-left">
+											<span class="l-btn-text">Lưu</span>
+											<span class="l-btn-icon icon-save">&nbsp;</span>
+										</span>
+									</button>
+									<button id="btn-selectAllPhanquyen" class="l-btn" disabled="disabled">
+										<span class="l-btn-left">
+											<span class="l-btn-text">Chọn tất cả</span>
+											<span class="l-btn-icon icon-checked">&nbsp;</span>
+										</span>
+									</button>
+									<button id="btn-unselectAllPhanquyen" class="l-btn" disabled="disabled">
+										<span class="l-btn-left">
+											<span class="l-btn-text">Bỏ chọn</span>
+											<span class="l-btn-icon icon-nochecked">&nbsp;</span>
+										</span>
+									</button>
+								</div>
+
+								<div class="card-body phanquyen-body"><div class="alert alert-success" role="alert"><h5 class="alert-heading">Chức năng phân quyền sử dụng theo nhóm</h5><ul><li>Chọn nhóm quyền cần thiết lập phân quyền</li><li>Thiết lập các quyền sử dụng theo nhóm đã chọn</li></ul></div></div>
+
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Modal cập nhật nhóm quyền -->
+	<div class="modal fade" role="dialog" aria-labelledby="mdAddNewNhomQuyen" aria-hidden="true" data-backdrop="static" id="mdAddNewNhomQuyen">
+		<div class="modal-dialog mini-modal-x">
+			<div class="modal-content">
+
+				<form action="#" method="post" enctype="multipart/form-data" id="frmAddNewNhomQuyen">
+
+					<div class="modal-header">
+						<h5 class="modal-title">Cập nhật nhóm quyền</h5>
+						<button type="button" class="close" data-dismiss="modal">
+							<span aria-hidden="true">×</span>
+							<span class="sr-only">Close</span>
+						</button>
+					</div>
+
+					<div class="modal-body">
+
+						<div class="row">
+							<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
+								<div class="form-group">
+									<label>Mã nhóm quyền</label>
+									<input class="form-control" id="strquyencode" name="strquyencode" type="text">
+								</div>
+							</div>
+							<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
+								<span class="example-codequyen">Ví dụ: TP <img src="assets/images/i6.gif"> Trưởng phòng</span>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+								<div class="form-group">
+									<label>Tên nhóm quyền</label>
+									<input class="form-control" id="strtennhomquyen" name="strtennhomquyen" type="text">
+								</div>
+							</div>
+						</div>
+
+					</div>
+
+					<div class="modal-footer">
+
+						<div class="col-md-12 col-lg-12 col-xl-12 no-margin-right">
+
+							<input type="hidden" name="actionAddNewNhomquyen" id="actionAddNewNhomquyen" value="">
+							<button type="button" name="save" id="saveAddNewNhomquyen" class="btn btn-primary btn-sm"><i class="far fa-save"></i> Ghi nhận </button>
+							<button type="button" class="btn btn-sm btn-danger" data-dismiss="modal"><i class="fas fa-times"></i> Đóng</button>
+						</div>
+
+					</div>
+
+				</form>
+
+			</div>
+		</div>
+	</div>
+	<!-- End modal -->
+	<!-- ============================================================== -->
+	<style>
+		ul.list-nhomquyen li {
+			cursor: pointer
+		}
+
+		li.selectedRow {
+			background-color: #56bff0;
+			border-radius: 4px;
+		}
+	</style>
+</div>

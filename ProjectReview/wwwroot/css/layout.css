@@ -7,9 +7,9 @@ a {
 }
 
 .main-sidebar {
-    background-color: #E7E3E7;
+    background: #E7E3E7 !important;
     position: absolute;
-    max-width: 300px;
+    width: 250px;
     height: 100%;
 }
 
@@ -18,9 +18,296 @@ a {
 }
 
 .content {
-    margin-left: 300px;
+    margin-left: 250px;
+    margin-top: 10px;
 }
 
 header {
-    position: relative
+    position: relative;
+    background-color: #085075 !important;
+    height: 70px;
+    justify-content: center;
+}
+
+a > span {
+    color: #000000
+}
+
+ul {
+    padding-left: 10px
+}
+
+html {
+    position: relative;
+    min-height: 100%
+}
+
+body {
+    font-size: 16px;
+    background-color: #e9ecef;
+    padding-bottom: 30px;
+    margin: 0;
+    font-family: Roboto,"Helvetica Neue",Arial,"Noto Sans","Liberation Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+}
+
+a {
+    color: #0ca4ca;
+    text-decoration: none
+}
+
+.small {
+    font-size: 14px;
+}
+
+.noradius {
+    border-radius: 5px
+}
+
+.noborder {
+    border: 0 !important
+}
+
+.radius-circle {
+    border-radius: 50px
+}
+
+label {
+    font-weight: 500
+}
+
+.label {
+    display: inline-block;
+    padding: .2em .6em;
+    font-size: 75%;
+    font-weight: 700;
+    color: #fff;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: .25rem
+}
+
+.label:empty {
+        display: none
+}
+
+.card-box {
+    padding: 15px;
+    background-clip: padding-box;
+    margin-bottom: 20px;
+    background-color: #fff;
+    border: 1px solid rgba(183, 183, 183, .125)
+}
+
+.card-box i {
+    font-size: 50px;
+    margin-top: 10px
+}
+
+.card-header {
+    color: #6b6b6b;
+    border-bottom: 1px solid rgba(111, 111, 111, .13);
+    padding: 0.2rem 1rem;
+}
+
+.card-header h3 {
+    font-weight: 500;
+    line-height: 1.5;
+    font-size: 16px;
+    margin-bottom: 0
+}
+
+.card-footer {
+    padding: .7rem 1.2rem;
+    background-color: #e9eef3;
+    border-top: 1px solid rgba(0, 0, 0, .125)
+}
+
+.main-sidebar {
+    top: 70px;
+    width: 250px;
+    z-index: 1000;
+    background: #2a3542;
+    bottom: 70px;
+    margin-bottom: -70px;
+    margin-top: 0;
+    padding-bottom: 70px;
+    position: absolute;
+    overflow: auto;
+}
+
+.content {
+    margin-left: 250px;
+    overflow: hidden
+}
+
+.content-page .content {
+    padding-top: 10px;
+    margin-top: 50px
+}
+
+
+body.adminbody .main-sidebar.left {
+    bottom: 0;
+    margin-bottom: 0;
+    margin-top: 0;
+    padding-bottom: 0;
+    position: fixed;
+    overflow-y: auto;
+}
+
+.hidden {
+    display: none;
+}
+
+
+#sidebar-menu,
+#sidebar-menu a,
+#sidebar-menu li,
+#sidebar-menu ul {
+    border: 0;
+    font-weight: 400;
+    line-height: 1;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    text-decoration: none
+}
+
+#sidebar-menu {
+    padding-bottom: 30px;
+    width: 100%
+}
+
+#sidebar-menu a {
+    line-height: 13px
+}
+
+#sidebar-menu ul li .menu-arrow:before {
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    content: "\f105"
+}
+
+#sidebar-menu ul li a.subdrop .menu-arrow {
+    -ms-transform: rotate(90deg);
+    -webkit-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    transform: rotate(90deg)
+}
+
+/*#sidebar-menu ul ul {
+    display: none
+}*/
+
+#sidebar-menu ul ul li {
+    border-top: 0;
+    background-color: #ffffff;
+}
+
+#sidebar-menu ul ul li.active a {
+    background-color: #FFF7CE
+}
+
+#sidebar-menu ul ul a:hover {
+    color: #007bff;
+    background-color: #FFF7CE;
+}
+
+#sidebar-menu .subdrop {
+    color: #000 !important;
+    background-color: #FFD79C;
+    border-bottom: solid 3px #FF8229;
+}
+
+#sidebar-menu > ul > li > a,
+#sidebar-menu > ul > li > ul > li > a {
+    color: #000000;
+    display: block;
+    padding: 16px 10px 16px 10px;
+    font-weight: 400;
+    font-size: 16px;
+}
+
+#sidebar-menu > ul > li > a
+{
+    border-bottom: 1px solid #6b6b6b;
+}
+
+.last-item {
+    border-bottom: 1px solid #6b6b6b !important;
+}
+
+#sidebar-menu > ul > li > ul > li > a {
+    border-bottom: 1px dashed #6b6b6b;
+}
+
+#sidebar-menu > ul > li > a:hover {
+    color: #000;
+    background-color: #FFF7CE;
+    text-decoration: none
+}
+
+#sidebar-menu > ul > li > a > span {
+    vertical-align: middle
+}
+
+#sidebar-menu ul li a i {
+    display: inline-block;
+    font-size: 16px;
+    line-height: 16px;
+    margin-left: 0px;
+    margin-right: 5px;
+    text-align: center;
+    vertical-align: middle;
+    width: 16px;
+}
+
+#sidebar-menu ul li a .drop-arrow {
+    float: right
+}
+
+#sidebar-menu ul li a .drop-arrow i {
+    margin-right: 0
+}
+
+#sidebar-menu > ul > li > a.active {
+    color: #000 !important;
+    background-color: #FFD79C;
+}
+
+
+.dropdown-example {
+    position: static;
+    display: block;
+    margin-bottom: .25rem;
+    clear: left
+}
+
+.dropdown-item.active,
+.dropdown-item:active {
+    background-color: #0f9df7
+}
+
+#sidebar-menu > ul > li > a.pro {
+    background-color: #3eb9dd;
+    color: #fff;
+    bottom: 0
+}
+
+.menu-arrow {
+    right: 10px;
+    position: absolute;
+}
+
+header {
+    display: flex;
+    justify-content: flex-start;
+}
+
+.submenu > a{
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
