@@ -14,7 +14,7 @@ namespace ProjectReview.Models
         public virtual DbSet<Opinion> Opinions { get; set; }
         public virtual DbSet<PermissionGroup> PermissionGroups { get; set; }
         public virtual DbSet<Position> Positions { get; set; }
-        public virtual DbSet<Profile> Profiles { get; set; }
+        public virtual DbSet<CategoryProfile> Profiles { get; set; }
         public virtual DbSet<ProfileDocument> ProfileDocuments { get; set; }
         public virtual DbSet<Rank> Ranks { get; set; }
         public virtual DbSet<User> Users { get; set; }
@@ -31,7 +31,7 @@ namespace ProjectReview.Models
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Data Source=DESKTOP-PL7Q9Q6; Initial Catalog=ProjectReview;Integrated Security=True;TrustServerCertificate=True;");
+                optionsBuilder.UseSqlServer("Data Source=DESKTOP-PL7Q9Q6; Initial Catalog=Review;Integrated Security=True;TrustServerCertificate=True;");
             }
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -52,11 +52,11 @@ namespace ProjectReview.Models
                     .IsRequired()
                     .HasColumnType("datetime");
 
-                entity.HasOne(x => x.CreateUser)
-                    .WithMany(y => y.Departments)
-                    .HasForeignKey(x => x.CreateUserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Department_User");
+                //entity.HasOne(x => x.CreateUser)
+                //    .WithMany(y => y.Departments)
+                //    .HasForeignKey(x => x.CreateUserId)
+                //    .OnDelete(DeleteBehavior.ClientSetNull)
+                //    .HasConstraintName("FK_Department_User");
             });
 
             modelBuilder.Entity<Document>(entity =>
@@ -208,7 +208,6 @@ namespace ProjectReview.Models
                 entity.Property(x => x.NumberPaper).IsRequired();
                 entity.Property(x => x.Status).IsRequired();
                 entity.Property(x => x.Condition)
-                    .IsRequired()
                     .HasMaxLength(4000);
                 
                 entity.Property(x => x.CreateDate)
@@ -241,7 +240,7 @@ namespace ProjectReview.Models
                 entity.Property(x => x.Id).ValueGeneratedOnAdd();
 
                 entity.Property(x => x.Content).IsRequired();
-                entity.Property(x => x.FileName).IsRequired()
+                entity.Property(x => x.FileName)
                     .HasMaxLength(400);
 
                 entity.Property(x => x.CreateDate)
@@ -276,11 +275,11 @@ namespace ProjectReview.Models
                     .IsRequired()
                     .HasColumnType("datetime");
 
-                entity.HasOne(x => x.CreateUser)
-                    .WithMany(y => y.PermissionGroups)
-                    .HasForeignKey(x => x.CreateUserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_PermissionGroup_User");
+                //entity.HasOne(x => x.CreateUser)
+                //    .WithMany(y => y.PermissionGroups)
+                //    .HasForeignKey(x => x.CreateUserId)
+                //    .OnDelete(DeleteBehavior.ClientSetNull)
+                //    .HasConstraintName("FK_PermissionGroup_User");
             });
 
             modelBuilder.Entity<Position>(entity =>
@@ -299,14 +298,14 @@ namespace ProjectReview.Models
                     .IsRequired()
                     .HasColumnType("datetime");
 
-                entity.HasOne(x => x.CreateUser)
-                    .WithMany(y => y.Positions)
-                    .HasForeignKey(x => x.CreateUserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Position_User");
+                //entity.HasOne(x => x.CreateUser)
+                //    .WithMany(y => y.Positions)
+                //    .HasForeignKey(x => x.CreateUserId)
+                //    .OnDelete(DeleteBehavior.ClientSetNull)
+                //    .HasConstraintName("FK_Position_User");
             });
 
-            modelBuilder.Entity<Profile>(entity =>
+            modelBuilder.Entity<CategoryProfile>(entity =>
             {
                 entity.ToTable("Profile");
                 entity.HasKey(x => x.Id);
@@ -372,11 +371,11 @@ namespace ProjectReview.Models
                     .IsRequired()
                     .HasColumnType("datetime");
 
-                entity.HasOne(x => x.CreateUser)
-                    .WithMany(y => y.Ranks)
-                    .HasForeignKey(x => x.CreateUserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Rank_User");
+                //entity.HasOne(x => x.CreateUser)
+                //    .WithMany(y => y.Ranks)
+                //    .HasForeignKey(x => x.CreateUserId)
+                //    .OnDelete(DeleteBehavior.ClientSetNull)
+                //    .HasConstraintName("FK_Rank_User");
             });
 
             modelBuilder.Entity<User>(entity =>
@@ -407,11 +406,11 @@ namespace ProjectReview.Models
                     .IsRequired()
                     .HasColumnType("datetime");
 
-                entity.HasOne(x => x.CreateUser)
-                    .WithMany(y => y.Users)
-                    .HasForeignKey(x => x.CreateUserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_User_CreateUser");
+                //entity.HasOne(x => x.CreateUser)
+                //    .WithMany(y => y.Users)
+                //    .HasForeignKey(x => x.CreateUserId)
+                //    .OnDelete(DeleteBehavior.ClientSetNull)
+                //    .HasConstraintName("FK_User_CreateUser");
                 entity.HasOne(x => x.Position)
                     .WithMany(y => y.Users)
                     .HasForeignKey(x => x.PositionId)

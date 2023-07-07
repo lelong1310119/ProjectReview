@@ -22,6 +22,13 @@ a {
     margin-top: 10px;
 }
 
+.card-header {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    height: 60px;
+}
+
 header {
     position: relative;
     background-color: #085075 !important;
@@ -294,6 +301,10 @@ body.adminbody .main-sidebar.left {
     background-color: #3eb9dd;
     color: #fff;
     bottom: 0
+}
+
+thead {
+   background-color: #f1f1f1 ;
 }
 
 .menu-arrow {

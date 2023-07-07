@@ -14,8 +14,9 @@
         public string FileName { get; set; }
         public string Content { get; set; }
         public long DocumentId { get; set; }
+		public Boolean isDelete { get; set; }
 
-        public virtual User Host { get; set; }
+		public virtual User Host { get; set; }
         public virtual User Instructor { get; set;}
         public virtual User CreateUser { get; set; }
         public virtual Document Document { get; set; }

@@ -10,87 +10,90 @@ using ProjectReview.Models.Entities;
 
 namespace ProjectReview.Controllers
 {
-    public class PermissionGroupsController : Controller
+    public class CategoryProfilesController : Controller
     {
         private readonly DataContext _context;
 
-        public PermissionGroupsController(DataContext context)
+        public CategoryProfilesController(DataContext context)
         {
             _context = context;
         }
 
-        // GET: PermissionGroups
+        // GET: Profiles
         public async Task<IActionResult> Index()
         {
-            var dataContext = _context.PermissionGroups;
+            var dataContext = _context.Profiles.Include(p => p.CreateUser);
             return View(await dataContext.ToListAsync());
         }
 
-        // GET: PermissionGroups/Details/5
+        // GET: Profiles/Details/5
         public async Task<IActionResult> Details(long? id)
         {
-            if (id == null || _context.PermissionGroups == null)
+            if (id == null || _context.Profiles == null)
             {
                 return NotFound();
             }
 
-            var permissionGroup = await _context.PermissionGroups
+            var profile = await _context.Profiles
+                .Include(p => p.CreateUser)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (permissionGroup == null)
+            if (profile == null)
             {
                 return NotFound();
             }
 
-            return View(permissionGroup);
+            return View(profile);
         }
 
-        // GET: PermissionGroups/Create
+        // GET: Profiles/Create
         public IActionResult Create()
         {
             ViewData["CreateUserId"] = new SelectList(_context.Users, "Id", "Email");
             return View();
         }
 
-        // POST: PermissionGroups/Create
+        // POST: Profiles/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Status,CreateDate")] PermissionGroup permissionGroup)
+        public async Task<IActionResult> Create([Bind("Id,Symbol,Title,Expiry,Deadline,Status,OrderBy,CreateDate,CreateUserId")] CategoryProfile profile)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(permissionGroup);
+                _context.Add(profile);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(permissionGroup);
+            ViewData["CreateUserId"] = new SelectList(_context.Users, "Id", "Email", profile.CreateUserId);
+            return View(profile);
         }
 
-        // GET: PermissionGroups/Edit/5
+        // GET: Profiles/Edit/5
         public async Task<IActionResult> Edit(long? id)
         {
-            if (id == null || _context.PermissionGroups == null)
+            if (id == null || _context.Profiles == null)
             {
                 return NotFound();
             }
 
-            var permissionGroup = await _context.PermissionGroups.FindAsync(id);
-            if (permissionGroup == null)
+            var profile = await _context.Profiles.FindAsync(id);
+            if (profile == null)
             {
                 return NotFound();
             }
-            return View(permissionGroup);
+            ViewData["CreateUserId"] = new SelectList(_context.Users, "Id", "Email", profile.CreateUserId);
+            return View(profile);
         }
 
-        // POST: PermissionGroups/Edit/5
+        // POST: Profiles/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(long id, [Bind("Id,Name,Status,CreateDate")] PermissionGroup permissionGroup)
+        public async Task<IActionResult> Edit(long id, [Bind("Id,Symbol,Title,Expiry,Deadline,Status,OrderBy,CreateDate,CreateUserId")] CategoryProfile profile)
         {
-            if (id != permissionGroup.Id)
+            if (id != profile.Id)
             {
                 return NotFound();
             }
@@ -99,12 +102,12 @@ namespace ProjectReview.Controllers
             {
                 try
                 {
-                    _context.Update(permissionGroup);
+                    _context.Update(profile);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!PermissionGroupExists(permissionGroup.Id))
+                    if (!ProfileExists(profile.Id))
                     {
                         return NotFound();
                     }
@@ -115,49 +118,51 @@ namespace ProjectReview.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(permissionGroup);
+            ViewData["CreateUserId"] = new SelectList(_context.Users, "Id", "Email", profile.CreateUserId);
+            return View(profile);
         }
 
-        // GET: PermissionGroups/Delete/5
+        // GET: Profiles/Delete/5
         public async Task<IActionResult> Delete(long? id)
         {
-            if (id == null || _context.PermissionGroups == null)
+            if (id == null || _context.Profiles == null)
             {
                 return NotFound();
             }
 
-            var permissionGroup = await _context.PermissionGroups
+            var profile = await _context.Profiles
+                .Include(p => p.CreateUser)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (permissionGroup == null)
+            if (profile == null)
             {
                 return NotFound();
             }
 
-            return View(permissionGroup);
+            return View(profile);
         }
 
-        // POST: PermissionGroups/Delete/5
+        // POST: Profiles/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(long id)
         {
-            if (_context.PermissionGroups == null)
+            if (_context.Profiles == null)
             {
-                return Problem("Entity set 'DataContext.PermissionGroups'  is null.");
+                return Problem("Entity set 'DataContext.Profiles'  is null.");
             }
-            var permissionGroup = await _context.PermissionGroups.FindAsync(id);
-            if (permissionGroup != null)
+            var profile = await _context.Profiles.FindAsync(id);
+            if (profile != null)
             {
-                _context.PermissionGroups.Remove(permissionGroup);
+                _context.Profiles.Remove(profile);
             }
             
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool PermissionGroupExists(long id)
+        private bool ProfileExists(long id)
         {
-          return (_context.PermissionGroups?.Any(e => e.Id == id)).GetValueOrDefault();
+          return (_context.Profiles?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

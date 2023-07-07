@@ -22,8 +22,9 @@ namespace ProjectReview.Controllers
         // GET: Ranks
         public async Task<IActionResult> Index()
         {
-            var dataContext = _context.Ranks.Include(r => r.CreateUser);
-            return View(await dataContext.ToListAsync());
+              return _context.Ranks != null ? 
+                          View(await _context.Ranks.ToListAsync()) :
+                          Problem("Entity set 'DataContext.Ranks'  is null.");
         }
 
         // GET: Ranks/Details/5
@@ -35,7 +36,6 @@ namespace ProjectReview.Controllers
             }
 
             var rank = await _context.Ranks
-                .Include(r => r.CreateUser)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (rank == null)
             {
@@ -48,7 +48,6 @@ namespace ProjectReview.Controllers
         // GET: Ranks/Create
         public IActionResult Create()
         {
-            ViewData["CreateUserId"] = new SelectList(_context.Users, "Id", "Email");
             return View();
         }
 
@@ -57,7 +56,7 @@ namespace ProjectReview.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Note,Status,CreateDate,CreateUserId")] Rank rank)
+        public async Task<IActionResult> Create([Bind("Id,Name,Note,Status,CreateDate,isDelete")] Rank rank)
         {
             if (ModelState.IsValid)
             {
@@ -65,7 +64,6 @@ namespace ProjectReview.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CreateUserId"] = new SelectList(_context.Users, "Id", "Email", rank.CreateUserId);
             return View(rank);
         }
 
@@ -82,7 +80,6 @@ namespace ProjectReview.Controllers
             {
                 return NotFound();
             }
-            ViewData["CreateUserId"] = new SelectList(_context.Users, "Id", "Email", rank.CreateUserId);
             return View(rank);
         }
 
@@ -91,7 +88,7 @@ namespace ProjectReview.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(long id, [Bind("Id,Name,Note,Status,CreateDate,CreateUserId")] Rank rank)
+        public async Task<IActionResult> Edit(long id, [Bind("Id,Name,Note,Status,CreateDate,isDelete")] Rank rank)
         {
             if (id != rank.Id)
             {
@@ -118,7 +115,6 @@ namespace ProjectReview.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CreateUserId"] = new SelectList(_context.Users, "Id", "Email", rank.CreateUserId);
             return View(rank);
         }
 
@@ -131,7 +127,6 @@ namespace ProjectReview.Controllers
             }
 
             var rank = await _context.Ranks
-                .Include(r => r.CreateUser)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (rank == null)
             {

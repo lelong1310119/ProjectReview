@@ -22,7 +22,7 @@ namespace ProjectReview.Controllers
         // GET: Users
         public async Task<IActionResult> Index()
         {
-            var dataContext = _context.Users.Include(u => u.CreateUser).Include(u => u.Department).Include(u => u.PermissionGroup).Include(u => u.Position).Include(u => u.Rank);
+            var dataContext = _context.Users.Include(u => u.Department).Include(u => u.PermissionGroup).Include(u => u.Position).Include(u => u.Rank);
             return View(await dataContext.ToListAsync());
         }
 
@@ -35,7 +35,6 @@ namespace ProjectReview.Controllers
             }
 
             var user = await _context.Users
-                .Include(u => u.CreateUser)
                 .Include(u => u.Department)
                 .Include(u => u.PermissionGroup)
                 .Include(u => u.Position)
@@ -73,7 +72,6 @@ namespace ProjectReview.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CreateUserId"] = new SelectList(_context.Users, "Id", "Email", user.CreateUserId);
             ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Name", user.DepartmentId);
             ViewData["PermissionGroupId"] = new SelectList(_context.PermissionGroups, "Id", "Name", user.PermissionGroupId);
             ViewData["PositionId"] = new SelectList(_context.Positions, "Id", "Name", user.PositionId);
@@ -94,7 +92,6 @@ namespace ProjectReview.Controllers
             {
                 return NotFound();
             }
-            ViewData["CreateUserId"] = new SelectList(_context.Users, "Id", "Email", user.CreateUserId);
             ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Name", user.DepartmentId);
             ViewData["PermissionGroupId"] = new SelectList(_context.PermissionGroups, "Id", "Name", user.PermissionGroupId);
             ViewData["PositionId"] = new SelectList(_context.Positions, "Id", "Name", user.PositionId);
@@ -134,7 +131,6 @@ namespace ProjectReview.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CreateUserId"] = new SelectList(_context.Users, "Id", "Email", user.CreateUserId);
             ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Name", user.DepartmentId);
             ViewData["PermissionGroupId"] = new SelectList(_context.PermissionGroups, "Id", "Name", user.PermissionGroupId);
             ViewData["PositionId"] = new SelectList(_context.Positions, "Id", "Name", user.PositionId);
@@ -151,7 +147,6 @@ namespace ProjectReview.Controllers
             }
 
             var user = await _context.Users
-                .Include(u => u.CreateUser)
                 .Include(u => u.Department)
                 .Include(u => u.PermissionGroup)
                 .Include(u => u.Position)

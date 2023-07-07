@@ -33,10 +33,10 @@
                 <input asp-for="CreateDate" class="form-control" />
                 <span asp-validation-for="CreateDate" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="CreateUserId" class="control-label"></label>
-                <select asp-for="CreateUserId" class="form-control" asp-items="ViewBag.CreateUserId"></select>
-                <span asp-validation-for="CreateUserId" class="text-danger"></span>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="isDelete" /> @Html.DisplayNameFor(model => model.isDelete)
+                </label>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />

@@ -22,7 +22,7 @@ namespace ProjectReview.Controllers
         // GET: Departments
         public async Task<IActionResult> Index()
         {
-            var dataContext = _context.Departments.Include(d => d.CreateUser);
+            var dataContext = _context.Departments;
             return View(await dataContext.ToListAsync());
         }
 
@@ -35,7 +35,6 @@ namespace ProjectReview.Controllers
             }
 
             var department = await _context.Departments
-                .Include(d => d.CreateUser)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (department == null)
             {
@@ -48,7 +47,6 @@ namespace ProjectReview.Controllers
         // GET: Departments/Create
         public IActionResult Create()
         {
-            ViewData["CreateUserId"] = new SelectList(_context.Users, "Id", "Email");
             return View();
         }
 
@@ -57,16 +55,22 @@ namespace ProjectReview.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Address,Phone,Status,CreateDate,CreateUserId")] Department department)
+        public async Task<IActionResult> Create([Bind("Name,Address,Phone")] Test test)
         {
+            Department department = new Department();
             if (ModelState.IsValid)
             {
-                _context.Add(department);
+                department.Name = test.Name;
+                department.Address = test.Address;
+                department.Phone = test.Phone;
+                department.Status = 0;
+                department.CreateDate = DateTime.Now;
+                department.isDelete = false;
+                await _context.AddAsync(department);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CreateUserId"] = new SelectList(_context.Users, "Id", "Email", department.CreateUserId);
-            return View(department);
+            return View(test);
         }
 
         // GET: Departments/Edit/5
@@ -82,7 +86,6 @@ namespace ProjectReview.Controllers
             {
                 return NotFound();
             }
-            ViewData["CreateUserId"] = new SelectList(_context.Users, "Id", "Email", department.CreateUserId);
             return View(department);
         }
 
@@ -118,27 +121,24 @@ namespace ProjectReview.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CreateUserId"] = new SelectList(_context.Users, "Id", "Email", department.CreateUserId);
             return View(department);
         }
 
         // GET: Departments/Delete/5
-        public async Task<IActionResult> Delete(long? id)
+        public async Task<IActionResult> Delete(long id)
         {
-            if (id == null || _context.Departments == null)
+            if (_context.Departments == null)
             {
-                return NotFound();
+                return Problem("Entity set 'DataContext.Departments'  is null.");
+            }
+            var department = await _context.Departments.FindAsync(id);
+            if (department != null)
+            {
+                _context.Departments.Remove(department);
             }
 
-            var department = await _context.Departments
-                .Include(d => d.CreateUser)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (department == null)
-            {
-                return NotFound();
-            }
-
-            return View(department);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
 
         // POST: Departments/Delete/5

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProjectReview.Models;
 
@@ -11,9 +12,11 @@ using ProjectReview.Models;
 namespace ProjectReview.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20230707044351_initial")]
+    partial class initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -85,6 +88,9 @@ namespace ProjectReview.Migrations
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("datetime");
 
+                    b.Property<long>("CreateUserId")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(400)
@@ -101,6 +107,8 @@ namespace ProjectReview.Migrations
                         .HasColumnType("bit");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CreateUserId");
 
                     b.ToTable("Department", (string)null);
                 });
@@ -402,6 +410,9 @@ namespace ProjectReview.Migrations
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("datetime");
 
+                    b.Property<long>("CreateUserId")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(400)
@@ -414,6 +425,8 @@ namespace ProjectReview.Migrations
                         .HasColumnType("bit");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CreateUserId");
 
                     b.ToTable("PermissionGroup", (string)null);
                 });
@@ -428,6 +441,9 @@ namespace ProjectReview.Migrations
 
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("datetime");
+
+                    b.Property<long>("CreateUserId")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -445,6 +461,8 @@ namespace ProjectReview.Migrations
                         .HasColumnType("bit");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CreateUserId");
 
                     b.ToTable("Position", (string)null);
                 });
@@ -478,6 +496,9 @@ namespace ProjectReview.Migrations
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("datetime");
 
+                    b.Property<long>("CreateUserId")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(400)
@@ -495,6 +516,8 @@ namespace ProjectReview.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CreateUserId");
+
                     b.ToTable("Rank", (string)null);
                 });
 
@@ -511,6 +534,9 @@ namespace ProjectReview.Migrations
 
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("datetime");
+
+                    b.Property<long>("CreateUserId")
+                        .HasColumnType("bigint");
 
                     b.Property<long>("DepartmentId")
                         .HasColumnType("bigint");
@@ -557,6 +583,8 @@ namespace ProjectReview.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CreateUserId");
+
                     b.HasIndex("DepartmentId");
 
                     b.HasIndex("PermissionGroupId");
@@ -575,6 +603,17 @@ namespace ProjectReview.Migrations
                         .HasForeignKey("CreateUserId")
                         .IsRequired()
                         .HasConstraintName("FK_Profile_User");
+
+                    b.Navigation("CreateUser");
+                });
+
+            modelBuilder.Entity("ProjectReview.Models.Entities.Department", b =>
+                {
+                    b.HasOne("ProjectReview.Models.Entities.User", "CreateUser")
+                        .WithMany("Departments")
+                        .HasForeignKey("CreateUserId")
+                        .IsRequired()
+                        .HasConstraintName("FK_Department_User");
 
                     b.Navigation("CreateUser");
                 });
@@ -701,6 +740,28 @@ namespace ProjectReview.Migrations
                     b.Navigation("Job");
                 });
 
+            modelBuilder.Entity("ProjectReview.Models.Entities.PermissionGroup", b =>
+                {
+                    b.HasOne("ProjectReview.Models.Entities.User", "CreateUser")
+                        .WithMany("PermissionGroups")
+                        .HasForeignKey("CreateUserId")
+                        .IsRequired()
+                        .HasConstraintName("FK_PermissionGroup_User");
+
+                    b.Navigation("CreateUser");
+                });
+
+            modelBuilder.Entity("ProjectReview.Models.Entities.Position", b =>
+                {
+                    b.HasOne("ProjectReview.Models.Entities.User", "CreateUser")
+                        .WithMany("Positions")
+                        .HasForeignKey("CreateUserId")
+                        .IsRequired()
+                        .HasConstraintName("FK_Position_User");
+
+                    b.Navigation("CreateUser");
+                });
+
             modelBuilder.Entity("ProjectReview.Models.Entities.ProfileDocument", b =>
                 {
                     b.HasOne("ProjectReview.Models.Entities.Document", "Document")
@@ -720,8 +781,25 @@ namespace ProjectReview.Migrations
                     b.Navigation("JobProfile");
                 });
 
+            modelBuilder.Entity("ProjectReview.Models.Entities.Rank", b =>
+                {
+                    b.HasOne("ProjectReview.Models.Entities.User", "CreateUser")
+                        .WithMany("Ranks")
+                        .HasForeignKey("CreateUserId")
+                        .IsRequired()
+                        .HasConstraintName("FK_Rank_User");
+
+                    b.Navigation("CreateUser");
+                });
+
             modelBuilder.Entity("ProjectReview.Models.Entities.User", b =>
                 {
+                    b.HasOne("ProjectReview.Models.Entities.User", "CreateUser")
+                        .WithMany("Users")
+                        .HasForeignKey("CreateUserId")
+                        .IsRequired()
+                        .HasConstraintName("FK_User_CreateUser");
+
                     b.HasOne("ProjectReview.Models.Entities.Department", "Department")
                         .WithMany("Users")
                         .HasForeignKey("DepartmentId")
@@ -745,6 +823,8 @@ namespace ProjectReview.Migrations
                         .HasForeignKey("RankId")
                         .IsRequired()
                         .HasConstraintName("FK_User_Rank");
+
+                    b.Navigation("CreateUser");
 
                     b.Navigation("Department");
 
@@ -809,6 +889,8 @@ namespace ProjectReview.Migrations
                 {
                     b.Navigation("CreateJobs");
 
+                    b.Navigation("Departments");
+
                     b.Navigation("DocumentTypes");
 
                     b.Navigation("Documents");
@@ -823,7 +905,15 @@ namespace ProjectReview.Migrations
 
                     b.Navigation("Opinions");
 
+                    b.Navigation("PermissionGroups");
+
+                    b.Navigation("Positions");
+
                     b.Navigation("Profiles");
+
+                    b.Navigation("Ranks");
+
+                    b.Navigation("Users");
                 });
 #pragma warning restore 612, 618
         }

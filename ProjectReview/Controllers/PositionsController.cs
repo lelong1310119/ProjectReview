@@ -22,7 +22,7 @@ namespace ProjectReview.Controllers
         // GET: Positions
         public async Task<IActionResult> Index()
         {
-            var dataContext = _context.Positions.Include(p => p.CreateUser);
+            var dataContext = _context.Positions;
             return View(await dataContext.ToListAsync());
         }
 
@@ -35,7 +35,7 @@ namespace ProjectReview.Controllers
             }
 
             var position = await _context.Positions
-                .Include(p => p.CreateUser)
+                
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (position == null)
             {
@@ -65,7 +65,6 @@ namespace ProjectReview.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CreateUserId"] = new SelectList(_context.Users, "Id", "Email", position.CreateUserId);
             return View(position);
         }
 
@@ -82,7 +81,6 @@ namespace ProjectReview.Controllers
             {
                 return NotFound();
             }
-            ViewData["CreateUserId"] = new SelectList(_context.Users, "Id", "Email", position.CreateUserId);
             return View(position);
         }
 
@@ -118,7 +116,6 @@ namespace ProjectReview.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CreateUserId"] = new SelectList(_context.Users, "Id", "Email", position.CreateUserId);
             return View(position);
         }
 
@@ -131,7 +128,7 @@ namespace ProjectReview.Controllers
             }
 
             var position = await _context.Positions
-                .Include(p => p.CreateUser)
+                
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (position == null)
             {

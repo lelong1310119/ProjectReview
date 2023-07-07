@@ -1,0 +1,205 @@
+﻿@model IEnumerable<ProjectReview.Models.Entities.CategoryProfile>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+			<div class="card mb-3">
+				<div class="card-header">
+					<h3><i class="fas fa-table"></i> Danh mục hồ sơ</h3>
+				</div>
+
+				<div class="toolbar">
+					<div class="row">
+						<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 float-mobile">
+							<button id="btn-addnew-danhmuchoso" class="l-btn" data-toggle="modal" data-target="#frUpdateDanhmuchoso">
+								<span class="l-btn-left">
+									<span class="l-btn-text">Tạo danh mục hồ sơ</span>
+									<span class="l-btn-icon icon-add">&nbsp;</span>
+								</span>
+							</button>
+							<button id="btn-print-danhmuchoso" class="l-btn">
+								<span class="l-btn-left">
+									<span class="l-btn-text">In</span>
+									<span class="l-btn-icon icon-print">&nbsp;</span>
+								</span>
+							</button>
+							<button id="btn-excel-danhmuchoso" class="l-btn">
+								<span class="l-btn-left">
+									<span class="l-btn-text">Excel</span>
+									<span class="l-btn-icon icon-excel">&nbsp;</span>
+								</span>
+							</button>
+						</div>
+						<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 float-mobile">
+							<div class="year_filter">
+								<label>Lọc theo năm</label>
+								<select class="form-control" id="namdanhmuchoso">
+									<option value="2023">2023</option>
+									<option value="2022">2022</option>
+									<option value="2021">2021</option>
+									<option value="2020">2020</option>
+									<option value="2019">2019</option>
+									<option value="2018">2018</option>
+									<option value="2017">2017</option>
+									<option value="2016">2016</option>
+									<option value="2015">2015</option>
+									<option value="2014">2014</option>
+									<option value="2013">2013</option>
+									<option value="2012">2012</option>
+									<option value="2011">2011</option>
+									<option value="2010">2010</option>
+								</select>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="card-body card-content">
+					<div class="table-responsive">
+						<div id="dataTable_Danhmuchoso_wrapper" class="dataTables_wrapper dt-bootstrap4 no-footer">
+							<div class="row"><div class="col-sm-12 col-md-6"><div class="dataTables_length" id="dataTable_Danhmuchoso_length"><label>Đang xem <select name="dataTable_Danhmuchoso_length" aria-controls="dataTable_Danhmuchoso" class="custom-select custom-select-sm form-control form-control-sm"><option value="10">10</option><option value="25">25</option><option value="50">50</option><option value="-1">Tất cả</option></select> mục</label></div></div><div class="col-sm-12 col-md-6"><div id="dataTable_Danhmuchoso_filter" class="dataTables_filter"><label>Tìm kiếm:<input type="search" class="form-control form-control-sm" placeholder="" aria-controls="dataTable_Danhmuchoso"></label></div></div></div><div class="row">
+								<div class="col-sm-12">
+									<table id="dataTable_Danhmuchoso" class="table table-bordered table-hover display nowrap dataTable no-footer" style="width: 100%;" role="grid" aria-describedby="dataTable_Danhmuchoso_info">
+										<thead>
+											<tr class="first-row" role="row"><th class="text-center sorting_disabled" rowspan="1" colspan="1" style="width: 39px;" aria-label="TT HS">TT HS</th><th class="text-center sorting_disabled" rowspan="1" colspan="1" style="width: 113px;" aria-label="Số và ký hiệu hồ sơ">Số và ký hiệu hồ sơ</th><th class="text-left sorting_disabled" rowspan="1" colspan="1" style="width: 280px;" aria-label="Tiêu đề danh mục hồ sơ">Tiêu đề danh mục hồ sơ</th><th class="text-center sorting_disabled" rowspan="1" colspan="1" style="width: 109px;" aria-label="Thời hạn bảo quản">Thời hạn bảo quản</th><th class="text-center sorting_disabled" rowspan="1" colspan="1" style="width: 113px;" aria-label="Người lập hồ sơ">Người lập hồ sơ</th><th class="text-center sorting_disabled" rowspan="1" colspan="1" style="width: 90px;" aria-label="Hạn nộp lưu">Hạn nộp lưu</th><th class="text-center sorting_disabled" rowspan="1" colspan="1" style="width: 73px;" aria-label="Trạng thái">Trạng thái</th><th class="text-center sorting_disabled" rowspan="1" colspan="1" style="width: 209px;" aria-label="Tác vụ">Tác vụ</th></tr>
+
+										</thead>
+										<tbody><tr role="row" class="odd"><td class=" text-center">1</td><td class=" text-center">01/HSQLNV</td><td class=" text-left"><a href="?cate=laphoso&amp;subcat=danhmuchoso&amp;iddanhmuchoso=22">Hồ sơ quản lý nghiệp vụ</a></td><td class=" text-center">Lâu dài</td><td class=" text-center">Quản trị hệ thống</td><td class=" text-center"></td><td class=" text-center">Đang mở</td><td class=" text-center"><button type="button" name="update" id="22" class="btn edit-danhmuchoso" title="Sửa danh mục hồ sơ"><img src="assets/icons/pencil.png" title="Sửa danh mục hồ sơ"></button>  <button type="button" name="delete" id="22" class="btn delete-danhmuchoso" title="Xóa danh mục hồ sơ"><img src="assets/icons/delete.gif" title="Xóa danh mục hồ sơ"></button>  <button type="button" name="close" id="22" class="btn close-danhmuchoso" title="Đóng hồ sơ"><img src="assets/icons/lock.png" title="Đóng hồ sơ"> Đóng hồ sơ</button></td></tr><tr role="row" class="even"><td class=" text-center">2</td><td class=" text-center">02/HSNT-HCTC</td><td class=" text-left"><a href="?cate=laphoso&amp;subcat=danhmuchoso&amp;iddanhmuchoso=23">Hồ sơ nguyên tắc</a></td><td class=" text-center">Lâu dài</td><td class=" text-center">Quản trị hệ thống</td><td class=" text-center"></td><td class=" text-center">Đang mở</td><td class=" text-center"><button type="button" name="update" id="23" class="btn edit-danhmuchoso" title="Sửa danh mục hồ sơ"><img src="assets/icons/pencil.png" title="Sửa danh mục hồ sơ"></button>  <button type="button" name="delete" id="23" class="btn delete-danhmuchoso" title="Xóa danh mục hồ sơ"><img src="assets/icons/delete.gif" title="Xóa danh mục hồ sơ"></button>  <button type="button" name="close" id="23" class="btn close-danhmuchoso" title="Đóng hồ sơ"><img src="assets/icons/lock.png" title="Đóng hồ sơ"> Đóng hồ sơ</button></td></tr></tbody>
+									</table><div id="dataTable_Danhmuchoso_processing" class="dataTables_processing card" style="display: none;">Đang xử lý...</div>
+								</div>
+							</div><div class="row"><div class="col-sm-12 col-md-5"><div class="dataTables_info" id="dataTable_Danhmuchoso_info" role="status" aria-live="polite">Đang xem 1 đến 2 trong tổng số 2 mục</div></div><div class="col-sm-12 col-md-7"><div class="dataTables_paginate paging_simple_numbers" id="dataTable_Danhmuchoso_paginate"><ul class="pagination"><li class="paginate_button page-item previous disabled" id="dataTable_Danhmuchoso_previous"><a href="#" aria-controls="dataTable_Danhmuchoso" data-dt-idx="0" tabindex="0" class="page-link">Trước</a></li><li class="paginate_button page-item active"><a href="#" aria-controls="dataTable_Danhmuchoso" data-dt-idx="1" tabindex="0" class="page-link">1</a></li><li class="paginate_button page-item next disabled" id="dataTable_Danhmuchoso_next"><a href="#" aria-controls="dataTable_Danhmuchoso" data-dt-idx="2" tabindex="0" class="page-link">Sau</a></li></ul></div></div></div>
+						</div>
+					</div>
+					<!-- end table-responsive-->
+
+				</div>
+				<!-- end card-body-->
+
+			</div>
+			<!-- end card-->
+
+		</div>
+
+	</div>
+
+	<!-- Modal Thêm công văn mới -->
+	<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="frUpdateDanhmuchoso" aria-hidden="true" data-backdrop="static" id="frUpdateDanhmuchoso">
+		<div class="modal-dialog mini-modal">
+			<div class="modal-content">
+				<form action="#" method="post" enctype="multipart/form-data" id="frmUpdateDanhmuchoso">
+
+					<div class="modal-header">
+						<h5 class="modal-title">Cập nhật thông tin danh mục hồ sơ</h5>
+						<button type="button" class="close" data-dismiss="modal">
+							<span aria-hidden="true">×</span>
+							<span class="sr-only">Close</span>
+						</button>
+					</div>
+
+					<div class="modal-body">
+
+						<div class="row">
+							<div class="col-xs-12 col-sm-12 col-md-2 col-lg-2 col-xl-2">
+								<div class="form-group">
+									<label>Số thứ tự</label>
+									<input class="form-control" id="intsott_danhmuchoso" name="intsott_danhmuchoso" type="number">
+								</div>
+
+							</div>
+							<div class="col-xs-12 col-sm-12 col-md-10 col-lg-10 col-xl-10">
+								<div class="form-group">
+									<label>Tiêu đề danh mục hồ sơ</label>
+									<input class="form-control" id="strtieudehoso" name="strtieudehoso" type="text">
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
+								<div class="form-group">
+									<label>Số ký hiệu hồ sơ</label>
+									<input class="form-control" id="strsokyhieuhoso" name="strsokyhieuhoso" type="text">
+								</div>
+							</div>
+							<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
+								<div class="form-group">
+									<label>Hạn bảo quản</label>
+									<select id="idhanbaoquan_danhmuchoso" class="form-control">
+									</select>
+								</div>
+							</div>
+						</div>
+
+						<div class="row">
+
+							<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+								<div class="form-group">
+									<label>Hạn nộp lưu</label>
+									<input type="text" class="form-control" id="strhannopluu">
+								</div>
+							</div>
+
+						</div>
+
+						<div class="row">
+							<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+								<div class="form-group">
+									<label>Ghi chú</label>
+									<textarea class="form-control" rows="2" id="strghichu_danhmuchoso"></textarea>
+								</div>
+							</div>
+						</div>
+
+					</div>
+
+					<div class="modal-footer">
+						<div class="modal-toolbar">
+							<div class="col-md-8 col-lg-8 col-xl-8 margin-error">
+								<span id="thong-bao-errordanhmuchoso"></span>
+							</div>
+							<div class="col-md-4 col-lg-4 col-xl-4 no-margin-right">
+								<input type="hidden" name="idRecordDanhmuchoso" id="idRecordDanhmuchoso" value="0">
+								<input type="hidden" name="action" id="actionDanhmuchoso" value="">
+								<button type="button" name="save" id="saveAddNewDanhmuchoso" class="btn btn-primary btn-sm"><i class="far fa-save"></i> Lưu </button>
+								<button type="button" class="btn btn-sm btn-danger" data-dismiss="modal"><i class="fas fa-times"></i> Đóng</button>
+							</div>
+						</div>
+					</div>
+
+				</form>
+
+			</div>
+		</div>
+	</div>
+	<!-- End modal -->
+	<!-- Modal hiển thị danh sách văn bản để in -->
+	<div class="modal fade" role="dialog" aria-labelledby="ppPrintDanhmuchoso" aria-hidden="true" data-backdrop="static" id="ppPrintDanhmuchoso">
+		<div class="modal-dialog print-modal">
+			<div class="modal-content">
+
+				<div class="modal-header">
+					<h5 class="modal-title">In danh danh mục hồ sơ</h5>
+					<button type="button" class="close" data-dismiss="modal">
+						<span aria-hidden="true">×</span>
+						<span class="sr-only">Close</span>
+					</button>
+				</div>
+
+				<div class="modal-body body-print-modal">
+					<div class="row">
+						<div id="NhanDuLieuDanhmuchoso"></div><!-- Hiển thị dữ liệu -->
+					</div>
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" name="save" id="printListDanhmuchoso" class="btn btn-primary btn-sm"><i class="far fa-save"></i> In danh sách </button>
+					<button type="button" class="btn btn-sm btn-danger" data-dismiss="modal"><i class="fas fa-times"></i> Đóng</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- End modal -->
+</div>
