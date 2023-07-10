@@ -2,7 +2,8 @@
 {
     public class JobProfile
     {
-        public long Id { get; set; }    
+        public long Id { get; set; }
+        public string Name { get; set; }    
         public long ProfileId { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }   

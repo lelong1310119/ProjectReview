@@ -1,6 +1,6 @@
-﻿@model ProjectReview.DTO.Ranks.CreateRankDTO
+﻿@model ProjectReview.DTO.Positions.CreatePositionDTO
 @{
-    ViewData["Title"] = "Rank-Create";
+    ViewData["Title"] = "Position-Create";
 }
 
 
@@ -9,14 +9,14 @@
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
             <div class="card">
                 <div class="card-header">
-                    <h4><i class="far fa-folder-open"></i> Thêm mới cấp bậc</h4>
+                    <h4><i class="far fa-folder-open"></i> Thêm mới chức vụ</h4>
                 </div>
                 <div class="card-body">
                     <div class="card-content col-md-6">
                         <form asp-action="Create">
                             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                             <div class="form-group mb-3">
-                                <label asp-for="Name" class="control-label">Tên cấp bậc</label>
+                                <label asp-for="Name" class="control-label">Tên chức vụ</label>
                                 <input asp-for="Name" class="form-control" />
                                 <span asp-validation-for="Name" class="text-danger"></span>
                             </div>
@@ -26,7 +26,7 @@
                                 <span asp-validation-for="Note" class="text-danger"></span>
                             </div>
                             <div class="form-group" style="display: flex">
-                                <a type="button" class="btn btn-lg btn-secondary d-flex flex-column align-items-center justify-content-center" asp-area="" asp-controller="Ranks" asp-action="Index" asp-route-page="@ViewContext.HttpContext.Session.GetInt32("page")" style="width: 100px">
+                                <a type="button" class="btn btn-lg btn-secondary d-flex flex-column align-items-center justify-content-center" asp-area="" asp-controller="Positions" asp-action="Index" asp-route-page="@ViewContext.HttpContext.Session.GetInt32("page")" style="width: 100px">
                                     <i class="fa-solid fa-arrow-left"></i> Trở về
                                 </a>
                                 <button type="submit" class="btn btn-lg btn-primary mx-3 d-flex flex-column align-items-center justify-content-center" style="width: 100px">

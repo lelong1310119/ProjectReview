@@ -1,103 +1,241 @@
-﻿@model IEnumerable<ProjectReview.Models.Entities.Position>
+﻿@model ProjectReview.DTO.Positions.PositionFilter;
+@using ProjectReview.DTO.Positions
+@using ProjectReview.Models.Entities;
 
 @{
-    ViewData["Title"] = "Index";
+	ViewData["Title"] = "Position";
+	var items = ViewData["items"] as List<PositionDTO>;
+	int currentPage = (int)(ViewData["page"] ?? 0);
+	int totalPage = (int)(ViewData["totalPage"] ?? 0);
+	int pageSize = (int)(ViewData["pageSize"] ?? 10);
+	var count = currentPage * 10 - 9;
+}
+
+@section Scripts{
+	<script>
+		const input = document.querySelector('.input-page');
+		const btnGo = document.querySelector('.btnGo');
+		const feedback = document.querySelector('.invalid-feedback');
+		const choose = document.querySelector('#selectPageSize')
+		const currentPage = @ViewData["page"];
+		const totalPage = @ViewData["totalPage"];
+		const pageSize = @ViewData["pageSize"]
+
+			choose.addEventListener('change', function (e) {
+				e.preventDefault();
+				const size = choose.value;
+				console.log(size);
+				console.log(choose)
+				window.location.href = '/Positions/Index?size=' + size;
+			});
+
+		btnGo.addEventListener('click', function (e) {
+			e.preventDefault();
+
+			const page = input.value.trim();
+			if (isNaN(page) || page < 1 || page > totalPage) {
+				feedback.classList.remove("d-none");
+				feedback.classList.add("d-block");
+				input.classList.add('is-invalid');
+				return;
+			}
+			window.location.href = '/Positions/Index?page=' + page + '&size=' + pageSize;
+		});
+
+		input.addEventListener('input', function () {
+			feedback.classList.remove("d-block");
+			feedback.classList.add("d-none");
+			input.classList.remove('is-invalid');
+		});
+		function goToPage(page) {
+			window.location.href = "/Positions/Index?page=" + page + '&size=' + pageSize;
+		}
+	</script>
 }
 
 <div class="container-fluid">
 	<div class="row">
 		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
-			<div class="card mb-3">
-				<div class="card-header inline-button">
-					<h3><i class="far fa-folder-open"></i> Chức danh, chức vụ</h3>
-					<button id="btn-addnewChucdanh" class="l-btn btn-inline-title" data-toggle="modal" data-target="#mdUpdateChucdanh">
-						<span class="l-btn-left">
-							<span class="l-btn-text">Thêm chức danh, chức vụ</span>
-							<span class="l-btn-icon icon-add">&nbsp;</span>
-						</span>
-					</button>
+			<div class="card">
+				<div class="card-header">
+					<h4><i class="far fa-folder-open"></i> Danh mục đơn vị bộ phận</h4>
 				</div>
-
-				<div class="card-body card-content">
-					<div class="table-responsive">
-						<div id="tbllistChucdanh_wrapper" class="dataTables_wrapper dt-bootstrap4 no-footer">
-							<div class="row"><div class="col-sm-12 col-md-6"><div class="dataTables_length" id="tbllistChucdanh_length"><label>Đang xem <select name="tbllistChucdanh_length" aria-controls="tbllistChucdanh" class="custom-select custom-select-sm form-control form-control-sm"><option value="10">10</option><option value="-1">Tất cả</option></select> mục</label></div></div><div class="col-sm-12 col-md-6"><div id="tbllistChucdanh_filter" class="dataTables_filter"><label>Tìm kiếm:<input type="search" class="form-control form-control-sm" placeholder="" aria-controls="tbllistChucdanh"></label></div></div></div><div class="row">
+				<div class="card-body">
+					<div class="card-content">
+						<div class="d-flex">
+							<div class="mt-4">
+								<a class="btn btn-primary mb-3 me-3" asp-action="Create" style="height: 40px">
+									<i class="fa-solid fa-add"></i><span class="m-1">  Thêm mới</span>
+								</a>
+								<div>
+									<span>Số dòng: </span>
+									<select id="selectPageSize" class="form-select mb-3" aria-label="Default select example" value=@pageSize style="width: 90px">
+										<option value=10>10</option>
+										<option value=20>20</option>
+										<option value=50>50</option>
+										<option value=100>100</option>
+									</select>
+								</div>
+							</div>
+							<div class="mb-3 col-md-4 ms-auto">
+								<form method="POST" class="needs-validation" novalidate="" autocomplete="off">
+									<div class="mb-3">
+										<label asp-for="Name" class="mb-1 fw-bold">Tên đơn vị</label>
+										<input asp-for="Name" class="form-control" aria-required="true">
+										<span asp-validation-for="Name" class="text-danger"></span>
+									</div>
+									<div class="d-flex align-items-center justify-content-center mt-3">
+										<button type="submit" class="btn btn-lg btn-warning mx-2 d-flex align-items-center justify-content-center text-white" style="width: 150px">
+											<i class="fa-solid fa-search"></i><span class="m-1">  Tìm kiếm</span>
+										</button>
+										<a type="button" class="btn btn-lg btn-info mx-2 d-flex align-items-center justify-content-center" asp-area="" asp-controller="Positions" asp-action="ClearSession" style="width: 100px">
+											<i class="fa-solid fa-arrows-rotate"></i><span class="m-1">Reset</span>
+										</a>
+									</div>
+								</form>
+							</div>
+						</div>
+						<div class="dataTables_wrapper dt-bootstrap4 no-footer">
+							<div class="row">
 								<div class="col-sm-12">
-									<table id="tbllistChucdanh" class="table table-bordered table-hover display nowrap dataTable no-footer" style="width: 100%;" role="grid" aria-describedby="tbllistChucdanh_info">
+									<table id="tblListDonvi" class="table table-bordered table-hover display dataTable no-footer" style="width: 100%;" role="grid" aria-describedby="tblListDonvi_info">
 										<thead>
-											<tr class="first-row" role="row"><th class="sorting_disabled text-center" rowspan="1" colspan="1" style="width: 41px;">STT</th><th class="sorting_disabled text-left" rowspan="1" colspan="1" style="width: 357px;">Tên chức danh, chức vụ</th><th class="sorting_disabled text-center" rowspan="1" colspan="1" style="width: 123px;">Trạng thái</th><th class="sorting_disabled text-left" rowspan="1" colspan="1" style="width: 415px;">Ghi chú</th><th class="sorting_disabled text-center" rowspan="1" colspan="1" style="width: 122px;">Thao tác</th></tr>
+											<tr class="first-row" role="row">
+												<th class="text-center sorting_disabled" style="width: 28px;">TT</th>
+												<th class="text-center sorting_disabled" style="width: 286px;">Chức danh, chức vụ</th>
+												<th class="text-center sorting_disabled" style="width: 258px;">Ghi chú</th>
+												<th class="text-center sorting_disabled" style="width: 117px;">Trạng thái</th>
+												<th class="text-center sorting_disabled" style="width: 173px;">Tác vụ</th>
+											</tr>
 										</thead>
-										<tbody><tr role="row" class="odd"><td class=" text-center">1</td><td class=" text-left">Quản trị hệ thống</td><td class=" text-center"><button type="button" name="active" id="1" class="btn btn-success btn-xs actived">Hiển thị</button></td><td class=" text-left">Quản trị hệ thống</td><td class=" text-center"><button type="button" name="update" id="1" class="btn btn-warning btn-xs updateLoaiChucdanh"><i class="fas fa-pencil-alt"></i></button> <button type="button" name="delete" id="1" class="btn btn-danger btn-xs deleteLoaiChucdanh"><i class="fas fa-trash-alt"></i></button></td></tr><tr role="row" class="even"><td class=" text-center">2</td><td class=" text-left">Trưởng phòng</td><td class=" text-center"><button type="button" name="active" id="2" class="btn btn-success btn-xs actived">Hiển thị</button></td><td class=" text-left">Ban lãnh đạo</td><td class=" text-center"><button type="button" name="update" id="2" class="btn btn-warning btn-xs updateLoaiChucdanh"><i class="fas fa-pencil-alt"></i></button> <button type="button" name="delete" id="2" class="btn btn-danger btn-xs deleteLoaiChucdanh"><i class="fas fa-trash-alt"></i></button></td></tr><tr role="row" class="odd"><td class=" text-center">3</td><td class=" text-left">Phó Trưởng phòng</td><td class=" text-center"><button type="button" name="active" id="3" class="btn btn-success btn-xs actived">Hiển thị</button></td><td class=" text-left">Lãnh đạo phòng</td><td class=" text-center"><button type="button" name="update" id="3" class="btn btn-warning btn-xs updateLoaiChucdanh"><i class="fas fa-pencil-alt"></i></button> <button type="button" name="delete" id="3" class="btn btn-danger btn-xs deleteLoaiChucdanh"><i class="fas fa-trash-alt"></i></button></td></tr><tr role="row" class="even"><td class=" text-center">4</td><td class=" text-left">Cán bộ</td><td class=" text-center"><button type="button" name="active" id="4" class="btn btn-success btn-xs actived">Hiển thị</button></td><td class=" text-left">Cán bộ</td><td class=" text-center"><button type="button" name="update" id="4" class="btn btn-warning btn-xs updateLoaiChucdanh"><i class="fas fa-pencil-alt"></i></button> <button type="button" name="delete" id="4" class="btn btn-danger btn-xs deleteLoaiChucdanh"><i class="fas fa-trash-alt"></i></button></td></tr><tr role="row" class="odd"><td class=" text-center">5</td><td class=" text-left">Nhân viên văn thư</td><td class=" text-center"><button type="button" name="active" id="5" class="btn btn-success btn-xs actived">Hiển thị</button></td><td class=" text-left">Nhân viên văn thư</td><td class=" text-center"><button type="button" name="update" id="5" class="btn btn-warning btn-xs updateLoaiChucdanh"><i class="fas fa-pencil-alt"></i></button> <button type="button" name="delete" id="5" class="btn btn-danger btn-xs deleteLoaiChucdanh"><i class="fas fa-trash-alt"></i></button></td></tr><tr role="row" class="even"><td class=" text-center">6</td><td class=" text-left">Kế toán</td><td class=" text-center"><button type="button" name="inactived" id="7" class="btn btn-danger btn-xs inactived">Đang ẩn</button></td><td class=" text-left">Kế toán tài chính</td><td class=" text-center"><button type="button" name="update" id="7" class="btn btn-warning btn-xs updateLoaiChucdanh"><i class="fas fa-pencil-alt"></i></button> <button type="button" name="delete" id="7" class="btn btn-danger btn-xs deleteLoaiChucdanh"><i class="fas fa-trash-alt"></i></button></td></tr></tbody>
-									</table><div id="tbllistChucdanh_processing" class="dataTables_processing card" style="display: none;">Đang xử lý...</div>
+										<tbody>
+											@if (Model == null || items.Count == 0)
+											{
+												<tr>
+													<td colspan="6" class="text-center">Không có dữ liệu</td>
+												</tr>
+											}
+											@foreach (var item in items)
+											{
+												<tr>
+													<td class="text-center">@count</td>
+													<td class="text-center">@item.Name</td>
+													<td class="text-center">@item.Note</td>
+													@if (item.Status == 0)
+													{
+														<td class="text-center"><a type="button" class="btn btn-success" asp-area="" asp-controller="Positions" asp-action="Active" asp-route-id="@item.Id">Kích hoạt</a></td>
+													}
+													else
+													{
+														<td class="text-center">Hoạt động</td>
+													}
+													<td class=" text-center">
+														<a type="button" class="btn btn-warning btn-xs" asp-area="" asp-controller="Positions" asp-action="Edit" asp-route-id="@item.Id">
+															<i class="fas fa-pencil-alt"></i>
+														</a>
+														@if (item.Status == 0)
+														{
+															<a type="button" class="btn btn-danger btn-xs" onclick="return confirm('Bạn chắc chắn muốn xóa thông tin này?');" asp-area="" asp-controller="Positions" asp-action="Delete" asp-route-id="@item.Id">
+																<i class="fas fa-trash-alt"></i>
+															</a>
+														}
+													</td>
+												</tr>
+												count++;
+											}
+										</tbody>
+									</table>
+									<nav aria-label="Page navigation example">
+										<ul class="pagination justify-content-start">
+											@if (currentPage == 1)
+											{
+												<li class="page-item disabled">
+													<a class="page-link" href="#" tabindex="-1">Trước</a>
+												</li>
+											}
+											else
+											{
+												<li class="page-item">
+													<a class="page-link" href="#" onclick="goToPage(@currentPage - 1)">Trước</a>
+												</li>
+											}
+											@if (totalPage > 0)
+											{
+												@if (currentPage > 3)
+												{
+													<li class="page-item d-none d-md-block">
+														<a class="page-link">...</a>
+													</li>
+												}
+												@for (var i = (currentPage - 2); i <= (currentPage + 2); i++)
+												{
+													@if (i > 0 && i <= totalPage)
+													{
+														@if (i == currentPage)
+														{
+															<li class="page-item active"><a class="page-link" href="#" onclick="goToPage(@i)">@i</a></li>
+														}
+														else
+														{
+															<li class="page-item"><a class="page-link" href="#" onclick="goToPage(@i)">@i</a></li>
+														}
+													}
+												}
+												@if (currentPage < (totalPage - 2))
+												{
+													<li class="page-item d-none d-md-block">
+														<a class="page-link">...</a>
+													</li>
+												}
+											}
+											@if (currentPage == totalPage)
+											{
+												<li class="page-item disabled">
+													<a class="page-link" href="#">Sau</a>
+												</li>
+											}
+											else
+											{
+												<li class="page-item">
+													<a class="page-link" href="#" onclick="goToPage(@currentPage + 1)">Sau</a>
+												</li>
+											}
+										</ul>
+									</nav>
+									<div>
+										<div class="d-flex align-items-center justify-content-center mt-3">
+											<div>
+												<div class="input-group">
+													<div class="input-group-prepend">
+														<button class="btn btn-primary btnGo" type="button">Đi</button>
+													</div>
+													<input class="form-control input-page" style="margin-left: 2px; width: 60px;margin-right: 10px;">
+												</div>
+												<span class="text-danger"></span>
+											</div>
+											@if (currentPage > 1)
+											{
+												<button type="button" class="btn btn-outline-primary" onclick="goToPage(@currentPage - 1)">Trước</button>
+											}
+											<span class="mx-2">Trang: <span id="currentPage">@ViewData["page"]</span></span>
+											@if (currentPage < totalPage)
+											{
+												<button type="button" class="btn btn-outline-primary" onclick="goToPage(@currentPage + 1)">Sau</button>
+											}
+											<span class="mx-2">Số trang: <span id="currentPage">@ViewData["totalPage"]</span></span>
+										</div>
+									</div>
+									<div>
+										<div class="d-flex align-items-center justify-content-center mt-3">
+											<span class="d-flex align-items-center justify-content-center invalid-feedback d-none">Vui lòng nhập số từ 1 đến @ViewData["totalPage"]</span>
+										</div>
+									</div>
 								</div>
-							</div><div class="row"><div class="col-sm-12 col-md-5"><div class="dataTables_info" id="tbllistChucdanh_info" role="status" aria-live="polite">Đang xem 1 đến 6 trong tổng số 6 mục</div></div><div class="col-sm-12 col-md-7"><div class="dataTables_paginate paging_simple_numbers" id="tbllistChucdanh_paginate"><ul class="pagination"><li class="paginate_button page-item previous disabled" id="tbllistChucdanh_previous"><a href="#" aria-controls="tbllistChucdanh" data-dt-idx="0" tabindex="0" class="page-link">Trước</a></li><li class="paginate_button page-item active"><a href="#" aria-controls="tbllistChucdanh" data-dt-idx="1" tabindex="0" class="page-link">1</a></li><li class="paginate_button page-item next disabled" id="tbllistChucdanh_next"><a href="#" aria-controls="tbllistChucdanh" data-dt-idx="2" tabindex="0" class="page-link">Sau</a></li></ul></div></div></div>
+							</div>
 						</div>
 					</div>
-					<!-- end table-responsive-->
 				</div>
 			</div>
 		</div>
 	</div>
-	<!-- Modal thêm, sửa -->
-	<div class="modal fade" role="dialog" aria-labelledby="mdUpdateChucdanh" aria-hidden="true" data-backdrop="static" id="mdUpdateChucdanh">
-		<div class="modal-dialog mini-modal">
-			<div class="modal-content">
-				<form action="#" method="post" enctype="multipart/form-data" id="frmUpdateChucdanh">
-
-					<div class="modal-header">
-						<h5 class="modal-title">Cập nhật chức danh, chức vụ</h5>
-						<button type="button" class="close" data-dismiss="modal">
-							<span aria-hidden="true">×</span>
-							<span class="sr-only">Close</span>
-						</button>
-					</div>
-
-					<div class="modal-body">
-
-						<div class="row">
-
-							<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
-								<div class="form-group">
-									<label>Tên chức danh</label>
-									<input class="form-control" id="strtenchucdanh" name="strtenchucdanh" type="text">
-								</div>
-							</div>
-							<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
-								<div class="form-group">
-									<label>Trạng thái</label><br>
-									<label class="custom-control custom-radio custom-control-inline">
-										<input type="radio" name="radActive" class="custom-control-input" value="1">
-										<span class="custom-control-label">Hiển thị</span>
-									</label>
-									<label class="custom-control custom-radio custom-control-inline">
-										<input type="radio" name="radActive" class="custom-control-input" value="0">
-										<span class="custom-control-label">Không hiển thị</span>
-									</label>
-								</div>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
-								<div class="form-group">
-									<label>Ghi chú</label>
-									<textarea id="strghichuchucdanh" required="" class="form-control" rows="4"></textarea>
-								</div>
-							</div>
-						</div>
-					</div>
-
-					<div class="modal-footer">
-						<input type="hidden" name="idRecordChucdanh" id="idRecordChucdanh" value="0">
-						<input type="hidden" name="actionChucdanh" id="actionChucdanh" value="">
-						<button type="button" name="save-continues" id="saveNewChucdanh-1" class="btn btn-success btn-sm"><i class="far fa-save"></i> Lưu &amp; Tiếp </button>
-						<button type="button" name="save-close" id="saveNewChucdanh-2" class="btn btn-primary btn-sm"><i class="far fa-save"></i> Lưu &amp; Đóng </button>
-						<button type="button" class="btn btn-sm btn-danger" data-dismiss="modal"><i class="fas fa-times"></i> Đóng</button>
-					</div>
-
-				</form>
-
-			</div>
-		</div>
-	</div>
-	<!-- End modal -->
 </div>

@@ -12,8 +12,8 @@ using ProjectReview.Models;
 namespace ProjectReview.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230709184426_update_entity")]
-    partial class update_entity
+    [Migration("20230710041401_initial")]
+    partial class initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -415,6 +415,11 @@ namespace ProjectReview.Migrations
 
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(400)
+                        .HasColumnType("nvarchar(400)");
 
                     b.Property<int>("NumberPaper")
                         .HasColumnType("int");

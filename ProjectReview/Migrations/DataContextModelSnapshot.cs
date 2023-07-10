@@ -413,6 +413,11 @@ namespace ProjectReview.Migrations
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime");
 
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(400)
+                        .HasColumnType("nvarchar(400)");
+
                     b.Property<int>("NumberPaper")
                         .HasColumnType("int");
 

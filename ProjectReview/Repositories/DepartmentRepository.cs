@@ -1,7 +1,5 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 using ProjectReview.DTO.Departments;
 using ProjectReview.Models;
 using ProjectReview.Models.Entities;
@@ -11,10 +9,11 @@ namespace ProjectReview.Repositories
 {
 	public interface IDepartmentRepository
 	{
-		Task<bool> Delete(long id);
+		Task Delete(long id);
+		Task Active(long id);
 		Task<DepartmentDTO> Create(CreateDepartmentDTO createDepartment);
 		Task<DepartmentDTO> Update(UpdateDepartmentDTO updateDepartment);
-		Task<DepartmentDTO> GetById(long id);
+		Task<UpdateDepartmentDTO> GetById(long id);
 		Task<List<DepartmentDTO>> GetAll();
 		Task<CustomPaging<DepartmentDTO>> GetCustomPaging(string filter, int page, int pageSize);
 	}
@@ -30,9 +29,25 @@ namespace ProjectReview.Repositories
 			_mapper = mapper;
 		}
 
-		public async Task<bool> Delete(long id)
+		public async Task Delete(long id)
 		{
-			return true;
+			var result = await _dataContext.Departments
+							.Where(x => x.Id == id)
+							.FirstOrDefaultAsync();
+			if (result == null) return;
+			_dataContext.Remove(result);
+			await _dataContext.SaveChangesAsync();
+		}
+
+		public async Task Active(long id)
+		{
+			var result = await _dataContext.Departments
+							.Where(x => x.Id == id)
+							.FirstOrDefaultAsync();
+			if (result == null) return;
+			result.Status = 1;
+			_dataContext.Departments.Update(result);
+			await _dataContext.SaveChangesAsync();
 		}
 
 		public async Task<DepartmentDTO> Create(CreateDepartmentDTO createDepartment) {
@@ -52,7 +67,6 @@ namespace ProjectReview.Repositories
 			
 			department.Name = updateDepartment.Name;
 			department.Phone = updateDepartment.Phone;
-			department.Status = updateDepartment.Status;
 			department.Address = updateDepartment.Address;
 
 			_dataContext.Departments.Update(department);
@@ -60,13 +74,13 @@ namespace ProjectReview.Repositories
 			return _mapper.Map<Department, DepartmentDTO>(department);
 		}
 
-		public async Task<DepartmentDTO> GetById(long id)
+		public async Task<UpdateDepartmentDTO> GetById(long id)
 		{
 			var department = await _dataContext.Departments
 									.Where(x => x.Id == id)
 									.FirstOrDefaultAsync();
 			if (department == null) return null;
-			return _mapper.Map<Department, DepartmentDTO>(department);
+			return _mapper.Map<Department, UpdateDepartmentDTO>(department);
 		}
 
 		public async Task<List<DepartmentDTO>> GetAll()

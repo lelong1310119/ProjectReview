@@ -10,6 +10,5 @@ namespace ProjectReview.DTO.Departments
 		public string Phone { get; set; }
 		public int Status { get; set; }
 		public DateTime CreateDate { get; set; }
-		public Boolean isDelete { get; set; }
 	}
 }
