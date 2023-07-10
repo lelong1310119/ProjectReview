@@ -3,6 +3,7 @@ using ProjectReview.Models;
 using ProjectReview.Repositories;
 using ProjectReview.Services.Departments;
 using ProjectReview.Services.Positions;
+using ProjectReview.Services.Ranks;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +26,8 @@ builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
 builder.Services.AddScoped<IDepartmentService, DepartmentService>();
 builder.Services.AddScoped<IPositionRepository,PositionRepository>();
 builder.Services.AddScoped<IPositionService, PositionService>();
+builder.Services.AddScoped<IRankRepository, RankRepository>();
+builder.Services.AddScoped<IRankService, RankService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 var app = builder.Build();
