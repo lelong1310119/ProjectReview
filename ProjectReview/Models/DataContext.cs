@@ -1,9 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using ProjectReview.Models.Entities;
-
 namespace ProjectReview.Models
 {
-    public partial class DataContext : DbContext
+    public partial class DataContext : IdentityDbContext<User, Role, long, IdentityUserClaim<long>, UserRole, IdentityUserLogin<long>, IdentityRoleClaim<long>, IdentityUserToken<long>>
     {
         public virtual DbSet<Department> Departments { get; set; }
         public virtual DbSet<Document> Documents { get; set; }
@@ -18,6 +19,11 @@ namespace ProjectReview.Models
         public virtual DbSet<ProfileDocument> ProfileDocuments { get; set; }
         public virtual DbSet<Rank> Ranks { get; set; }
         public virtual DbSet<User> Users { get; set; }
+        public virtual DbSet<Role> Roles { get; set; }
+        public virtual DbSet<UserRole> UserRoles { get; set; }
+        public virtual DbSet<RolePermission> RolePermissions { get; set; }
+        public virtual DbSet<JobDocument> JobDocuments { get; set; }
+
 
         public DataContext()
         {
@@ -26,17 +32,26 @@ namespace ProjectReview.Models
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
         }
+//        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+//        {
+//            if (!optionsBuilder.IsConfigured)
+//            {
+//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
+//                optionsBuilder.UseSqlServer("Data Source=DESKTOP-PL7Q9Q6; Initial Catalog=Review;Integrated Security=True;TrustServerCertificate=True;");
+//            }
+//        }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Data Source=DESKTOP-PL7Q9Q6; Initial Catalog=Review;Integrated Security=True;TrustServerCertificate=True;");
+                optionsBuilder.UseSqlServer("Data Source=LAPTOP-TC1PJ34D\\LONG;Initial Catalog=Review;Integrated Security=True;TrustServerCertificate=True;");
             }
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Department>(entity =>
+			base.OnModelCreating(modelBuilder);
+			modelBuilder.Entity<Department>(entity =>
             {
                 entity.ToTable("Department");
                 entity.HasKey(x => x.Id);
@@ -191,12 +206,6 @@ namespace ProjectReview.Models
                     .HasForeignKey(x => x.InstructorId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Job_InstructorUser");
-
-                entity.HasOne(x => x.Document)
-                    .WithOne(y => y.Job)
-                    .HasForeignKey<Job>(x => x.DocumentId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Job_Document");
             });
 
             modelBuilder.Entity<JobProfile>(entity =>
@@ -391,9 +400,8 @@ namespace ProjectReview.Models
                 entity.Property(x => x.UserName)
                     .IsRequired()
                     .HasMaxLength(400);
-                entity.Property(x => x.Password)
-                    .IsRequired()
-                    .HasMaxLength(400);
+                entity.Property(x => x.PasswordHash)
+                    .IsRequired();
                 entity.Property(x => x.Email)
                     .IsRequired()
                     .HasMaxLength(400);
@@ -432,6 +440,70 @@ namespace ProjectReview.Models
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_User_Rank");
             });
+
+            modelBuilder.Entity<Role>(entity =>
+            {
+                entity.ToTable("Role");
+                entity.HasKey(x => x.Id);
+                entity.Property(x => x.Id).ValueGeneratedOnAdd();
+
+                entity.Property(x => x.Name).IsRequired();
+            });
+
+			modelBuilder.Entity<RolePermission>(entity =>
+			{
+				entity.ToTable("RolePermission");
+				entity.HasKey(x => new { x.PermissionGroupId, x.RoleId });
+
+				entity.HasOne(x => x.PermissionGroup)
+					.WithMany(y => y.RolePermissions)
+					.HasForeignKey(x => x.PermissionGroupId)
+					.OnDelete(DeleteBehavior.ClientSetNull)
+					.HasConstraintName("FK_RolePermission_Permission");
+
+				entity.HasOne(x => x.Role)
+					.WithMany(y => y.RolePermissions)
+					.HasForeignKey(x => x.RoleId)
+					.OnDelete(DeleteBehavior.ClientSetNull)
+					.HasConstraintName("FK_RolePermission_Role");
+			});
+
+			modelBuilder.Entity<JobDocument>(entity =>
+			{
+				entity.ToTable("JobDocument");
+				entity.HasKey(x => new { x.JobId, x.DocumentId });
+
+				entity.HasOne(x => x.Job)
+					.WithOne(y => y.JobDocument)
+					.HasForeignKey<JobDocument>(x => x.JobId)
+					.OnDelete(DeleteBehavior.ClientSetNull)
+					.HasConstraintName("FK_JobDocument_Job");
+
+				entity.HasOne(x => x.Document)
+					.WithOne(y => y.JobDocument)
+					.HasForeignKey<JobDocument>(x => x.DocumentId)
+					.OnDelete(DeleteBehavior.ClientSetNull)
+					.HasConstraintName("FK_JobDocument_Document");
+
+			});
+
+			modelBuilder.Entity<UserRole>(entity =>
+            {
+				entity.ToTable("UserRole");
+				entity.HasKey(x => new { x.UserId, x.RoleId });
+
+				entity.HasOne(x => x.User)
+					.WithMany(y => y.UserRoles)
+					.HasForeignKey(x => x.UserId)
+					.OnDelete(DeleteBehavior.ClientSetNull)
+					.HasConstraintName("FK_UserRole_User");
+
+				entity.HasOne(x => x.Role)
+					.WithMany(y => y.UserRoles)
+					.HasForeignKey(x => x.RoleId)
+					.OnDelete(DeleteBehavior.ClientSetNull)
+					.HasConstraintName("FK_UserRole_Role");
+			});
         }
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
     }

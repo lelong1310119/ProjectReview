@@ -22,7 +22,7 @@ namespace ProjectReview.Controllers
         // GET: Jobs
         public async Task<IActionResult> Index()
         {
-            var dataContext = _context.Jobs.Include(j => j.CreateUser).Include(j => j.Document).Include(j => j.Host).Include(j => j.Instructor);
+            var dataContext = _context.Jobs.Include(j => j.CreateUser).Include(j => j.Host).Include(j => j.Instructor);
             return View(await dataContext.ToListAsync());
         }
 
@@ -36,7 +36,6 @@ namespace ProjectReview.Controllers
 
             var job = await _context.Jobs
                 .Include(j => j.CreateUser)
-                .Include(j => j.Document)
                 .Include(j => j.Host)
                 .Include(j => j.Instructor)
                 .FirstOrDefaultAsync(m => m.Id == id);
@@ -72,7 +71,6 @@ namespace ProjectReview.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["CreateUserId"] = new SelectList(_context.Users, "Id", "Email", job.CreateUserId);
-            ViewData["DocumentId"] = new SelectList(_context.Documents, "Id", "Author", job.DocumentId);
             ViewData["HostId"] = new SelectList(_context.Users, "Id", "Email", job.HostId);
             ViewData["InstructorId"] = new SelectList(_context.Users, "Id", "Email", job.InstructorId);
             return View(job);
@@ -92,7 +90,6 @@ namespace ProjectReview.Controllers
                 return NotFound();
             }
             ViewData["CreateUserId"] = new SelectList(_context.Users, "Id", "Email", job.CreateUserId);
-            ViewData["DocumentId"] = new SelectList(_context.Documents, "Id", "Author", job.DocumentId);
             ViewData["HostId"] = new SelectList(_context.Users, "Id", "Email", job.HostId);
             ViewData["InstructorId"] = new SelectList(_context.Users, "Id", "Email", job.InstructorId);
             return View(job);
@@ -131,7 +128,6 @@ namespace ProjectReview.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["CreateUserId"] = new SelectList(_context.Users, "Id", "Email", job.CreateUserId);
-            ViewData["DocumentId"] = new SelectList(_context.Documents, "Id", "Author", job.DocumentId);
             ViewData["HostId"] = new SelectList(_context.Users, "Id", "Email", job.HostId);
             ViewData["InstructorId"] = new SelectList(_context.Users, "Id", "Email", job.InstructorId);
             return View(job);
@@ -147,7 +143,6 @@ namespace ProjectReview.Controllers
 
             var job = await _context.Jobs
                 .Include(j => j.CreateUser)
-                .Include(j => j.Document)
                 .Include(j => j.Host)
                 .Include(j => j.Instructor)
                 .FirstOrDefaultAsync(m => m.Id == id);

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualBasic;
 using ProjectReview.Models;
 using ProjectReview.Models.Entities;
 
@@ -44,6 +45,29 @@ namespace ProjectReview.Controllers
             return View(department);
         }
 
+        [HttpPost]
+        public async Task<IActionResult> Test(Test test)
+        {
+            if (ModelState.IsValid)
+            {
+                Department department = new Department();
+                department.Name = test.Name;
+                department.Address = test.Address;
+                department.Phone = test.Phone;
+                department.CreateDate = DateTime.Now;
+		        Console.WriteLine("Department Name: " + department.Name);
+		        Console.WriteLine("Department Description: " + department.Address);
+		        Console.WriteLine("Department CreateDate: " + department.CreateDate);
+		        await _context.Departments.AddAsync(department);
+                await _context.SaveChangesAsync();
+                return Ok(department);
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+
         // GET: Departments/Create
         public IActionResult Create()
         {
@@ -65,7 +89,6 @@ namespace ProjectReview.Controllers
                 department.Phone = test.Phone;
                 department.Status = 0;
                 department.CreateDate = DateTime.Now;
-                department.isDelete = false;
                 await _context.AddAsync(department);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));

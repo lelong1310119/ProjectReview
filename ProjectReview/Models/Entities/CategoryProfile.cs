@@ -11,7 +11,6 @@
         public int OrderBy { get; set; }
         public DateTime CreateDate { get; set; }
         public long CreateUserId { get; set; }
-		public Boolean isDelete { get; set; }
 
 		public virtual User CreateUser { get; set; }
         public virtual ICollection<JobProfile> JobProfiles { get; set; }

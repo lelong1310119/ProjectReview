@@ -4,7 +4,6 @@
     {
         public long JobProfileId { get; set; }
         public long DocumentId { get; set; }
-		public Boolean isDelete { get; set; }
 
 		public virtual JobProfile JobProfile { get; set; }  
         public virtual Document Document { get; set; }  

@@ -22,11 +22,10 @@
         public string? Note { get; set; }
         public Boolean IsAssign { get; set; }
         public int Type { get; set; }
-		public Boolean isDelete { get; set; }
 
 		public virtual User CreateUser { get; set; }
         public virtual DocumentType DocumentType { get; set; }
-        public virtual Job Job { get; set; }
+        public virtual JobDocument JobDocument { get; set; }
         public virtual ICollection<ProfileDocument> ProfileDocuments { get; set; }
     }
 }

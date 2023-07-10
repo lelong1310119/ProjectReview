@@ -37,7 +37,6 @@ namespace ProjectReview.Repositories
 
 		public async Task<DepartmentDTO> Create(CreateDepartmentDTO createDepartment) {
 			var department = _mapper.Map<CreateDepartmentDTO, Department>(createDepartment);
-			department.isDelete = false;
 			department.CreateDate = DateTime.Now;
 			await _dataContext.Departments.AddAsync(department);
 			await _dataContext.SaveChangesAsync();

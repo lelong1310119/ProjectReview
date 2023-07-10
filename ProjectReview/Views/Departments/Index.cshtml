@@ -5,6 +5,50 @@
 	ViewData["Title"] = "Department";
 }
 
+@section Scripts{
+	<script>
+		$(document).ready(function () {
+			// When the "Add new department" button is clicked
+			$('#addNewDepartment').click(function () {
+				$('#name').val('');
+				$('#address').val('');
+				$('#phone').val('');
+				$('#addDepartmentModal').modal('show');
+			});
+
+			// When the "Save" button is clicked
+			$('#saveDepartment').click(function () {
+				var name = $('#name').val();
+				var address = $('#address').val();
+				var phone = $('#phone').val();
+				console.log(name);
+				console.log(address);
+				console.log(phone);
+
+				$.ajax({
+					type: 'POST',
+					url: '/Departments/Test',
+					data: { 'name': name, 'address': address, 'phone': phone },
+					success: function () {
+						$('#addDepartmentModal').modal('hide');
+						location.reload();
+						console.log("123");
+						// Show success alert
+						$('#success-alert').removeClass('d-none');
+						setTimeout(function () {
+							$('#success-alert').addClass('d-none');
+						}, 2000);
+					},
+					error: function () {
+						// Show error alert
+						$('#error-alert').removeClass('d-none');
+					}
+				});
+			});
+		});
+	</script>
+}
+
 <div class="container-fluid">
 	<div class="row">
 		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
@@ -14,7 +58,7 @@
 				</div>
 				<div class="card-body">
 					<div class="card-content">
-						<a type="button" class="btn btn-primary mb-3" asp-action="Create">Thêm mới</a>
+						<button class="btn btn-primary mb-3" id="addNewDepartment">Thêm mới</button>
 						<div class="dataTables_wrapper dt-bootstrap4 no-footer">
 							<div class="row">
 								<div class="col-sm-12">
@@ -73,6 +117,50 @@
 	</div>
 </div>
 
+<div class="modal fade" id="addDepartmentModal" tabindex="-1" role="dialog" aria-labelledby="addDepartmentModalLabel" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="addDepartmentModalLabel">Thêm mới đơn vị, bộ phận</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<form id="addDepartmentForm">
+					<div class="form-group">
+						<label for="name">Tên đơn vị, bộ phận:</label>
+						<input type="text" class="form-control" id="name" name="name" required>
+					</div>
+					<div class="form-group">
+						<label for="address">Địa chỉ:</label>
+						<input type="text" class="form-control" id="address" name="address">
+					</div>
+					<div class="form-group">
+						<label for="phone">Điện thoại:</label>
+						<input type="text" class="form-control" id="phone" name="phone">
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+				<button type="button" class="btn btn-primary" id="saveDepartment">Lưu</button>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="alert alert-success alert-dismissible fade d-none" role="alert" id="success-alert">
+	<strong>Thành công!</strong> Đã thêm mới đơn vị, bộ phận thành công.
+	<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+		<span aria-hidden="true">&times;</span>
+	</button>
+</div>
+<div class="alert alert-danger alert-dismissible fade d-none" role="alert" id="error-alert">
+	<strong>Lỗi!</strong> Không thể thêm mới đơn vị, bộ phận. Vui lòng thử lại sau.
+	<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+		<span aria-hidden="true">&times;</span>
+	</button>
+</div>
 @*<div class="container-fluid">
 	<div class="row">
 		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
