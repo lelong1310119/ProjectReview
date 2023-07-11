@@ -1,4 +1,6 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using ProjectReview.Common;
 using ProjectReview.Models;
 using ProjectReview.Repositories;
 using ProjectReview.Services.Departments;
@@ -22,6 +24,7 @@ builder.Services.AddDbContext<DataContext>(options =>
 //builder.Services.AddDbContext<DataContext>(options =>
 //        options.UseSqlServer("Data Source=LAPTOP-TC1PJ34D\\LONG;Initial Catalog=Review;Integrated Security=True;TrustServerCertificate=True;"));
 builder.Services.AddScoped<DbSeeder>();
+builder.Services.AddSingleton<ICurrentUser, CurrentUser>();
 builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
 builder.Services.AddScoped<IDepartmentService, DepartmentService>();
 builder.Services.AddScoped<IPositionRepository,PositionRepository>();
@@ -29,6 +32,7 @@ builder.Services.AddScoped<IPositionService, PositionService>();
 builder.Services.AddScoped<IRankRepository, RankRepository>();
 builder.Services.AddScoped<IRankService, RankService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 var app = builder.Build();
 

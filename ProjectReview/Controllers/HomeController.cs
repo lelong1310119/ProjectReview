@@ -1,5 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using ProjectReview.DTO.Users;
 using ProjectReview.Models;
+using ProjectReview.Models.Entities;
+using ProjectReview.Services.Users;
 using System.Diagnostics;
 
 namespace ProjectReview.Controllers
@@ -7,10 +11,12 @@ namespace ProjectReview.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly IUserService _userService;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, IUserService userService)
         {
             _logger = logger;
+            _userService = userService;
         }
 
         public IActionResult Index()
@@ -18,12 +24,40 @@ namespace ProjectReview.Controllers
             return View();
         }
 
-        public IActionResult Privacy()
+        public IActionResult Login()
         {
-            return View();
-        }
+			if (HttpContext.Session.GetString("username") is null)
+			{
+				return View();
+			}
+			else
+			{
+				return RedirectToAction("Index");
+			}
+		}
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+		public IActionResult Logout()
+		{
+			HttpContext.Session.Remove("username");
+			return RedirectToAction("Login");
+		}
+
+		[HttpPost]
+		public async Task<IActionResult> Login([FromForm] LoginDTO login)
+		{
+			try
+			{
+				var user = await _userService.Login(login.UserName, login.Password);
+				HttpContext.Session.SetString("username", user.UserName);
+				return RedirectToAction("Index", "Home");
+			} catch (Exception ex)
+			{
+				ModelState.AddModelError("", ex.Message);
+				return View(login);
+			}
+		}
+
+		[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
