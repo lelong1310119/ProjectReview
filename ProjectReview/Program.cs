@@ -4,8 +4,10 @@ using ProjectReview.Common;
 using ProjectReview.Models;
 using ProjectReview.Repositories;
 using ProjectReview.Services.Departments;
+using ProjectReview.Services.DocumentTypes;
 using ProjectReview.Services.Positions;
 using ProjectReview.Services.Ranks;
+using ProjectReview.Services.Users;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,6 +35,10 @@ builder.Services.AddScoped<IRankRepository, RankRepository>();
 builder.Services.AddScoped<IRankService, RankService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IDocumentTypeRepository, DocumentTypeRepository>();
+builder.Services.AddScoped<IDocumentTypeService, DocumentTypeService>();
+builder.Services.AddScoped<IPermissionGroupRepository, PermissionGroupRepository>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 var app = builder.Build();
 

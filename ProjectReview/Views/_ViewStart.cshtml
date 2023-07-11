@@ -1,3 +1,4 @@
 ﻿@{
-    Layout = "_Layout";
+    var sessionUsername = Context.Session.GetString("username");
+    Layout = sessionUsername == null ? "_LayoutBlank" : "_Layout";
 }

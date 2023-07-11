@@ -1,179 +1,253 @@
-﻿@model IEnumerable<ProjectReview.Models.Entities.User>
+﻿@model ProjectReview.DTO.Users.UserFilter;
+@using ProjectReview.DTO.Users
+@using ProjectReview.Models.Entities;
 
 @{
-    ViewData["Title"] = "Index";
+	ViewData["Title"] = "User";
+	var items = ViewData["items"] as List<UserDTO>;
+	int currentPage = (int)(ViewData["page"] ?? 0);
+	int totalPage = (int)(ViewData["totalPage"] ?? 0);
+	int pageSize = (int)(ViewData["pageSize"] ?? 10);
+	var count = currentPage * 10 - 9;
+}
+
+@section Scripts{
+	<script>
+		const input = document.querySelector('.input-page');
+		const btnGo = document.querySelector('.btnGo');
+		const feedback = document.querySelector('.invalid-feedback');
+		const choose = document.querySelector('#selectPageSize')
+		const currentPage = @ViewData["page"];
+		const totalPage = @ViewData["totalPage"];
+		const pageSize = @ViewData["pageSize"]
+
+			choose.addEventListener('change', function (e) {
+				e.preventDefault();
+				const size = choose.value;
+				console.log(size);
+				console.log(choose)
+				window.location.href = '/Users/Index?size=' + size;
+			});
+
+		btnGo.addEventListener('click', function (e) {
+			e.preventDefault();
+
+			const page = input.value.trim();
+			if (isNaN(page) || page < 1 || page > totalPage) {
+				feedback.classList.remove("d-none");
+				feedback.classList.add("d-block");
+				input.classList.add('is-invalid');
+				return;
+			}
+			window.location.href = '/Users/Index?page=' + page + '&size=' + pageSize;
+		});
+
+		input.addEventListener('input', function () {
+			feedback.classList.remove("d-block");
+			feedback.classList.add("d-none");
+			input.classList.remove('is-invalid');
+		});
+		function goToPage(page) {
+			window.location.href = "/Users/Index?page=" + page + '&size=' + pageSize;
+		}
+	</script>
 }
 
 <div class="container-fluid">
 	<div class="row">
 		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
-			<div class="card mb-3">
-				<div class="card-header inline-button">
-					<h3><i class="far fa-folder-open"></i> Danh mục cán bộ, viên chức, người sử dụng</h3>
-					<button id="btn-addnewCanbo" class="l-btn btn-inline-title" data-toggle="modal" data-target="#modalUpdateCanbo">
-						<span class="l-btn-left">
-							<span class="l-btn-text">Thêm cán bộ</span>
-							<span class="l-btn-icon icon-add">&nbsp;</span>
-						</span>
-					</button>
+			<div class="card">
+				<div class="card-header">
+					<h4><i class="far fa-folder-open"></i> Quản lý cán bộ</h4>
 				</div>
-
-				<div class="card-body card-content">
-					<div class="table-responsive">
-						<div id="tblListCanboUser_wrapper" class="dataTables_wrapper dt-bootstrap4 no-footer">
-							<div class="row"><div class="col-sm-12 col-md-6"><div class="dataTables_length" id="tblListCanboUser_length"><label>Đang xem <select name="tblListCanboUser_length" aria-controls="tblListCanboUser" class="custom-select custom-select-sm form-control form-control-sm"><option value="10">10</option><option value="-1">Tất cả</option></select> mục</label></div></div><div class="col-sm-12 col-md-6"><div id="tblListCanboUser_filter" class="dataTables_filter"><label>Tìm kiếm:<input type="search" class="form-control form-control-sm" placeholder="" aria-controls="tblListCanboUser"></label></div></div></div><div class="row">
+				<div class="card-body container-card">
+					<div class="card-content">
+						<div class="d-flex">
+							<div class="mt-4">
+								<a class="btn btn-primary mb-3 me-3" asp-action="Create" style="height: 40px">
+									<i class="fa-solid fa-add"></i><span class="m-1">  Thêm mới</span>
+								</a>
+								<div>
+									<span>Số dòng: </span>
+									<select id="selectPageSize" class="form-select mb-3" aria-label="Default select example" value=@pageSize style="width: 90px">
+										<option value=10>10</option>
+										<option value=20>20</option>
+										<option value=50>50</option>
+										<option value=100>100</option>
+									</select>
+								</div>
+							</div>
+							<div class="mb-3 col-md-4 ms-auto">
+								<form method="POST" class="needs-validation" novalidate="" autocomplete="off">
+									<div class="mb-3">
+										<label asp-for="FullName" class="mb-1 fw-bold">Họ tên</label>
+										<input asp-for="FullName" class="form-control" aria-required="true">
+										<span asp-validation-for="FullName" class="text-danger"></span>
+									</div>
+									<div class="d-flex align-items-center justify-content-center mt-3">
+										<button type="submit" class="btn btn-lg btn-warning mx-2 d-flex align-items-center justify-content-center text-white" style="width: 150px">
+											<i class="fa-solid fa-search"></i><span class="m-1">  Tìm kiếm</span>
+										</button>
+										<a type="button" class="btn btn-lg btn-info mx-2 d-flex align-items-center justify-content-center" asp-area="" asp-controller="Users" asp-action="ClearSession" style="width: 100px">
+											<i class="fa-solid fa-arrows-rotate"></i><span class="m-1">Reset</span>
+										</a>
+									</div>
+								</form>
+							</div>
+						</div>
+						<div class="dataTables_wrapper dt-bootstrap4 no-footer">
+							<div class="row">
 								<div class="col-sm-12">
-									<table id="tblListCanboUser" class="table table-bordered table-hover display dataTable no-footer" style="width: 100%;" role="grid" aria-describedby="tblListCanboUser_info">
+									<table id="tblListDonvi" class="table table-bordered table-hover display dataTable no-footer" style="width: 100%;" role="grid" aria-describedby="tblListDonvi_info">
 										<thead>
-											<tr class="first-row" role="row"><th class="text-center sorting_disabled" rowspan="1" colspan="1" aria-label="STT" style="width: 25px;">STT</th><th class="text-left sorting_disabled" rowspan="1" colspan="1" aria-label="Họ và tên" style="width: 126px;">Họ và tên</th><th class="text-center sorting_disabled" rowspan="1" colspan="1" aria-label="Ngày sinh" style="width: 79px;">Ngày sinh</th><th class="text-center sorting_disabled" rowspan="1" colspan="1" aria-label="Giới tính" style="width: 56px;">Giới tính</th><th class="text-center sorting_disabled" rowspan="1" colspan="1" aria-label="Chức vụ" style="width: 108px;">Chức vụ</th><th class="text-center sorting_disabled" rowspan="1" colspan="1" aria-label="Cấp bậc" style="width: 109px;">Cấp bậc</th><th class="text-center sorting_disabled" rowspan="1" colspan="1" aria-label="Nhóm quyền" style="width: 125px;">Nhóm quyền</th><th class="text-center sorting_disabled" rowspan="1" colspan="1" aria-label="Tên truy cập" style="width: 116px;">Tên truy cập</th><th class="text-center sorting_disabled" rowspan="1" colspan="1" aria-label="Email" style="width: 176px;">Email</th><th class="text-center sorting_disabled" rowspan="1" colspan="1" aria-label="Thao tác" style="width: 74px;">Thao tác</th></tr>
+											<tr class="first-row" role="row">
+												<th class="text-center sorting_disabled" style="width: 28px;">TT</th>
+												<th class="text-center sorting_disabled" style="width: 150px;">Họ và tên</th>
+												<th class="text-center sorting_disabled" style="width: 150px;">Ngày sinh</th>
+												<th class="text-center sorting_disabled" style="width: 50px;">Giới tính</th>
+												<th class="text-center sorting_disabled" style="width: 80px;">Chức vụ</th>
+												<th class="text-center sorting_disabled" style="width: 80px;">Cấp bậc</th>
+												<th class="text-center sorting_disabled" style="width: 150px;">Nhóm quyền</th>
+												<th class="text-center sorting_disabled" style="width: 100px;">Tên truy cập</th>
+												<th class="text-center sorting_disabled" style="width: 100px;">Email</th>
+												<th class="text-center sorting_disabled" style="width: 100px;">Trạng thái</th>
+												<th class="text-center sorting_disabled" style="width: 100px;">Tác vụ</th>
+											</tr>
 										</thead>
-										<tbody><tr role="row" class="odd"><td class=" text-center">1</td><td class=" text-left">Administrator</td><td class=" text-center">04/11/1978</td><td class=" text-center">Nam</td><td class=" text-center">Quản trị hệ thống</td><td class=" text-center"></td><td class=" text-center">Quản trị hệ thống</td><td class=" text-center">admin</td><td class=" text-center">tesvietnam@yahoo.com</td><td class=" text-center"><button type="button" name="update" id="1" class="btn btn-warning btn-xs updateCanbo"><i class="fas fa-pencil-alt"></i></button></td></tr><tr role="row" class="even"><td class=" text-center">2</td><td class=" text-left">Quản trị hệ thống</td><td class=" text-center">03/11/1988</td><td class=" text-center">Nam</td><td class=" text-center">Quản trị hệ thống</td><td class=" text-center"></td><td class=" text-center">Quản trị hệ thống</td><td class=" text-center">quantrihethong</td><td class=" text-center">hoangkhoi28@gmail.com</td><td class=" text-center"><button type="button" name="update" id="18" class="btn btn-warning btn-xs updateCanbo"><i class="fas fa-pencil-alt"></i></button> <button type="button" name="delete" id="18" class="btn btn-danger btn-xs deleteCanbo"><i class="fas fa-trash-alt"></i></button></td></tr><tr role="row" class="odd"><td class=" text-center">3</td><td class=" text-left">Nguyễn Văn Thắng</td><td class=" text-center">13/05/2023</td><td class=" text-center">Nam</td><td class=" text-center">Quản trị hệ thống</td><td class=" text-center">Thượng Tá</td><td class=" text-center">Quản trị hệ thống</td><td class=" text-center">thangnv</td><td class=" text-center"></td><td class=" text-center"><button type="button" name="update" id="35" class="btn btn-warning btn-xs updateCanbo"><i class="fas fa-pencil-alt"></i></button> <button type="button" name="delete" id="35" class="btn btn-danger btn-xs deleteCanbo"><i class="fas fa-trash-alt"></i></button></td></tr><tr role="row" class="even"><td class=" text-center">4</td><td class=" text-left">Vũ Hải Nguyên</td><td class=" text-center">13/05/2023</td><td class=" text-center">Nam</td><td class=" text-center">Quản trị hệ thống</td><td class=" text-center">Đại úy</td><td class=" text-center">Quản trị hệ thống</td><td class=" text-center">nguyenvh</td><td class=" text-center"></td><td class=" text-center"><button type="button" name="update" id="36" class="btn btn-warning btn-xs updateCanbo"><i class="fas fa-pencil-alt"></i></button> <button type="button" name="delete" id="36" class="btn btn-danger btn-xs deleteCanbo"><i class="fas fa-trash-alt"></i></button></td></tr><tr role="row" class="odd"><td class=" text-center">5</td><td class=" text-left">Nguyễn Thị Liên</td><td class=" text-center">13/05/2023</td><td class=" text-center">Nữ</td><td class=" text-center">Trưởng phòng</td><td class=" text-center"></td><td class=" text-center">Trưởng phòng</td><td class=" text-center">liennt</td><td class=" text-center"></td><td class=" text-center"><button type="button" name="update" id="30" class="btn btn-warning btn-xs updateCanbo"><i class="fas fa-pencil-alt"></i></button> <button type="button" name="delete" id="30" class="btn btn-danger btn-xs deleteCanbo"><i class="fas fa-trash-alt"></i></button></td></tr><tr role="row" class="even"><td class=" text-center">6</td><td class=" text-left">Trần Văn Hùng</td><td class=" text-center">13/05/2023</td><td class=" text-center">Nam</td><td class=" text-center">Trưởng phòng</td><td class=" text-center">Trung úy</td><td class=" text-center">Trưởng phòng</td><td class=" text-center">hungtv</td><td class=" text-center"></td><td class=" text-center"><button type="button" name="update" id="37" class="btn btn-warning btn-xs updateCanbo"><i class="fas fa-pencil-alt"></i></button> <button type="button" name="delete" id="37" class="btn btn-danger btn-xs deleteCanbo"><i class="fas fa-trash-alt"></i></button></td></tr><tr role="row" class="odd"><td class=" text-center">7</td><td class=" text-left">Hà Kiều Trang</td><td class=" text-center">13/05/2023</td><td class=" text-center">Nữ</td><td class=" text-center">Phó Trưởng phòng</td><td class=" text-center"></td><td class=" text-center">Phó Trưởng phòng</td><td class=" text-center">tranghk</td><td class=" text-center"></td><td class=" text-center"><button type="button" name="update" id="31" class="btn btn-warning btn-xs updateCanbo"><i class="fas fa-pencil-alt"></i></button> <button type="button" name="delete" id="31" class="btn btn-danger btn-xs deleteCanbo"><i class="fas fa-trash-alt"></i></button></td></tr><tr role="row" class="even"><td class=" text-center">8</td><td class=" text-left">Lê Đức Tài</td><td class=" text-center">13/05/2023</td><td class=" text-center">Nam</td><td class=" text-center">Cán bộ</td><td class=" text-center"></td><td class=" text-center">Cán bộ</td><td class=" text-center">taild</td><td class=" text-center"></td><td class=" text-center"><button type="button" name="update" id="32" class="btn btn-warning btn-xs updateCanbo"><i class="fas fa-pencil-alt"></i></button> <button type="button" name="delete" id="32" class="btn btn-danger btn-xs deleteCanbo"><i class="fas fa-trash-alt"></i></button></td></tr><tr role="row" class="odd"><td class=" text-center">9</td><td class=" text-left">Nguyễn Đăng Khánh</td><td class=" text-center">13/05/2023</td><td class=" text-center">Nam</td><td class=" text-center">Cán bộ</td><td class=" text-center"></td><td class=" text-center">Cán bộ</td><td class=" text-center">khanhnd</td><td class=" text-center"></td><td class=" text-center"><button type="button" name="update" id="33" class="btn btn-warning btn-xs updateCanbo"><i class="fas fa-pencil-alt"></i></button> <button type="button" name="delete" id="33" class="btn btn-danger btn-xs deleteCanbo"><i class="fas fa-trash-alt"></i></button></td></tr><tr role="row" class="even"><td class=" text-center">10</td><td class=" text-left">Nguyễn Hương Giang</td><td class=" text-center">13/05/2023</td><td class=" text-center">Nữ</td><td class=" text-center">Nhân viên văn thư</td><td class=" text-center"></td><td class=" text-center">Văn thư</td><td class=" text-center">giangnh</td><td class=" text-center">giangnh@gmail.com</td><td class=" text-center"><button type="button" name="update" id="34" class="btn btn-warning btn-xs updateCanbo"><i class="fas fa-pencil-alt"></i></button> <button type="button" name="delete" id="34" class="btn btn-danger btn-xs deleteCanbo"><i class="fas fa-trash-alt"></i></button></td></tr></tbody>
-									</table><div id="tblListCanboUser_processing" class="dataTables_processing card" style="display: none;">Đang xử lý...</div>
+										<tbody>
+											@if (Model == null || items.Count == 0)
+											{
+												<tr>
+													<td colspan="11" class="text-center">Không có dữ liệu</td>
+												</tr>
+											}
+											@foreach (var item in items)
+											{
+												<tr>
+													<td class="text-center">@count</td>
+													<td class="text-center">@item.FullName</td>
+													<td class="text-center">@item.Birthday.ToString("dd/MM/yyyy")</td>
+													<td class="text-center">@item.Gender</td>
+													<td class="text-center">@item.Position.Name</td>
+													<td class="text-center">@item.Rank.Name</td>
+													<td class="text-center">@item.PermissionGroup.Name</td>
+													<td class="text-center">@item.UserName</td>
+													<td class="text-center">@item.Email</td>
+													@if (item.Status == 0)
+													{
+														<td class="text-center"><a type="button" class="btn btn-success" asp-area="" asp-controller="Users" asp-action="Active" asp-route-id="@item.Id">Kích hoạt</a></td>
+													}
+													else
+													{
+														<td class="text-center">Hoạt động</td>
+													}
+													<td class=" text-center">
+														<a type="button" class="btn btn-warning btn-xs" asp-area="" asp-controller="Users" asp-action="Edit" asp-route-id="@item.Id">
+															<i class="fas fa-pencil-alt"></i>
+														</a>
+														@if (item.Status == 0)
+														{
+															<a type="button" class="btn btn-danger btn-xs" onclick="return confirm('Bạn chắc chắn muốn xóa thông tin này?');" asp-area="" asp-controller="Users" asp-action="Delete" asp-route-id="@item.Id">
+																<i class="fas fa-trash-alt"></i>
+															</a>
+														}
+													</td>
+												</tr>
+												count++;
+											}
+										</tbody>
+									</table>
+									<nav aria-label="Page navigation example">
+										<ul class="pagination justify-content-start">
+											@if (currentPage == 1)
+											{
+												<li class="page-item disabled">
+													<a class="page-link" href="#" tabindex="-1">Trước</a>
+												</li>
+											}
+											else
+											{
+												<li class="page-item">
+													<a class="page-link" href="#" onclick="goToPage(@currentPage - 1)">Trước</a>
+												</li>
+											}
+											@if (totalPage > 0)
+											{
+												@if (currentPage > 3)
+												{
+													<li class="page-item d-none d-md-block">
+														<a class="page-link">...</a>
+													</li>
+												}
+												@for (var i = (currentPage - 2); i <= (currentPage + 2); i++)
+												{
+													@if (i > 0 && i <= totalPage)
+													{
+														@if (i == currentPage)
+														{
+															<li class="page-item active"><a class="page-link" href="#" onclick="goToPage(@i)">@i</a></li>
+														}
+														else
+														{
+															<li class="page-item"><a class="page-link" href="#" onclick="goToPage(@i)">@i</a></li>
+														}
+													}
+												}
+												@if (currentPage < (totalPage - 2))
+												{
+													<li class="page-item d-none d-md-block">
+														<a class="page-link">...</a>
+													</li>
+												}
+											}
+											@if (currentPage == totalPage)
+											{
+												<li class="page-item disabled">
+													<a class="page-link" href="#">Sau</a>
+												</li>
+											}
+											else
+											{
+												<li class="page-item">
+													<a class="page-link" href="#" onclick="goToPage(@currentPage + 1)">Sau</a>
+												</li>
+											}
+										</ul>
+									</nav>
+									<div>
+										<div class="d-flex align-items-center justify-content-center mt-3">
+											<div>
+												<div class="input-group">
+													<div class="input-group-prepend">
+														<button class="btn btn-primary btnGo" type="button">Đi</button>
+													</div>
+													<input class="form-control input-page" style="margin-left: 2px; width: 60px;margin-right: 10px;">
+												</div>
+												<span class="text-danger"></span>
+											</div>
+											@if (currentPage > 1)
+											{
+												<button type="button" class="btn btn-outline-primary" onclick="goToPage(@currentPage - 1)">Trước</button>
+											}
+											<span class="mx-2">Trang: <span id="currentPage">@ViewData["page"]</span></span>
+											@if (currentPage < totalPage)
+											{
+												<button type="button" class="btn btn-outline-primary" onclick="goToPage(@currentPage + 1)">Sau</button>
+											}
+											<span class="mx-2">Số trang: <span id="currentPage">@ViewData["totalPage"]</span></span>
+										</div>
+									</div>
+									<div>
+										<div class="d-flex align-items-center justify-content-center mt-3">
+											<span class="d-flex align-items-center justify-content-center invalid-feedback d-none">Vui lòng nhập số từ 1 đến @ViewData["totalPage"]</span>
+										</div>
+									</div>
 								</div>
-							</div><div class="row"><div class="col-sm-12 col-md-5"><div class="dataTables_info" id="tblListCanboUser_info" role="status" aria-live="polite">Đang xem 1 đến 10 trong tổng số 10 mục</div></div><div class="col-sm-12 col-md-7"><div class="dataTables_paginate paging_simple_numbers" id="tblListCanboUser_paginate"><ul class="pagination"><li class="paginate_button page-item previous disabled" id="tblListCanboUser_previous"><a href="#" aria-controls="tblListCanboUser" data-dt-idx="0" tabindex="0" class="page-link">Trước</a></li><li class="paginate_button page-item active"><a href="#" aria-controls="tblListCanboUser" data-dt-idx="1" tabindex="0" class="page-link">1</a></li><li class="paginate_button page-item next disabled" id="tblListCanboUser_next"><a href="#" aria-controls="tblListCanboUser" data-dt-idx="2" tabindex="0" class="page-link">Sau</a></li></ul></div></div></div>
+							</div>
 						</div>
 					</div>
-					<!-- end table-responsive-->
 				</div>
 			</div>
 		</div>
 	</div>
-	<!-- Modal thêm, sửa -->
-	<div class="modal fade" role="dialog" aria-labelledby="modalUpdateCanbo" aria-hidden="true" data-backdrop="static" id="modalUpdateCanbo">
-		<div class="modal-dialog mini-modal-small">
-			<div class="modal-content">
-				<form action="#" method="post" enctype="multipart/form-data" id="frmUpdateCanboUser" data-parsley-validate="" novalidate="">
-
-					<div class="modal-header">
-						<h5 class="modal-title">Cập nhật danh sách người cán bộ, viên chức</h5>
-						<button type="button" class="close" data-dismiss="modal">
-							<span aria-hidden="true">×</span>
-							<span class="sr-only">Close</span>
-						</button>
-					</div>
-
-					<div class="modal-body">
-
-						<div class="row">
-
-							<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 col-xl-4">
-								<div class="form-group">
-									<label>Họ và tên cán bộ <span class="required">(*)</span></label>
-									<input id="strhotenvienchuc" type="text" class="form-control">
-								</div>
-							</div>
-
-							<div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 col-xl-3">
-								<div class="form-group">
-									<label>Ngày sinh</label>
-									<input type="text" class="form-control" id="strngaysinh">
-								</div>
-							</div>
-
-							<div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 col-xl-3">
-								<div class="form-group">
-									<label class="sex-user">Giới tính</label><br>
-									<label class="custom-control custom-radio custom-control-inline sex-user">
-										<input type="radio" name="radGioitinh" class="custom-control-input" id="radNam" value="1" data-parsley-multiple="radGioitinh">
-										<span class="custom-control-label">Nam</span>
-									</label>
-									<label class="custom-control custom-radio custom-control-inline">
-										<input type="radio" name="radGioitinh" class="custom-control-input" id="radNu" value="0" data-parsley-multiple="radGioitinh">
-										<span class="custom-control-label">Nữ</span>
-									</label>
-								</div>
-							</div>
-
-							<div class="col-xs-12 col-sm-12 col-md-2 col-lg-2 col-xl-2">
-								<div class="form-group">
-									<label>Cấp bậc</label>
-									<select id="intcapbac" class="form-control">
-									</select>
-								</div>
-							</div>
-						</div>
-
-						<div class="row">
-							<div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 col-xl-3">
-								<div class="form-group">
-									<label>Chức vụ</label>
-									<select id="intchucdanh" class="form-control">
-									</select>
-								</div>
-							</div>
-
-							<div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 col-xl-3">
-								<div class="form-group">
-									<label>Nhóm quyền <span class="required">(*)</span></label>
-									<select id="intnhomquyen" class="form-control">
-									</select>
-								</div>
-							</div>
-
-							<div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 col-xl-3">
-								<div class="form-group">
-									<label class="form-check-label custom-checkbox">
-										<input class="form-check-input" type="checkbox" id="chkbitkyvb" data-parsley-multiple="chkbitkyvb"> Quyền xử lý công việc
-									</label>
-
-								</div>
-							</div>
-
-							<div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 col-xl-3">
-								<div class="form-group">
-									<label class="form-check-label custom-checkbox">
-										<input class="form-check-input" type="checkbox" id="chkuyquyenbitkyvb" data-parsley-multiple="chkuyquyenbitkyvb"> Ủy quyền DUYỆT công việc
-									</label>
-
-								</div>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 col-xl-4">
-								<div class="form-group">
-									<label>Tên truy cập <span class="required">(*)</span></label>
-									<input id="strtentruycap" type="text" class="form-control">
-								</div>
-							</div>
-
-							<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 col-xl-4">
-								<div class="form-group">
-									<label for="emailAddress">Email</label>
-									<input type="email" name="email" data-parsley-trigger="change" required="" placeholder="Địa chỉ email" class="form-control" id="stremail">
-								</div>
-							</div>
-
-							<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 col-xl-4">
-								<div class="form-group">
-									<label for="emailAddress">Đơn vị/bộ phận</label>
-									<select class="form-control" id="txtdonvi">
-									</select>
-								</div>
-							</div>
-						</div>
-
-						<div class="row">
-							<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
-								<div class="form-group">
-									<label>Ghi chú</label>
-									<textarea id="strghichucanbo" required="" class="form-control" rows="4"></textarea>
-								</div>
-							</div>
-						</div>
-					</div>
-
-					<div class="modal-footer">
-						<input type="hidden" name="idRecordCanbo" id="idRecordCanbo" value="0">
-						<input type="hidden" name="actionCanbo" id="actionCanbo" value="">
-						<button type="button" name="save-continues" id="saveNewCanbo-1" class="btn btn-success btn-sm"><i class="far fa-save"></i> Lưu &amp; Tiếp </button>
-						<button type="button" name="save-close" id="saveNewCanbo-2" class="btn btn-primary btn-sm"><i class="far fa-save"></i> Lưu &amp; Đóng </button>
-						<button type="button" class="btn btn-sm btn-danger" data-dismiss="modal"><i class="fas fa-times"></i> Đóng</button>
-					</div>
-
-				</form>
-
-			</div>
-		</div>
-	</div>
-	<!-- End modal -->
 </div>

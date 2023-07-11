@@ -16,14 +16,12 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace ProjectReview.Controllers
 {
-    public class RanksController : Controller
+    public class RanksController : BaseController
     {
-        private readonly DataContext _context;
         private readonly IRankService _rankService;
 
-        public RanksController(DataContext context, IRankService RankService)
+        public RanksController(IRankService RankService)
         {
-            _context = context;
             _rankService = RankService;
         }
 
@@ -76,24 +74,6 @@ namespace ProjectReview.Controllers
             HttpContext.Session.SetInt32("page", 1);
             HttpContext.Session.SetInt32("pageSize", 10);
             return View(filter);
-        }
-
-        // GET: Ranks/Details/5
-        public async Task<IActionResult> Details(long? id)
-        {
-            if (id == null || _context.Ranks == null)
-            {
-                return NotFound();
-            }
-
-            var Rank = await _context.Ranks
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (Rank == null)
-            {
-                return NotFound();
-            }
-
-            return View(Rank);
         }
 
         // GET: Ranks/Create

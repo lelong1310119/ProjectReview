@@ -1,7 +1,10 @@
 ﻿using AutoMapper;
 using ProjectReview.DTO.Departments;
+using ProjectReview.DTO.DocumentTypes;
+using ProjectReview.DTO.PermissionGroups;
 using ProjectReview.DTO.Positions;
 using ProjectReview.DTO.Ranks;
+using ProjectReview.DTO.Users;
 using ProjectReview.Models.Entities;
 
 namespace ProjectReview.DTO
@@ -21,6 +24,15 @@ namespace ProjectReview.DTO
             CreateMap<UpdateRankDTO, Rank>();
             CreateMap<Rank, RankDTO>();
             CreateMap<Rank, UpdateRankDTO>();
+			CreateMap<User, UserDTO>();
+			CreateMap<CreateUserDTO, User>();
+            CreateMap<CreateDocumentTypeDTO, DocumentType>();
+            CreateMap<UpdateDocumentTypeDTO, DocumentType>();
+            CreateMap<DocumentType, DocumentTypeDTO>();
+            CreateMap<DocumentType, UpdateDocumentTypeDTO>();
+			CreateMap<UpdateUserDTO, User>();
+			CreateMap<User, UpdateUserDTO>();
+			CreateMap<PermissionGroup, PermissionGroupDTO>();
         }
 	}
 }

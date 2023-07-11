@@ -11,6 +11,8 @@ namespace ProjectReview.Repositories
 		IPositionRepository PositionRepository { get; }
 		IRankRepository RankRepository { get; }
 		IUserRepository UserRepository { get; }
+		IDocumentTypeRepository DocumentTypeRepository { get; }
+		IPermissionGroupRepository PermissionGroupRepository { get; }
 	}
 
 	public class UnitOfWork : IUnitOfWork
@@ -23,6 +25,8 @@ namespace ProjectReview.Repositories
 		public IPositionRepository PositionRepository { get; private set; }
 		public IRankRepository RankRepository { get; private set; }
 		public IUserRepository UserRepository { get; private set; }
+		public IDocumentTypeRepository DocumentTypeRepository { get; private set; }
+		public IPermissionGroupRepository PermissionGroupRepository { get; private set; }
 
 		public UnitOfWork(DataContext context, IMapper mapper, ICurrentUser currentUser)
 		{
@@ -33,6 +37,8 @@ namespace ProjectReview.Repositories
 			PositionRepository = new PositionRepository(context, mapper);	
 			RankRepository = new RankRepository(context, mapper);
 			UserRepository = new UserRepository(context, mapper);
+			DocumentTypeRepository = new DocumentTypeRepository(context, mapper, currentUser);
+			PermissionGroupRepository = new PermissionGroupRepository(context, mapper);
 		}
 
 		public void Save()

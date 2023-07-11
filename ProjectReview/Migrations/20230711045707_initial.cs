@@ -104,6 +104,7 @@ namespace ProjectReview.Migrations
                     PermissionGroupId = table.Column<long>(type: "bigint", nullable: false),
                     RankId = table.Column<long>(type: "bigint", nullable: false),
                     Note = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: true),
+                    Status = table.Column<long>(type: "bigint", nullable: false),
                     CreateDate = table.Column<DateTime>(type: "datetime", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(400)", maxLength: 400, nullable: false),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),

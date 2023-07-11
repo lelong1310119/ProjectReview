@@ -5,50 +5,78 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using ProjectReview.DTO.DocumentTypes;
 using ProjectReview.Models;
 using ProjectReview.Models.Entities;
+using ProjectReview.Paging;
+using ProjectReview.Services.DocumentTypes;
 
 namespace ProjectReview.Controllers
 {
-    public class DocumentTypesController : Controller
+    public class DocumentTypesController : BaseController
     {
-        private readonly DataContext _context;
+        private readonly IDocumentTypeService _documentTypeService;
 
-        public DocumentTypesController(DataContext context)
+        public DocumentTypesController(IDocumentTypeService documentTypeService)
         {
-            _context = context;
+            _documentTypeService = documentTypeService;
         }
 
         // GET: DocumentTypes
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? page, int? size)
         {
-            var dataContext = _context.DocumentTypes.Include(d => d.CreateUser);
-            return View(await dataContext.ToListAsync());
+            DocumentTypeFilter filter;
+            byte[] filterBytes = HttpContext.Session.Get("documentTypeFilter");
+            if (filterBytes != null)
+            {
+                var filterJson = System.Text.Encoding.UTF8.GetString(filterBytes);
+                filter = System.Text.Json.JsonSerializer.Deserialize<DocumentTypeFilter>(filterJson);
+            }
+            else
+            {
+                filter = new DocumentTypeFilter();
+            }
+            int pageNumber = (page ?? 1);
+            int pageSize = (size ?? 10);
+            ViewData["page"] = pageNumber;
+            ViewData["pageSize"] = pageSize;
+            CustomPaging<DocumentTypeDTO> result = await _documentTypeService.GetCustomPaging(filter.Name, pageNumber, pageSize);
+            int totalPage = result.TotalPage;
+            ViewData["totalPage"] = totalPage;
+            ViewData["items"] = result.Data;
+            HttpContext.Session.SetInt32("page", pageNumber);
+            HttpContext.Session.SetInt32("pageSize", pageSize);
+            return View(filter);
         }
 
-        // GET: DocumentTypes/Details/5
-        public async Task<IActionResult> Details(long? id)
+        public IActionResult ClearSession()
         {
-            if (id == null || _context.DocumentTypes == null)
-            {
-                return NotFound();
-            }
-
-            var documentType = await _context.DocumentTypes
-                .Include(d => d.CreateUser)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (documentType == null)
-            {
-                return NotFound();
-            }
-
-            return View(documentType);
+            HttpContext.Session.Remove("documentTypeFilter");
+            HttpContext.Session.Remove("page");
+            HttpContext.Session.Remove("pageSize");
+            return RedirectToAction("Index");
         }
+
+        [HttpPost]
+        public async Task<ActionResult> Index([FromForm] DocumentTypeFilter filter)
+        {
+            var filterBytes = System.Text.Encoding.UTF8.GetBytes(System.Text.Json.JsonSerializer.Serialize(filter));
+            HttpContext.Session.Set("documentTypeFilter", filterBytes);
+            ViewData["page"] = 1;
+            ViewData["pageSize"] = 10;
+            var result = await _documentTypeService.GetCustomPaging(filter.Name, 1, 10);
+            int totalPage = result.TotalPage;
+            ViewData["totalPage"] = totalPage;
+            ViewData["items"] = result.Data;
+            HttpContext.Session.SetInt32("page", 1);
+            HttpContext.Session.SetInt32("pageSize", 10);
+            return View(filter);
+        }
+
 
         // GET: DocumentTypes/Create
         public IActionResult Create()
         {
-            ViewData["CreateUserId"] = new SelectList(_context.Users, "Id", "Email");
             return View();
         }
 
@@ -57,33 +85,29 @@ namespace ProjectReview.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Note,Status,CreateDate,CreateUserId")] DocumentType documentType)
+        public async Task<IActionResult> Create([FromForm] CreateDocumentTypeDTO createDocumentTypeDTO)
         {
-            if (ModelState.IsValid)
+            try
             {
-                _context.Add(documentType);
-                await _context.SaveChangesAsync();
+                await _documentTypeService.Create(createDocumentTypeDTO);
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CreateUserId"] = new SelectList(_context.Users, "Id", "Email", documentType.CreateUserId);
-            return View(documentType);
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", ex.Message);
+                return View(createDocumentTypeDTO);
+            }
         }
 
         // GET: DocumentTypes/Edit/5
-        public async Task<IActionResult> Edit(long? id)
+        public async Task<IActionResult> Edit(long id)
         {
-            if (id == null || _context.DocumentTypes == null)
+            var result = await _documentTypeService.GetById(id);
+            if (result == null)
             {
                 return NotFound();
             }
-
-            var documentType = await _context.DocumentTypes.FindAsync(id);
-            if (documentType == null)
-            {
-                return NotFound();
-            }
-            ViewData["CreateUserId"] = new SelectList(_context.Users, "Id", "Email", documentType.CreateUserId);
-            return View(documentType);
+            return View(result);
         }
 
         // POST: DocumentTypes/Edit/5
@@ -91,78 +115,37 @@ namespace ProjectReview.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(long id, [Bind("Id,Name,Note,Status,CreateDate,CreateUserId")] DocumentType documentType)
+        public async Task<IActionResult> Edit([FromForm] UpdateDocumentTypeDTO DocumentType)
         {
-            if (id != documentType.Id)
+            try
             {
-                return NotFound();
+                int? page = HttpContext.Session.GetInt32("page");
+                int? size = HttpContext.Session.GetInt32("pageSize");
+                await _documentTypeService.Update(DocumentType);
+                return RedirectToAction(nameof(Index), new { page, size });
             }
-
-            if (ModelState.IsValid)
+            catch (Exception ex)
             {
-                try
-                {
-                    _context.Update(documentType);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!DocumentTypeExists(documentType.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                ModelState.AddModelError("", ex.Message);
+                return View(DocumentType);
             }
-            ViewData["CreateUserId"] = new SelectList(_context.Users, "Id", "Email", documentType.CreateUserId);
-            return View(documentType);
         }
 
         // GET: DocumentTypes/Delete/5
-        public async Task<IActionResult> Delete(long? id)
+        public async Task<IActionResult> Delete(long id)
         {
-            if (id == null || _context.DocumentTypes == null)
-            {
-                return NotFound();
-            }
-
-            var documentType = await _context.DocumentTypes
-                .Include(d => d.CreateUser)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (documentType == null)
-            {
-                return NotFound();
-            }
-
-            return View(documentType);
+            int? page = HttpContext.Session.GetInt32("page");
+            int? size = HttpContext.Session.GetInt32("pageSize");
+            await _documentTypeService.Delete(id);
+            return RedirectToAction(nameof(Index), new { page, size });
         }
 
-        // POST: DocumentTypes/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(long id)
+        public async Task<IActionResult> Active(long id)
         {
-            if (_context.DocumentTypes == null)
-            {
-                return Problem("Entity set 'DataContext.DocumentTypes'  is null.");
-            }
-            var documentType = await _context.DocumentTypes.FindAsync(id);
-            if (documentType != null)
-            {
-                _context.DocumentTypes.Remove(documentType);
-            }
-            
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool DocumentTypeExists(long id)
-        {
-          return (_context.DocumentTypes?.Any(e => e.Id == id)).GetValueOrDefault();
+            int? page = HttpContext.Session.GetInt32("page");
+            int? size = HttpContext.Session.GetInt32("pageSize");
+            await _documentTypeService.Active(id);
+            return RedirectToAction(nameof(Index), new { page, size });
         }
     }
 }

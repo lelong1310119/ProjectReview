@@ -8,7 +8,7 @@ using System.Diagnostics;
 
 namespace ProjectReview.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : BaseController
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IUserService _userService;
@@ -21,7 +21,14 @@ namespace ProjectReview.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            if (HttpContext.Session.GetString("username") is null)
+            {
+                return RedirectToAction("Index","Login");
+            }
+            else
+            {
+                return View();
+            }
         }
 
         public IActionResult Login()
@@ -49,7 +56,7 @@ namespace ProjectReview.Controllers
 			{
 				var user = await _userService.Login(login.UserName, login.Password);
 				HttpContext.Session.SetString("username", user.UserName);
-				return RedirectToAction("Index", "Home");
+				return RedirectToAction("Index");
 			} catch (Exception ex)
 			{
 				ModelState.AddModelError("", ex.Message);

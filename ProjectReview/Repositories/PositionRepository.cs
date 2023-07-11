@@ -11,11 +11,13 @@ namespace ProjectReview.Repositories
 	{
 		Task Delete(long id);
 		Task Active(long id);
-		Task<PositionDTO> Create(CreatePositionDTO createPosition);
+		Task<bool> GetByName(string name);
+        Task<PositionDTO> Create(CreatePositionDTO createPosition);
 		Task<PositionDTO> Update(UpdatePositionDTO updatePosition);
 		Task<UpdatePositionDTO> GetById(long id);
 		Task<List<PositionDTO>> GetAll();
-		Task<CustomPaging<PositionDTO>> GetCustomPaging(string filter, int page, int pageSize);
+        Task<List<PositionDTO>> GetAllActive();
+        Task<CustomPaging<PositionDTO>> GetCustomPaging(string filter, int page, int pageSize);
 	}
 
 	public class PositionRepository : IPositionRepository
@@ -29,7 +31,17 @@ namespace ProjectReview.Repositories
 			_mapper = mapper;
 		}
 
-		public async Task Delete(long id)
+        public async Task<bool> GetByName(string name)
+        {
+            name = name.Trim();
+            var result = await _dataContext.Positions
+                                    .Where(x => x.Name == name)
+                                    .FirstOrDefaultAsync();
+            if (result == null) return false;
+            return true;
+        }
+
+        public async Task Delete(long id)
 		{
 			var result = await _dataContext.Positions
 							.Where(x => x.Id == id)
@@ -89,7 +101,15 @@ namespace ProjectReview.Repositories
 			return _mapper.Map<List<Position>, List<PositionDTO>>(result);
 		}
 
-		public async Task<CustomPaging<PositionDTO>> GetCustomPaging(string filter, int page, int pageSize)
+        public async Task<List<PositionDTO>> GetAllActive()
+        {
+            var result = await _dataContext.Positions
+									.Where(x => x.Status == 1)
+									.ToListAsync();
+            return _mapper.Map<List<Position>, List<PositionDTO>>(result);
+        }
+
+        public async Task<CustomPaging<PositionDTO>> GetCustomPaging(string filter, int page, int pageSize)
 		{
 			int count = await _dataContext.Positions
 										.Where(x => x.Name.Contains(filter))

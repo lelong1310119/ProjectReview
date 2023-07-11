@@ -16,14 +16,12 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace ProjectReview.Controllers
 {
-    public class DepartmentsController : Controller
+    public class DepartmentsController : BaseController
     {
-		private readonly DataContext _context;
         private readonly IDepartmentService _departmentService;
 
-        public DepartmentsController(DataContext context, IDepartmentService departmentService)
+        public DepartmentsController(IDepartmentService departmentService)
         {
-            _context = context;
             _departmentService = departmentService;
         }
 
@@ -78,46 +76,6 @@ namespace ProjectReview.Controllers
 			return View(filter);
 		}
 
-		// GET: Departments/Details/5
-		public async Task<IActionResult> Details(long? id)
-        {
-            if (id == null || _context.Departments == null)
-            {
-                return NotFound();
-            }
-
-            var department = await _context.Departments
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (department == null)
-            {
-                return NotFound();
-            }
-
-            return View(department);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Test(Test test)
-        {
-            if (ModelState.IsValid)
-            {
-                Department department = new Department();
-                department.Name = test.Name;
-                department.Address = test.Address;
-                department.Phone = test.Phone;
-                department.CreateDate = DateTime.Now;
-		        Console.WriteLine("Department Name: " + department.Name);
-		        Console.WriteLine("Department Description: " + department.Address);
-		        Console.WriteLine("Department CreateDate: " + department.CreateDate);
-		        await _context.Departments.AddAsync(department);
-                await _context.SaveChangesAsync();
-                return Ok(department);
-            }
-            else
-            {
-                return BadRequest();
-            }
-        }
 
         // GET: Departments/Create
         public IActionResult Create()

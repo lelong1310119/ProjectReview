@@ -12,7 +12,7 @@ using ProjectReview.Models;
 namespace ProjectReview.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230710041401_initial")]
+    [Migration("20230711045707_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -697,6 +697,9 @@ namespace ProjectReview.Migrations
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<long>("Status")
+                        .HasColumnType("bigint");
 
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");

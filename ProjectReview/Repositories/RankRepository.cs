@@ -11,10 +11,12 @@ namespace ProjectReview.Repositories
     {
         Task Delete(long id);
         Task Active(long id);
+        Task<bool> GetByName(string name);
         Task<RankDTO> Create(CreateRankDTO createRank);
         Task<RankDTO> Update(UpdateRankDTO updateRank);
         Task<UpdateRankDTO> GetById(long id);
         Task<List<RankDTO>> GetAll();
+        Task<List<RankDTO>> GetAllActive();
         Task<CustomPaging<RankDTO>> GetCustomPaging(string filter, int page, int pageSize);
     }
 
@@ -27,6 +29,16 @@ namespace ProjectReview.Repositories
         {
             _dataContext = dataContext;
             _mapper = mapper;
+        }
+
+        public async Task<bool> GetByName(string name)
+        {
+            name = name.Trim();
+            var result = await _dataContext.Ranks
+                                    .Where(x => x.Name == name)
+                                    .FirstOrDefaultAsync();
+            if (result == null) return false;
+            return true;
         }
 
         public async Task Delete(long id)
@@ -86,6 +98,12 @@ namespace ProjectReview.Repositories
         public async Task<List<RankDTO>> GetAll()
         {
             var result = await _dataContext.Ranks.ToListAsync();
+            return _mapper.Map<List<Rank>, List<RankDTO>>(result);
+        }
+
+        public async Task<List<RankDTO>> GetAllActive()
+        {
+            var result = await _dataContext.Ranks.Where(x => x.Status == 1).ToListAsync();
             return _mapper.Map<List<Rank>, List<RankDTO>>(result);
         }
 

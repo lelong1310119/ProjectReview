@@ -10,22 +10,22 @@
                 <div class="card-header">
                     <h4><i class="far fa-folder-open"></i> Chỉnh sửa chức vụ</h4>
                 </div>
-                <div class="card-body">
+                <div class="card-body container-card">
                     <div class="card-content col-md-6">
                         <form asp-action="Edit">
                             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                             <input asp-for="Id" type="hidden">
-                            <div class="form-group mb-3">
+                            <div class="form-group m-3">
                                 <label asp-for="Name" class="control-label">Tên chức vụ</label>
                                 <input asp-for="Name" class="form-control" />
                                 <span asp-validation-for="Name" class="text-danger"></span>
                             </div>
-                            <div class="form-group mb-3">
+                            <div class="form-group m-3">
                                 <label asp-for="Note" class="control-label">Ghi chú</label>
                                 <input asp-for="Note" class="form-control" />
                                 <span asp-validation-for="Note" class="text-danger"></span>
                             </div>
-                            <div class="form-group" style="display: flex">
+                            <div class="form-group m-3" style="display: flex">
                                 <a type="button" class="btn btn-lg btn-secondary d-flex flex-column align-items-center justify-content-center" asp-area="" asp-controller="Positions" asp-action="Index" asp-route-page="@ViewContext.HttpContext.Session.GetInt32("page")" style="width: 100px">
                                     <i class="fa-solid fa-arrow-left"></i> Trở về
                                 </a>

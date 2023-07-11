@@ -35,13 +35,23 @@ namespace ProjectReview.Services.Positions
 
 		public async Task<PositionDTO> Create(CreatePositionDTO createPosition)
 		{
-			return await _UOW.PositionRepository.Create(createPosition);
+            createPosition.Name = createPosition.Name.Trim();
+            var check = await _UOW.PositionRepository.GetByName(createPosition.Name);
+            if (check) throw new Exception("Tên chức vụ đã tồn tại. Vui lòng nhập tên khác");
+            return await _UOW.PositionRepository.Create(createPosition);
 		}
 
 		public async Task<PositionDTO> Update(UpdatePositionDTO updatePosition)
 		{
-			return await _UOW.PositionRepository.Update(updatePosition);
-		}
+            var position = await _UOW.PositionRepository.GetById(updatePosition.Id);
+            updatePosition.Name = updatePosition.Name.Trim();
+            if (updatePosition.Name != position.Name)
+            {
+                var check = await _UOW.PositionRepository.GetByName(updatePosition.Name);
+                if (check) throw new Exception("Tên chức vụ đã tồn tại. Vui lòng nhập tên khác");
+            }
+            return await _UOW.PositionRepository.Update(updatePosition);
+        }
 
 		public async Task<UpdatePositionDTO> GetById(long id)
 		{

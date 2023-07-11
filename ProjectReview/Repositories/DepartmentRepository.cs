@@ -10,13 +10,15 @@ namespace ProjectReview.Repositories
 	public interface IDepartmentRepository
 	{
 		Task Delete(long id);
-		Task Active(long id);
-		Task<DepartmentDTO> Create(CreateDepartmentDTO createDepartment);
+		Task Active(long id); 
+		Task<bool> GetByName(string name);
+        Task<DepartmentDTO> Create(CreateDepartmentDTO createDepartment);
 		Task<DepartmentDTO> Update(UpdateDepartmentDTO updateDepartment);
 		Task<UpdateDepartmentDTO> GetById(long id);
 		Task<List<DepartmentDTO>> GetAll();
 		Task<CustomPaging<DepartmentDTO>> GetCustomPaging(string filter, int page, int pageSize);
-	}
+		Task<List<DepartmentDTO>> GetAllActive();
+    }
 
 	public class DepartmentRepository : IDepartmentRepository
 	{
@@ -27,6 +29,16 @@ namespace ProjectReview.Repositories
 		{
 			_dataContext = dataContext;
 			_mapper = mapper;
+		}
+
+		public async Task<bool> GetByName(string name)
+		{
+			name = name.Trim();
+			var result = await _dataContext.Departments
+									.Where(x => x.Name == name)
+									.FirstOrDefaultAsync();
+			if (result == null) return false;
+			return true;
 		}
 
 		public async Task Delete(long id)
@@ -89,7 +101,15 @@ namespace ProjectReview.Repositories
 			return _mapper.Map<List<Department>, List<DepartmentDTO>>(result);
 		}
 
-		public async Task<CustomPaging<DepartmentDTO>> GetCustomPaging(string filter, int page, int pageSize)
+        public async Task<List<DepartmentDTO>> GetAllActive()
+        {
+            var result = await _dataContext.Departments
+									.Where(x => x.Status == 1)
+									.ToListAsync();
+            return _mapper.Map<List<Department>, List<DepartmentDTO>>(result);
+        }
+
+        public async Task<CustomPaging<DepartmentDTO>> GetCustomPaging(string filter, int page, int pageSize)
 		{
 			int count = await _dataContext.Departments
 										.Where(x => x.Name.Contains(filter))

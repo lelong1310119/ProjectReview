@@ -10,7 +10,7 @@ using ProjectReview.Models.Entities;
 
 namespace ProjectReview.Controllers
 {
-    public class ProfileDocumentsController : Controller
+    public class ProfileDocumentsController : BaseController
     {
         private readonly DataContext _context;
 

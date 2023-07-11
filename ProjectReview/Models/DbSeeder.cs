@@ -196,6 +196,7 @@ namespace ProjectReview.Models
                     DepartmentId = 1,
                     UserName = "superadmin",
                     Note = "",
+                    Status = 0,
                     PasswordHash = HashPassword("123456"),
                     Email = "superadmin@gmail.com"
                 };
@@ -237,7 +238,7 @@ namespace ProjectReview.Models
                 documentTypes.Add(new DocumentType { Name = "Báo cáo", Status = 0, Note = "", CreateDate = DateTime.Now, CreateUserId = 1 });
                 documentTypes.Add(new DocumentType { Name = "Giấy mời", Status = 0, Note = "", CreateDate = DateTime.Now, CreateUserId = 1 });
                 documentTypes.Add(new DocumentType { Name = "Quyết định", Status = 0, Note = "", CreateDate = DateTime.Now, CreateUserId = 1 });
-                documentTypes.Add(new DocumentType { Name = "Mghị định", Status = 0, Note = "", CreateDate = DateTime.Now, CreateUserId = 1 });
+                documentTypes.Add(new DocumentType { Name = "Nghị định", Status = 0, Note = "", CreateDate = DateTime.Now, CreateUserId = 1 });
                 documentTypes.Add(new DocumentType { Name = "Thông báo", Status = 0, Note = "", CreateDate = DateTime.Now, CreateUserId = 1 });
                 documentTypes.Add(new DocumentType { Name = "Tờ trình", Status = 0, Note = "", CreateDate = DateTime.Now, CreateUserId = 1 });
                 documentTypes.Add(new DocumentType { Name = "Thông tư", Status = 0, Note = "", CreateDate = DateTime.Now, CreateUserId = 1 });

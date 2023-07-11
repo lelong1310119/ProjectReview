@@ -1,61 +1,80 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using ProjectReview.Models;
-using ProjectReview.Models.Entities;
+using ProjectReview.DTO.Positions;
+using ProjectReview.DTO.Users;
+using ProjectReview.Paging;
+using ProjectReview.Services.Users;
 
 namespace ProjectReview.Controllers
 {
-    public class UsersController : Controller
+    public class UsersController : BaseController
     {
-        private readonly DataContext _context;
+        private readonly IUserService _userService;
 
-        public UsersController(DataContext context)
+        public UsersController(IUserService userService)
         {
-            _context = context;
+            _userService = userService;
         }
 
         // GET: Users
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? page, int? size)
         {
-            var dataContext = _context.Users.Include(u => u.Department).Include(u => u.PermissionGroup).Include(u => u.Position).Include(u => u.Rank);
-            return View(await dataContext.ToListAsync());
+            UserFilter filter;
+            byte[] filterBytes = HttpContext.Session.Get("userFilter");
+            if (filterBytes != null)
+            {
+                var filterJson = System.Text.Encoding.UTF8.GetString(filterBytes);
+                filter = System.Text.Json.JsonSerializer.Deserialize<UserFilter>(filterJson);
+            }
+            else
+            {
+                filter = new UserFilter();
+            }
+            int pageNumber = (page ?? 1);
+            int pageSize = (size ?? 10);
+            ViewData["page"] = pageNumber;
+            ViewData["pageSize"] = pageSize;
+            CustomPaging<UserDTO> result = await _userService.GetCustomPaging(filter.FullName, pageNumber, pageSize);
+            int totalPage = result.TotalPage;
+            ViewData["totalPage"] = totalPage;
+            ViewData["items"] = result.Data;
+            HttpContext.Session.SetInt32("page", pageNumber);
+            HttpContext.Session.SetInt32("pageSize", pageSize);
+            return View(filter);
         }
 
-        // GET: Users/Details/5
-        public async Task<IActionResult> Details(long? id)
+        public IActionResult ClearSession()
         {
-            if (id == null || _context.Users == null)
-            {
-                return NotFound();
-            }
-
-            var user = await _context.Users
-                .Include(u => u.Department)
-                .Include(u => u.PermissionGroup)
-                .Include(u => u.Position)
-                .Include(u => u.Rank)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            return View(user);
+            HttpContext.Session.Remove("userFilter");
+            HttpContext.Session.Remove("page");
+            HttpContext.Session.Remove("pageSize");
+            return RedirectToAction("Index");
         }
+
+        [HttpPost]
+        public async Task<ActionResult> Index([FromForm] UserFilter filter)
+        {
+            var filterBytes = System.Text.Encoding.UTF8.GetBytes(System.Text.Json.JsonSerializer.Serialize(filter));
+            HttpContext.Session.Set("userFilter", filterBytes);
+            ViewData["page"] = 1;
+            ViewData["pageSize"] = 10;
+            var result = await _userService.GetCustomPaging(filter.FullName, 1, 10);
+            int totalPage = result.TotalPage;
+            ViewData["totalPage"] = totalPage;
+            ViewData["items"] = result.Data;
+            HttpContext.Session.SetInt32("page", 1);
+            HttpContext.Session.SetInt32("pageSize", 10);
+            return View(filter);
+        }
+
 
         // GET: Users/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            ViewData["CreateUserId"] = new SelectList(_context.Users, "Id", "Email");
-            ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Name");
-            ViewData["PermissionGroupId"] = new SelectList(_context.PermissionGroups, "Id", "Name");
-            ViewData["PositionId"] = new SelectList(_context.Positions, "Id", "Name");
-            ViewData["RankId"] = new SelectList(_context.Ranks, "Id", "Name");
+            ViewData["PositionId"] = new SelectList(await _userService.GetPosition(), "Id", "Name");
+            ViewData["PermissionGroupId"] = new SelectList(await _userService.GetPermissionGroup(), "Id", "Name");
+            ViewData["RankId"] = new SelectList(await _userService.GetRank(), "Id", "Name");
+            ViewData["DepartmentId"] = new SelectList(await _userService.GetDepartment(), "Id", "Name");
             return View();
         }
 
@@ -64,39 +83,33 @@ namespace ProjectReview.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,FullName,Birthday,Gender,PositionId,DepartmentId,PermissionGroupId,RankId,UserName,Password,Email,Note,CreateDate,CreateUserId")] User user)
+        public async Task<IActionResult> Create([FromForm] CreateUserDTO createUserDTO)
         {
-            if (ModelState.IsValid)
+            try
             {
-                _context.Add(user);
-                await _context.SaveChangesAsync();
+                await _userService.Create(createUserDTO);
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Name", user.DepartmentId);
-            ViewData["PermissionGroupId"] = new SelectList(_context.PermissionGroups, "Id", "Name", user.PermissionGroupId);
-            ViewData["PositionId"] = new SelectList(_context.Positions, "Id", "Name", user.PositionId);
-            ViewData["RankId"] = new SelectList(_context.Ranks, "Id", "Name", user.RankId);
-            return View(user);
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", ex.Message);
+                return View(createUserDTO);
+            }
         }
 
         // GET: Users/Edit/5
-        public async Task<IActionResult> Edit(long? id)
+        public async Task<IActionResult> Edit(long id)
         {
-            if (id == null || _context.Users == null)
+            ViewData["PositionId"] = new SelectList(await _userService.GetPosition(), "Id", "Name");
+            ViewData["PermissionGroupId"] = new SelectList(await _userService.GetPermissionGroup(), "Id", "Name");
+            ViewData["RankId"] = new SelectList(await _userService.GetRank(), "Id", "Name");
+            ViewData["DepartmentId"] = new SelectList(await _userService.GetDepartment(), "Id", "Name");
+            var result = await _userService.GetById(id);
+            if (result == null)
             {
                 return NotFound();
             }
-
-            var user = await _context.Users.FindAsync(id);
-            if (user == null)
-            {
-                return NotFound();
-            }
-            ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Name", user.DepartmentId);
-            ViewData["PermissionGroupId"] = new SelectList(_context.PermissionGroups, "Id", "Name", user.PermissionGroupId);
-            ViewData["PositionId"] = new SelectList(_context.Positions, "Id", "Name", user.PositionId);
-            ViewData["RankId"] = new SelectList(_context.Ranks, "Id", "Name", user.RankId);
-            return View(user);
+            return View(result);
         }
 
         // POST: Users/Edit/5
@@ -104,84 +117,37 @@ namespace ProjectReview.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(long id, [Bind("Id,FullName,Birthday,Gender,PositionId,DepartmentId,PermissionGroupId,RankId,UserName,Password,Email,Note,CreateDate,CreateUserId")] User user)
+        public async Task<IActionResult> Edit([FromForm] UpdateUserDTO user)
         {
-            if (id != user.Id)
+            try
             {
-                return NotFound();
+                int? page = HttpContext.Session.GetInt32("page");
+                int? size = HttpContext.Session.GetInt32("pageSize");
+                await _userService.Update(user);
+                return RedirectToAction(nameof(Index), new { page, size });
             }
-
-            if (ModelState.IsValid)
+            catch (Exception ex)
             {
-                try
-                {
-                    _context.Update(user);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!UserExists(user.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                ModelState.AddModelError("", ex.Message);
+                return View(User);
             }
-            ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Name", user.DepartmentId);
-            ViewData["PermissionGroupId"] = new SelectList(_context.PermissionGroups, "Id", "Name", user.PermissionGroupId);
-            ViewData["PositionId"] = new SelectList(_context.Positions, "Id", "Name", user.PositionId);
-            ViewData["RankId"] = new SelectList(_context.Ranks, "Id", "Name", user.RankId);
-            return View(user);
         }
 
         // GET: Users/Delete/5
-        public async Task<IActionResult> Delete(long? id)
+        public async Task<IActionResult> Delete(long id)
         {
-            if (id == null || _context.Users == null)
-            {
-                return NotFound();
-            }
-
-            var user = await _context.Users
-                .Include(u => u.Department)
-                .Include(u => u.PermissionGroup)
-                .Include(u => u.Position)
-                .Include(u => u.Rank)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            return View(user);
+            int? page = HttpContext.Session.GetInt32("page");
+            int? size = HttpContext.Session.GetInt32("pageSize");
+            await _userService.Delete(id);
+            return RedirectToAction(nameof(Index), new { page, size });
         }
 
-        // POST: Users/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(long id)
+        public async Task<IActionResult> Active(long id)
         {
-            if (_context.Users == null)
-            {
-                return Problem("Entity set 'DataContext.Users'  is null.");
-            }
-            var user = await _context.Users.FindAsync(id);
-            if (user != null)
-            {
-                _context.Users.Remove(user);
-            }
-            
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool UserExists(long id)
-        {
-          return (_context.Users?.Any(e => e.Id == id)).GetValueOrDefault();
+            int? page = HttpContext.Session.GetInt32("page");
+            int? size = HttpContext.Session.GetInt32("pageSize");
+            await _userService.Active(id);
+            return RedirectToAction(nameof(Index), new { page, size });
         }
     }
 }

@@ -13,6 +13,7 @@ namespace ProjectReview.Models.Entities
         public long PermissionGroupId { get; set; }
         public long RankId { get; set; }
         public string? Note { get; set; }
+        public long Status { get; set; } = 0;
         public DateTime CreateDate { get; set; }
 
         public virtual Position Position { get; set; }

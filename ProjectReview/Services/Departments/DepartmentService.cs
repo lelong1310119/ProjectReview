@@ -35,13 +35,23 @@ namespace ProjectReview.Services.Departments
 
 		public async Task<DepartmentDTO> Create(CreateDepartmentDTO createDepartment)
 		{
+            createDepartment.Name = createDepartment.Name.Trim();
+            var check = await _UOW.DepartmentRepository.GetByName(createDepartment.Name);
+			if (check) throw new Exception("Tên đơn vị đã tồn tại. Vui lòng nhập tên khác");
 			return await _UOW.DepartmentRepository.Create(createDepartment);
 		}
 
 		public async Task<DepartmentDTO> Update(UpdateDepartmentDTO updateDepartment)
 		{
-			return await _UOW.DepartmentRepository.Update(updateDepartment);
-		}
+			var department = await _UOW.DepartmentRepository.GetById(updateDepartment.Id);
+			updateDepartment.Name = updateDepartment.Name.Trim();
+			if (updateDepartment.Name != department.Name)
+			{
+				var check = await _UOW.DepartmentRepository.GetByName(updateDepartment.Name);
+                if (check) throw new Exception("Tên đơn vị đã tồn tại. Vui lòng nhập tên khác");
+            }
+            return await _UOW.DepartmentRepository.Update(updateDepartment);
+        }
 
 		public async Task<UpdateDepartmentDTO> GetById(long id)
 		{

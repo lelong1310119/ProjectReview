@@ -11,21 +11,21 @@
                 <div class="card-header">
                     <h4><i class="far fa-folder-open"></i> Thêm mới cấp bậc</h4>
                 </div>
-                <div class="card-body">
+                <div class="card-body container-card">
                     <div class="card-content col-md-6">
                         <form asp-action="Create">
                             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                            <div class="form-group mb-3">
+                            <div class="form-group m-3">
                                 <label asp-for="Name" class="control-label">Tên cấp bậc</label>
                                 <input asp-for="Name" class="form-control" />
                                 <span asp-validation-for="Name" class="text-danger"></span>
                             </div>
-                            <div class="form-group mb-3">
+                            <div class="form-group m-3">
                                 <label asp-for="Note" class="control-label">Ghi chú</label>
                                 <input asp-for="Note" class="form-control" />
                                 <span asp-validation-for="Note" class="text-danger"></span>
                             </div>
-                            <div class="form-group" style="display: flex">
+                            <div class="form-group m-3" style="display: flex">
                                 <a type="button" class="btn btn-lg btn-secondary d-flex flex-column align-items-center justify-content-center" asp-area="" asp-controller="Ranks" asp-action="Index" asp-route-page="@ViewContext.HttpContext.Session.GetInt32("page")" style="width: 100px">
                                     <i class="fa-solid fa-arrow-left"></i> Trở về
                                 </a>

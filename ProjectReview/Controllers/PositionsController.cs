@@ -16,14 +16,12 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace ProjectReview.Controllers
 {
-	public class PositionsController : Controller
+	public class PositionsController : BaseController
 	{
-		private readonly DataContext _context;
 		private readonly IPositionService _positionService;
 
-		public PositionsController(DataContext context, IPositionService positionService)
+		public PositionsController(IPositionService positionService)
 		{
-			_context = context;
 			_positionService = positionService;
 		}
 
@@ -78,23 +76,6 @@ namespace ProjectReview.Controllers
 			return View(filter);
 		}
 
-		// GET: Positions/Details/5
-		public async Task<IActionResult> Details(long? id)
-		{
-			if (id == null || _context.Positions == null)
-			{
-				return NotFound();
-			}
-
-			var position = await _context.Positions
-				.FirstOrDefaultAsync(m => m.Id == id);
-			if (position == null)
-			{
-				return NotFound();
-			}
-
-			return View(position);
-		}
 
 		// GET: Positions/Create
 		public IActionResult Create()

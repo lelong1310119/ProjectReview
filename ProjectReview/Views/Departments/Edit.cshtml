@@ -10,27 +10,27 @@
                 <div class="card-header">
                     <h4><i class="far fa-folder-open"></i> Chỉnh sửa đơn vị bộ phận</h4>
                 </div>
-                <div class="card-body">
+                <div class="card-body container-card">
                     <div class="card-content col-md-6">
                         <form asp-action="Edit">
                             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                             <input asp-for="Id" type="hidden">
-                            <div class="form-group mb-3">
+                            <div class="form-group m-3">
                                 <label asp-for="Name" class="control-label">Tên đơn vị</label>
                                 <input asp-for="Name" class="form-control" />
                                 <span asp-validation-for="Name" class="text-danger"></span>
                             </div>
-                            <div class="form-group mb-3">
+                            <div class="form-group m-3">
                                 <label asp-for="Address" class="control-label">Địa chỉ</label>
                                 <input asp-for="Address" class="form-control" />
                                 <span asp-validation-for="Address" class="text-danger"></span>
                             </div>
-                            <div class="form-group mb-3">
+                            <div class="form-group m-3">
                                 <label asp-for="Phone" class="control-label">Số điện thoại</label>
                                 <input asp-for="Phone" class="form-control" />
                                 <span asp-validation-for="Phone" class="text-danger"></span>
                             </div>
-                            <div class="form-group" style="display: flex">
+                            <div class="form-group m-3" style="display: flex">
                                 <a type="button" class="btn btn-lg btn-secondary d-flex flex-column align-items-center justify-content-center" asp-area="" asp-controller="Departments" asp-action="Index" asp-route-page="@ViewContext.HttpContext.Session.GetInt32("page")" style="width: 100px">
                                     <i class="fa-solid fa-arrow-left"></i> Trở về
                                 </a>

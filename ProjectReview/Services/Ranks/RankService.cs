@@ -35,11 +35,21 @@ namespace ProjectReview.Services.Ranks
 
         public async Task<RankDTO> Create(CreateRankDTO createRank)
         {
+            createRank.Name = createRank.Name.Trim();
+            var check = await _UOW.RankRepository.GetByName(createRank.Name);
+            if (check) throw new Exception("Tên cấp bậc đã tồn tại. Vui lòng nhập tên khác");
             return await _UOW.RankRepository.Create(createRank);
         }
 
         public async Task<RankDTO> Update(UpdateRankDTO updateRank)
         {
+            var rank = await _UOW.RankRepository.GetById(updateRank.Id);
+            updateRank.Name = updateRank.Name.Trim();
+            if (updateRank.Name != rank.Name)
+            {
+                var check = await _UOW.RankRepository.GetByName(updateRank.Name);
+                if (check) throw new Exception("Tên cấp bậc đã tồn tại. Vui lòng nhập tên khác");
+            }
             return await _UOW.RankRepository.Update(updateRank);
         }
 
