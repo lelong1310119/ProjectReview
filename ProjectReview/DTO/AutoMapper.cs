@@ -33,6 +33,10 @@ namespace ProjectReview.DTO
 			CreateMap<UpdateUserDTO, User>();
 			CreateMap<User, UpdateUserDTO>();
 			CreateMap<PermissionGroup, PermissionGroupDTO>();
+			CreateMap<UpdatePermissionGroupDTO, PermissionGroupDTO>();
+			CreateMap<PermissionGroup, PermissionGroupDTO>();
+			CreateMap<CreatePermissionGroupDTO, PermissionGroupDTO>();
+			CreateMap<PermissionGroup, UpdatePermissionGroupDTO>();
         }
 	}
 }

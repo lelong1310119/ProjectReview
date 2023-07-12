@@ -1,4 +1,5 @@
-﻿using ProjectReview.Models.Entities;
+﻿using ProjectReview.Enums;
+using ProjectReview.Models.Entities;
 
 namespace ProjectReview.DTO.PermissionGroups
 {
@@ -9,6 +10,7 @@ namespace ProjectReview.DTO.PermissionGroups
         public int Status { get; set; }
         public DateTime CreateDate { get; set; }
 
+        public List<CustomEnum> roleEnums { get; set; }
         public List<RolePermission> RolePermissions { get; set; }
     }
 }

@@ -38,6 +38,7 @@ namespace ProjectReview.Repositories
 		{
 			var user = _mapper.Map<CreateUserDTO, User>(userDTO);
 			user.Status = 0;
+            user.CreateDate = DateTime.Now;
 			await _dataContext.AddAsync(user);
             await _dataContext.SaveChangesAsync();
 			await UpdateRole(user.Id, user.PermissionGroupId);
@@ -73,8 +74,11 @@ namespace ProjectReview.Repositories
                             .Where(x => x.Id == id)
                             .FirstOrDefaultAsync();
             if (result == null) return;
-            _dataContext.Remove(result);
-            await _dataContext.SaveChangesAsync();
+			await _dataContext.UserRoles
+				.Where(x => x.UserId == result.Id)
+				.ExecuteDeleteAsync();
+			_dataContext.Remove(result);
+			await _dataContext.SaveChangesAsync();
         }
 
         public async Task Active(long id)
@@ -159,10 +163,10 @@ namespace ProjectReview.Repositories
 
         public async Task UpdateRole(long userId, long permissionId)
         {
-            //await _dataContext.UserRoles
-            //            .Where(x => x.UserId == userId)
-            //            .ExecuteDeleteAsync();
-            //await _dataContext.SaveChangesAsync();
+            await _dataContext.UserRoles
+                        .Where(x => x.UserId == userId)
+                        .ExecuteDeleteAsync();
+            await _dataContext.SaveChangesAsync();
             var result = await _dataContext.RolePermissions
                             .Where(x => x.PermissionGroupId == permissionId)
                             .ToListAsync();

@@ -1,163 +1,142 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing.Printing;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualBasic;
+using ProjectReview.DTO.PermissionGroups;
 using ProjectReview.Models;
 using ProjectReview.Models.Entities;
+using ProjectReview.Paging;
+using ProjectReview.Services.PermissionGroups;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace ProjectReview.Controllers
 {
-    public class PermissionGroupsController : BaseController
-    {
-        private readonly DataContext _context;
+	public class PermissionGroupsController : BaseController
+	{
+		private readonly IPermissionGroupService _permissionGroupService;
 
-        public PermissionGroupsController(DataContext context)
-        {
-            _context = context;
-        }
+		public PermissionGroupsController(IPermissionGroupService PermissionGroupService)
+		{
+			_permissionGroupService = PermissionGroupService;
+		}
 
-        // GET: PermissionGroups
-        public async Task<IActionResult> Index()
-        {
-            var dataContext = _context.PermissionGroups;
-            return View(await dataContext.ToListAsync());
-        }
+		// GET: PermissionGroups
+		public async Task<IActionResult> Index(int? page, int? size)
+		{
+			int pageNumber = (page ?? 1);
+			int pageSize = (size ?? 10);
+			ViewData["page"] = pageNumber;
+			ViewData["pageSize"] = pageSize;
+			CustomPaging<PermissionGroupDTO> result = await _permissionGroupService.GetCustomPaging(pageNumber, pageSize);
+			int totalPage = result.TotalPage;
+			ViewData["totalPage"] = totalPage;
+			ViewData["items"] = result.Data;
+			HttpContext.Session.SetInt32("page", pageNumber);
+			HttpContext.Session.SetInt32("pageSize", pageSize);
+			return View();
+		}
 
-        // GET: PermissionGroups/Details/5
-        public async Task<IActionResult> Details(long? id)
-        {
-            if (id == null || _context.PermissionGroups == null)
-            {
-                return NotFound();
-            }
+		public IActionResult ClearSession()
+		{
+			HttpContext.Session.Remove("page");
+			HttpContext.Session.Remove("pageSize");
+			return RedirectToAction("Index");
+		}
 
-            var permissionGroup = await _context.PermissionGroups
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (permissionGroup == null)
-            {
-                return NotFound();
-            }
+		[HttpPost]
+		public async Task<ActionResult> Index([FromForm] CreatePermissionGroupDTO createPermissionGroupDTO)
+		{
+			try
+			{
+				int? page = HttpContext.Session.GetInt32("page");
+				int? size = HttpContext.Session.GetInt32("pageSize");
+				var result = await _permissionGroupService.Create(createPermissionGroupDTO);
+				return RedirectToAction(nameof(Index), new { page, size });
+			} catch (Exception ex)
+			{
+				ModelState.AddModelError("", ex.Message);
+				return View(createPermissionGroupDTO);
+			}
+		}
 
-            return View(permissionGroup);
-        }
 
-        // GET: PermissionGroups/Create
-        public IActionResult Create()
-        {
-            ViewData["CreateUserId"] = new SelectList(_context.Users, "Id", "Email");
-            return View();
-        }
+		// GET: PermissionGroups/Create
+		public IActionResult Create()
+		{
+			return View();
+		}
 
-        // POST: PermissionGroups/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Status,CreateDate")] PermissionGroup permissionGroup)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(permissionGroup);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(permissionGroup);
-        }
+		// POST: PermissionGroups/Create
+		// To protect from overposting attacks, enable the specific properties you want to bind to.
+		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> Create([FromForm] CreatePermissionGroupDTO createPermissionGroupDTO)
+		{
+			try
+			{
+				await _permissionGroupService.Create(createPermissionGroupDTO);
+				return RedirectToAction(nameof(Index));
+			}
+			catch (Exception ex)
+			{
+				ModelState.AddModelError("", ex.Message);
+				return View(createPermissionGroupDTO);
+			}
+		}
 
-        // GET: PermissionGroups/Edit/5
-        public async Task<IActionResult> Edit(long? id)
-        {
-            if (id == null || _context.PermissionGroups == null)
-            {
-                return NotFound();
-            }
+		// GET: PermissionGroups/Edit/5
+		public async Task<IActionResult> Edit(long id)
+		{
+			var result = await _permissionGroupService.GetById(id);
+			if (result == null)
+			{
+				return NotFound();
+			}
+			return View(result);
+		}
 
-            var permissionGroup = await _context.PermissionGroups.FindAsync(id);
-            if (permissionGroup == null)
-            {
-                return NotFound();
-            }
-            return View(permissionGroup);
-        }
+		// POST: PermissionGroups/Edit/5
+		// To protect from overposting attacks, enable the specific properties you want to bind to.
+		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> Edit([FromForm] UpdatePermissionGroupDTO PermissionGroup)
+		{
+			try
+			{
+				int? page = HttpContext.Session.GetInt32("page");
+				int? size = HttpContext.Session.GetInt32("pageSize");
+				await _permissionGroupService.Update(PermissionGroup);
+				return RedirectToAction(nameof(Index), new { page, size });
+			}
+			catch (Exception ex)
+			{
+				ModelState.AddModelError("", ex.Message);
+				return View(PermissionGroup);
+			}
+		}
 
-        // POST: PermissionGroups/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(long id, [Bind("Id,Name,Status,CreateDate")] PermissionGroup permissionGroup)
-        {
-            if (id != permissionGroup.Id)
-            {
-                return NotFound();
-            }
+		// GET: PermissionGroups/Delete/5
+		public async Task<IActionResult> Delete(long id)
+		{
+			int? page = HttpContext.Session.GetInt32("page");
+			int? size = HttpContext.Session.GetInt32("pageSize");
+			await _permissionGroupService.Delete(id);
+			return RedirectToAction(nameof(Index), new { page, size });
+		}
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(permissionGroup);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!PermissionGroupExists(permissionGroup.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(permissionGroup);
-        }
-
-        // GET: PermissionGroups/Delete/5
-        public async Task<IActionResult> Delete(long? id)
-        {
-            if (id == null || _context.PermissionGroups == null)
-            {
-                return NotFound();
-            }
-
-            var permissionGroup = await _context.PermissionGroups
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (permissionGroup == null)
-            {
-                return NotFound();
-            }
-
-            return View(permissionGroup);
-        }
-
-        // POST: PermissionGroups/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(long id)
-        {
-            if (_context.PermissionGroups == null)
-            {
-                return Problem("Entity set 'DataContext.PermissionGroups'  is null.");
-            }
-            var permissionGroup = await _context.PermissionGroups.FindAsync(id);
-            if (permissionGroup != null)
-            {
-                _context.PermissionGroups.Remove(permissionGroup);
-            }
-            
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool PermissionGroupExists(long id)
-        {
-          return (_context.PermissionGroups?.Any(e => e.Id == id)).GetValueOrDefault();
-        }
-    }
+		public async Task<IActionResult> Active(long id)
+		{
+			int? page = HttpContext.Session.GetInt32("page");
+			int? size = HttpContext.Session.GetInt32("pageSize");
+			await _permissionGroupService.Active(id);
+			return RedirectToAction(nameof(Index), new { page, size });
+		}
+	}
 }

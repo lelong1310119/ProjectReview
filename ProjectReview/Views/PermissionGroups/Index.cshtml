@@ -1,75 +1,271 @@
-﻿@model IEnumerable<ProjectReview.Models.Entities.PermissionGroup>
+﻿@model ProjectReview.DTO.PermissionGroups.CreatePermissionGroupDTO;
+@using ProjectReview.DTO.PermissionGroups;
+@using ProjectReview.Models.Entities;
 
 @{
-    ViewData["Title"] = "Index";
+	ViewData["Title"] = "PermissionGroup";
+	var items = ViewData["items"] as List<PermissionGroupDTO>;
+	int currentPage = (int)(ViewData["page"] ?? 0);
+	int totalPage = (int)(ViewData["totalPage"] ?? 0);
+	int pageSize = (int)(ViewData["pageSize"] ?? 10);
+	var count = currentPage * 10 - 9;
+}
+
+@section Scripts{
+	<script>
+		const input = document.querySelector('.input-page');
+		const btnGo = document.querySelector('.btnGo');
+		const feedback = document.querySelector('.invalid-feedback');
+		const choose = document.querySelector('#selectPageSize')
+		const currentPage = @ViewData["page"];
+		const totalPage = @ViewData["totalPage"];
+		const pageSize = @ViewData["pageSize"]
+
+			choose.addEventListener('change', function (e) {
+				e.preventDefault();
+				const size = choose.value;
+				console.log(size);
+				console.log(choose)
+				window.location.href = '/PermissionGroups/Index?size=' + size;
+			});
+
+		btnGo.addEventListener('click', function (e) {
+			e.preventDefault();
+
+			const page = input.value.trim();
+			if (isNaN(page) || page < 1 || page > totalPage) {
+				feedback.classList.remove("d-none");
+				feedback.classList.add("d-block");
+				input.classList.add('is-invalid');
+				return;
+			}
+			window.location.href = '/PermissionGroups/Index?page=' + page + '&size=' + pageSize;
+		});
+
+		input.addEventListener('input', function () {
+			feedback.classList.remove("d-block");
+			feedback.classList.add("d-none");
+			input.classList.remove('is-invalid');
+		});
+		function goToPage(page) {
+			window.location.href = "/PermissionGroups/Index?page=" + page + '&size=' + pageSize;
+		}
+		$(document).ready(function () {
+			// When the "Add new PermissionGroup" button is clicked
+			$('#addNewPermissionGroup').click(function () {
+				$('#name').val('');
+				$('#address').val('');
+				$('#phone').val('');
+				$('#addPermissionGroupModal').modal('show');
+			});
+
+			// When the "Save" button is clicked
+			$('#savePermissionGroup').click(function () {
+				var name = $('#name').val();
+				var address = $('#address').val();
+				var phone = $('#phone').val();
+				console.log(name);
+				console.log(address);
+				console.log(phone);
+
+				$.ajax({
+					type: 'POST',
+					url: '/PermissionGroups/Test',
+					data: { 'name': name, 'address': address, 'phone': phone },
+					success: function () {
+						$('#addPermissionGroupModal').modal('hide');
+						location.reload();
+						console.log("123");
+						// Show success alert
+						$('#success-alert').removeClass('d-none');
+						setTimeout(function () {
+							$('#success-alert').addClass('d-none');
+						}, 2000);
+					},
+					error: function () {
+						// Show error alert
+						$('#error-alert').removeClass('d-none');
+					}
+				});
+			});
+		});
+	</script>
 }
 
 <div class="container-fluid">
 	<div class="row">
-		<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
 			<div class="card">
-				<div class="card-header inline-button">
-					<h3><i class="far fa-folder-open"></i> Phân quyền sử dụng theo nhóm</h3>
+				<div class="card-header">
+					<h4><i class="far fa-folder-open"></i> Danh mục đơn vị bộ phận</h4>
 				</div>
-				<div class="card-body card-phanquyen">
-					<div class="form-row">
-						<div class="col-xl-3 col-lg-3 col-md-12 col-sm-12 col-12">
-							<div class="card mb-3">
-
-								<div class="toolbar">
-									<button id="btn-addNewNhomQuyen" class="l-btn" data-toggle="modal" data-target="#mdAddNewNhomQuyen">
-										<span class="l-btn-left">
-											<span class="l-btn-text">Thêm nhóm</span>
-											<span class="l-btn-icon icon-add">&nbsp;</span>
-										</span>
-									</button>
-									<button id="btn-editNhomQuyen" class="l-btn" data-toggle="modal" data-target="#mdAddNewNhomQuyen" disabled="disabled">
-										<span class="l-btn-left">
-											<span class="l-btn-text">Sửa</span>
-											<span class="l-btn-icon icon-edit">&nbsp;</span>
-										</span>
-									</button>
-									<button id="btn-deleteNhomQuyen" class="l-btn" disabled="disabled">
-										<span class="l-btn-left">
-											<span class="l-btn-text">Xóa</span>
-											<span class="l-btn-icon icon-delete">&nbsp;</span>
-										</span>
-									</button>
-								</div>
-								<div class="card-body group-quyennhomquyen">
-
-									<ul class="list-nhomquyen"><li class="idnhomquyen" id="1"><img src="assets/images/dsnguoidung.png"> Quản trị hệ thống</li><li class="idnhomquyen" id="17"><img src="assets/images/dsnguoidung.png"> Trưởng phòng</li><li class="idnhomquyen" id="18"><img src="assets/images/dsnguoidung.png"> Phó Trưởng phòng</li><li class="idnhomquyen" id="19"><img src="assets/images/dsnguoidung.png"> Cán bộ</li><li class="idnhomquyen" id="20"><img src="assets/images/dsnguoidung.png"> Văn thư</li></ul>
-									<input type="hidden" name="idRecord_NhomQuyen" id="idRecord_NhomQuyen" value="0">
+				<div class="card-body container-card">
+					<div class="card-content">
+						@*<a class="btn btn-primary mb-3" asp-action="Create">
+						<i class="fa-solid fa-add"></i><span class="m-1">  Thêm mới</span>
+						</a>*@
+						<div class="d-flex">
+							<div class="mt-4">
+								<button class="btn btn-primary mb-3 me-3" data-toggle="modal" data-target="#modalPermissionGroup" style="height: 40px">
+									<i class="fa-solid fa-add"></i><span class="m-1">  Thêm mới</span>
+								</button>
+								<div>
+									<span>Số dòng: </span>
+									<select id="selectPageSize" class="form-select mb-3" aria-label="Default select example" value=@pageSize style="width: 90px">
+										<option value=10>10</option>
+										<option value=20>20</option>
+										<option value=50>50</option>
+										<option value=100>100</option>
+									</select>
 								</div>
 							</div>
 						</div>
-
-						<div class="col-xl-9 col-lg-9 col-md-12 col-sm-12 col-12">
-							<div class="card mb-3">
-
-								<div class="toolbar">
-									<button id="btn-addSavePhanquyen" class="l-btn" disabled="disabled">
-										<span class="l-btn-left">
-											<span class="l-btn-text">Lưu</span>
-											<span class="l-btn-icon icon-save">&nbsp;</span>
-										</span>
-									</button>
-									<button id="btn-selectAllPhanquyen" class="l-btn" disabled="disabled">
-										<span class="l-btn-left">
-											<span class="l-btn-text">Chọn tất cả</span>
-											<span class="l-btn-icon icon-checked">&nbsp;</span>
-										</span>
-									</button>
-									<button id="btn-unselectAllPhanquyen" class="l-btn" disabled="disabled">
-										<span class="l-btn-left">
-											<span class="l-btn-text">Bỏ chọn</span>
-											<span class="l-btn-icon icon-nochecked">&nbsp;</span>
-										</span>
-									</button>
+						<div class="dataTables_wrapper dt-bootstrap4 no-footer">
+							<div class="row">
+								<div class="col-sm-12">
+									<table id="tblListDonvi" class="table table-bordered table-hover display dataTable no-footer" style="width: 100%;" role="grid" aria-describedby="tblListDonvi_info">
+										<thead>
+											<tr class="first-row" role="row">
+												<th class="text-center sorting_disabled" style="width: 28px;">TT</th>
+												<th class="text-center sorting_disabled" style="width: 286px;">Nhóm quyền</th>
+												@*<th class="text-center sorting_disabled" style="width: 258px;">Quyền</th>*@
+												<th class="text-center sorting_disabled" style="width: 117px;">Trạng thái</th>
+												<th class="text-center sorting_disabled" style="width: 173px;">Tác vụ</th>
+											</tr>
+										</thead>
+										<tbody>
+											@if (items == null || items.Count == 0)
+											{
+												<tr>
+													<td colspan="4" class="text-center">Không có dữ liệu</td>
+												</tr>
+											}
+											@foreach (var item in items)
+											{
+												<tr>
+													<td class="text-center">@count</td>
+													<td class="text-center">@item.Name</td>
+													@*<td class="text-center">
+														@if(item.roleEnums.Count > 0)
+														{
+															<ul>
+																@foreach (var role in item.roleEnums)
+																{
+																	<li>@role.Detail</li>
+																}
+															</ul>
+														}
+													</td>*@
+													@if (item.Status == 0)
+													{
+														<td class="text-center"><a type="button" class="btn btn-success" asp-area="" asp-controller="PermissionGroups" asp-action="Active" asp-route-id="@item.Id">Kích hoạt</a></td>
+													}
+													else
+													{
+														<td class="text-center">Hoạt động</td>
+													}
+													<td class=" text-center">
+														<a type="button" class="btn btn-warning btn-xs" asp-area="" asp-controller="PermissionGroups" asp-action="Edit" asp-route-id="@item.Id">
+															<i class="fas fa-pencil-alt"></i>
+														</a>
+														@if (item.Status == 0)
+														{
+															<a type="button" class="btn btn-danger btn-xs" onclick="return confirm('Bạn chắc chắn muốn xóa thông tin này?');" asp-area="" asp-controller="PermissionGroups" asp-action="Delete" asp-route-id="@item.Id">
+																<i class="fas fa-trash-alt"></i>
+															</a>
+														}
+													</td>
+												</tr>
+												count++;
+											}
+										</tbody>
+									</table>
+									<nav aria-label="Page navigation example">
+										<ul class="pagination justify-content-start">
+											@if (currentPage == 1)
+											{
+												<li class="page-item disabled">
+													<a class="page-link" href="#" tabindex="-1">Trước</a>
+												</li>
+											}
+											else
+											{
+												<li class="page-item">
+													<a class="page-link" href="#" onclick="goToPage(@currentPage - 1)">Trước</a>
+												</li>
+											}
+											@if (totalPage > 0)
+											{
+												@if (currentPage > 3)
+												{
+													<li class="page-item d-none d-md-block">
+														<a class="page-link">...</a>
+													</li>
+												}
+												@for (var i = (currentPage - 2); i <= (currentPage + 2); i++)
+												{
+													@if (i > 0 && i <= totalPage)
+													{
+														@if (i == currentPage)
+														{
+															<li class="page-item active"><a class="page-link" href="#" onclick="goToPage(@i)">@i</a></li>
+														}
+														else
+														{
+															<li class="page-item"><a class="page-link" href="#" onclick="goToPage(@i)">@i</a></li>
+														}
+													}
+												}
+												@if (currentPage < (totalPage - 2))
+												{
+													<li class="page-item d-none d-md-block">
+														<a class="page-link">...</a>
+													</li>
+												}
+											}
+											@if (currentPage == totalPage)
+											{
+												<li class="page-item disabled">
+													<a class="page-link" href="#">Sau</a>
+												</li>
+											}
+											else
+											{
+												<li class="page-item">
+													<a class="page-link" href="#" onclick="goToPage(@currentPage + 1)">Sau</a>
+												</li>
+											}
+										</ul>
+									</nav>
+									<div>
+										<div class="d-flex align-items-center justify-content-center mt-3">
+											<div>
+												<div class="input-group">
+													<div class="input-group-prepend">
+														<button class="btn btn-primary btnGo" type="button">Đi</button>
+													</div>
+													<input class="form-control input-page" style="margin-left: 2px; width: 60px;margin-right: 10px;">
+												</div>
+												<span class="text-danger"></span>
+											</div>
+											@if (currentPage > 1)
+											{
+												<button type="button" class="btn btn-outline-primary" onclick="goToPage(@currentPage - 1)">Trước</button>
+											}
+											<span class="mx-2">Trang: <span id="currentPage">@ViewData["page"]</span></span>
+											@if (currentPage < totalPage)
+											{
+												<button type="button" class="btn btn-outline-primary" onclick="goToPage(@currentPage + 1)">Sau</button>
+											}
+											<span class="mx-2">Số trang: <span id="currentPage">@ViewData["totalPage"]</span></span>
+										</div>
+									</div>
+									<div>
+										<div class="d-flex align-items-center justify-content-center mt-3">
+											<span class="d-flex align-items-center justify-content-center invalid-feedback d-none">Vui lòng nhập số từ 1 đến @ViewData["totalPage"]</span>
+										</div>
+									</div>
 								</div>
-
-								<div class="card-body phanquyen-body"><div class="alert alert-success" role="alert"><h5 class="alert-heading">Chức năng phân quyền sử dụng theo nhóm</h5><ul><li>Chọn nhóm quyền cần thiết lập phân quyền</li><li>Thiết lập các quyền sử dụng theo nhóm đã chọn</li></ul></div></div>
-
 							</div>
 						</div>
 					</div>
@@ -77,16 +273,78 @@
 			</div>
 		</div>
 	</div>
+</div>
 
-	<!-- Modal cập nhật nhóm quyền -->
-	<div class="modal fade" role="dialog" aria-labelledby="mdAddNewNhomQuyen" aria-hidden="true" data-backdrop="static" id="mdAddNewNhomQuyen">
-		<div class="modal-dialog mini-modal-x">
+<div class="modal fade" id="modalPermissionGroup" tabindex="-1" role="dialog" aria-labelledby="modalPermissionGroup" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="addpermissiongroupmodallabel">Thêm mới nhóm quyền</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div>
+				<form method="POST" class="needs-validation" novalidate="" autocomplete="off">
+					<div class="modal-body" >
+						<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+						<div class="form-group m-3">
+							<label asp-for="Name" class="control-label">Tên nhóm quyền</label>
+							<input asp-for="Name" class="form-control" />
+							<span asp-validation-for="Name" class="text-danger"></span>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">đóng</button>
+						<button type="submit" class="btn btn-primary" id="savepermissiongroup">lưu</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+@*<div class="container-fluid">
+	<div class="row">
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+			<div class="card mb-3">
+				<div class="card-header">
+					<h4><i class="far fa-folder-open"></i> Danh mục đơn vị, bộ phận</h4>
+				</div>
+
+				<div class="card-body card-content">
+					<button class="btn btn-primary" data-toggle="modal" data-target="#modalUpdateDonvi">
+						<span class="l-btn-left">
+							<span class="l-btn-text">Cập nhật đơn vị</span>
+							<span class="l-btn-icon icon-add">&nbsp;</span>
+						</span>
+					</button>
+					<div class="table-responsive">
+						<div id="tblListDonvi_wrapper" class="dataTables_wrapper dt-bootstrap4 no-footer">
+							<div class="row"><div class="col-sm-12 col-md-6"><div class="dataTables_length" id="tblListDonvi_length"><label>Đang xem <select name="tblListDonvi_length" aria-controls="tblListDonvi" class="custom-select custom-select-sm form-control form-control-sm"><option value="10">10</option><option value="-1">Tất cả</option></select> mục</label></div></div><div class="col-sm-12 col-md-6"><div id="tblListDonvi_filter" class="dataTables_filter"><label>Tìm kiếm:<input type="search" class="form-control form-control-sm" placeholder="" aria-controls="tblListDonvi"></label></div></div></div><div class="row">
+								<div class="col-sm-12">
+									<table id="tblListDonvi" class="table table-bordered table-hover display dataTable no-footer" style="width: 100%;" role="grid" aria-describedby="tblListDonvi_info">
+										<thead>
+											<tr class="first-row" role="row">
+												<th class="text-center sorting_disabled" rowspan="1" colspan="1" aria-label="TT" style="width: 28px;">TT</th><th class="text-left sorting_disabled" rowspan="1" colspan="1" aria-label="Đơn vị, bộ phận" style="width: 286px;">Đơn vị, bộ phận</th><th class="text-left sorting_disabled" rowspan="1" colspan="1" aria-label="Địa chỉ, nơi làm việc" style="width: 258px;">Địa chỉ, nơi làm việc</th><th class="text-center sorting_disabled" rowspan="1" colspan="1" aria-label="Điện thoại" style="width: 173px;">Điện thoại</th><th class="text-center sorting_disabled" rowspan="1" colspan="1" aria-label="Trạng thái" style="width: 117px;">Trạng thái</th><th class="text-center sorting_disabled" rowspan="1" colspan="1" aria-label="Tác vụ" style="width: 173px;">Tác vụ</th>
+											</tr>
+										</thead>
+										<tbody><tr role="row" class="odd"><td class=" text-center">1</td><td class=" text-left">Ban Lãnh đạo</td><td class=" text-left">122 Trần Hưng Đạo, Quận Hai Bà Trưng, TP. Hà Nội</td><td class=" text-center"></td><td class=" text-center"><button type="button" name="active" id="1" class="btn btn-success btn-xs btnAn">Hiển thị</button></td><td class=" text-center"><button type="button" name="update" id="1" class="btn btn-warning btn-xs updateDonvi"><i class="fas fa-pencil-alt"></i></button> <button type="button" name="delete" id="1" class="btn btn-danger btn-xs deleteDonvi"><i class="fas fa-trash-alt"></i></button></td></tr><tr role="row" class="even"><td class=" text-center">2</td><td class=" text-left">Hành chính - Tổ chức</td><td class=" text-left">122 Trần Hưng Đạo, Quận Hai Bà Trưng, TP. Hà Nội</td><td class=" text-center"></td><td class=" text-center"><button type="button" name="active" id="2" class="btn btn-success btn-xs btnAn">Hiển thị</button></td><td class=" text-center"><button type="button" name="update" id="2" class="btn btn-warning btn-xs updateDonvi"><i class="fas fa-pencil-alt"></i></button> <button type="button" name="delete" id="2" class="btn btn-danger btn-xs deleteDonvi"><i class="fas fa-trash-alt"></i></button></td></tr><tr role="row" class="odd"><td class=" text-center">3</td><td class=" text-left">Kế toán - Tài vụ</td><td class=" text-left">122 Trần Hưng Đạo, Quận Hai Bà Trưng, TP. Hà Nội</td><td class=" text-center"></td><td class=" text-center"><button type="button" name="active" id="3" class="btn btn-success btn-xs btnAn">Hiển thị</button></td><td class=" text-center"><button type="button" name="update" id="3" class="btn btn-warning btn-xs updateDonvi"><i class="fas fa-pencil-alt"></i></button> <button type="button" name="delete" id="3" class="btn btn-danger btn-xs deleteDonvi"><i class="fas fa-trash-alt"></i></button></td></tr><tr role="row" class="even"><td class=" text-center">4</td><td class=" text-left">Tổ Chuyên môn</td><td class=" text-left">122 Trần Hưng Đạo, Quận Hai Bà Trưng, TP. Hà Nội</td><td class=" text-center"></td><td class=" text-center"><button type="button" name="active" id="4" class="btn btn-success btn-xs btnAn">Hiển thị</button></td><td class=" text-center"><button type="button" name="update" id="4" class="btn btn-warning btn-xs updateDonvi"><i class="fas fa-pencil-alt"></i></button> <button type="button" name="delete" id="4" class="btn btn-danger btn-xs deleteDonvi"><i class="fas fa-trash-alt"></i></button></td></tr><tr role="row" class="odd"><td class=" text-center">5</td><td class=" text-left">Tổ Kỹ thuật</td><td class=" text-left">122 Trần Hưng Đạo, Quận Hai Bà Trưng, TP. Hà Nội</td><td class=" text-center"></td><td class=" text-center"><button type="button" name="active" id="5" class="btn btn-success btn-xs btnAn">Hiển thị</button></td><td class=" text-center"><button type="button" name="update" id="5" class="btn btn-warning btn-xs updateDonvi"><i class="fas fa-pencil-alt"></i></button> <button type="button" name="delete" id="5" class="btn btn-danger btn-xs deleteDonvi"><i class="fas fa-trash-alt"></i></button></td></tr><tr role="row" class="even"><td class=" text-center">6</td><td class=" text-left">Quản trị hệ thống</td><td class=" text-left">122 Trần Hưng Đạo, Quận Hai Bà Trưng, TP. Hà Nội</td><td class=" text-center"></td><td class=" text-center"><button type="button" name="active" id="7" class="btn btn-success btn-xs btnAn">Hiển thị</button></td><td class=" text-center"><button type="button" name="update" id="7" class="btn btn-warning btn-xs updateDonvi"><i class="fas fa-pencil-alt"></i></button> <button type="button" name="delete" id="7" class="btn btn-danger btn-xs deleteDonvi"><i class="fas fa-trash-alt"></i></button></td></tr></tbody>
+									</table><div id="tblListDonvi_processing" class="dataTables_processing card" style="display: none;">Đang xử lý...</div>
+								</div>
+							</div><div class="row"><div class="col-sm-12 col-md-5"><div class="dataTables_info" id="tblListDonvi_info" role="status" aria-live="polite">Đang xem 1 đến 6 trong tổng số 6 mục</div></div><div class="col-sm-12 col-md-7"><div class="dataTables_paginate paging_simple_numbers" id="tblListDonvi_paginate"><ul class="pagination"><li class="paginate_button page-item previous disabled" id="tblListDonvi_previous"><a href="#" aria-controls="tblListDonvi" data-dt-idx="0" tabindex="0" class="page-link">Trước</a></li><li class="paginate_button page-item active"><a href="#" aria-controls="tblListDonvi" data-dt-idx="1" tabindex="0" class="page-link">1</a></li><li class="paginate_button page-item next disabled" id="tblListDonvi_next"><a href="#" aria-controls="tblListDonvi" data-dt-idx="2" tabindex="0" class="page-link">Sau</a></li></ul></div></div></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="modal fade" role="dialog" aria-labelledby="modalUpdateDonvi" aria-hidden="true" data-backdrop="static" id="modalUpdateDonvi">
+		<div class="modal-dialog mini-modal-small">
 			<div class="modal-content">
-
-				<form action="#" method="post" enctype="multipart/form-data" id="frmAddNewNhomQuyen">
+				<form action="#" method="post" enctype="multipart/form-data" id="frmUpdateDonvi" data-parsley-validate="" novalidate="">
 
 					<div class="modal-header">
-						<h5 class="modal-title">Cập nhật nhóm quyền</h5>
+						<h5 class="modal-title">Cập nhật danh sách đơn vị</h5>
 						<button type="button" class="close" data-dismiss="modal">
 							<span aria-hidden="true">×</span>
 							<span class="sr-only">Close</span>
@@ -96,21 +354,47 @@
 					<div class="modal-body">
 
 						<div class="row">
+
 							<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
 								<div class="form-group">
-									<label>Mã nhóm quyền</label>
-									<input class="form-control" id="strquyencode" name="strquyencode" type="text">
+									<label>Tên đơn vị</label>
+									<input id="txtdonvi" type="text" class="form-control">
 								</div>
 							</div>
+
 							<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
-								<span class="example-codequyen">Ví dụ: TP <img src="assets/images/i6.gif"> Trưởng phòng</span>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
 								<div class="form-group">
-									<label>Tên nhóm quyền</label>
-									<input class="form-control" id="strtennhomquyen" name="strtennhomquyen" type="text">
+									<label>Địa chỉ</label>
+									<input type="text" class="form-control" id="txtdiachi">
+								</div>
+							</div>
+
+						</div>
+
+						<div class="row">
+							<div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 col-xl-3">
+								<div class="form-group">
+									<label>Điện thoại</label>
+									<input id="txtdienthoaidonvi" type="text" class="form-control">
+								</div>
+							</div>
+							<div class="col-xs-12 col-sm-12 col-md-5 col-lg-5 col-xl-5">
+								<div class="form-group">
+									<label>Email</label>
+									<input id="txtemaildonvi" type="text" class="form-control email-inputmask">
+								</div>
+							</div>
+							<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 col-xl-4">
+								<div class="form-group">
+									<label>Trạng thái</label><br>
+									<label class="custom-control custom-radio custom-control-inline">
+										<input type="radio" name="radActiveCD" class="custom-control-input" value="1" data-parsley-multiple="radActiveCD">
+										<span class="custom-control-label">Hiển thị</span>
+									</label>
+									<label class="custom-control custom-radio custom-control-inline">
+										<input type="radio" name="radActiveCD" class="custom-control-input" value="0" data-parsley-multiple="radActiveCD">
+										<span class="custom-control-label">Không hiển thị</span>
+									</label>
 								</div>
 							</div>
 						</div>
@@ -118,14 +402,11 @@
 					</div>
 
 					<div class="modal-footer">
-
-						<div class="col-md-12 col-lg-12 col-xl-12 no-margin-right">
-
-							<input type="hidden" name="actionAddNewNhomquyen" id="actionAddNewNhomquyen" value="">
-							<button type="button" name="save" id="saveAddNewNhomquyen" class="btn btn-primary btn-sm"><i class="far fa-save"></i> Ghi nhận </button>
-							<button type="button" class="btn btn-sm btn-danger" data-dismiss="modal"><i class="fas fa-times"></i> Đóng</button>
-						</div>
-
+						<input type="hidden" name="idRecordDonvi" id="idRecordDonvi" value="0">
+						<input type="hidden" name="actionDonvi" id="actionDonvi" value="">
+						<button type="button" name="save-continues" id="saveNewDonvi-1" class="btn btn-success btn-sm"><i class="far fa-save"></i> Lưu &amp; Tiếp </button>
+						<button type="button" name="save-close" id="saveNewDonvi-2" class="btn btn-primary btn-sm"><i class="far fa-save"></i> Lưu &amp; Đóng </button>
+						<button type="button" class="btn btn-sm btn-danger" data-dismiss="modal"><i class="fas fa-times"></i> Đóng</button>
 					</div>
 
 				</form>
@@ -133,16 +414,4 @@
 			</div>
 		</div>
 	</div>
-	<!-- End modal -->
-	<!-- ============================================================== -->
-	<style>
-		ul.list-nhomquyen li {
-			cursor: pointer
-		}
-
-		li.selectedRow {
-			background-color: #56bff0;
-			border-radius: 4px;
-		}
-	</style>
-</div>
+</div>*@

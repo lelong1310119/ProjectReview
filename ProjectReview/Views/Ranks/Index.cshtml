@@ -65,7 +65,7 @@
 						<div class="d-flex">
 							<div class="mt-4">
 								<a class="btn btn-primary mb-3 me-3" asp-action="Create" style="height: 40px">
-									<i class="fa-solid fa-add"></i><span class="m-1">  Thêm mới</span>
+									<i class="fa-solid fa-add"></i><span class="m-1 text-white">  Thêm mới</span>
 								</a>
 								<div>
 									<span>Số dòng: </span>
@@ -109,7 +109,7 @@
 											</tr>
 										</thead>
 										<tbody>
-											@if (Model == null || items.Count == 0)
+											@if (items == null || items.Count == 0)
 											{
 												<tr>
 													<td colspan="5" class="text-center">Không có dữ liệu</td>

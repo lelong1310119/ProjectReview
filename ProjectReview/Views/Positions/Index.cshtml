@@ -58,14 +58,14 @@
 		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
 			<div class="card">
 				<div class="card-header">
-					<h4><i class="far fa-folder-open"></i> Danh mục đơn vị bộ phận</h4>
+					<h4><i class="far fa-folder-open"></i> Danh mục chức vụ</h4>
 				</div>
 				<div class="card-body container-card">
 					<div class="card-content">
 						<div class="d-flex">
 							<div class="mt-4">
 								<a class="btn btn-primary mb-3 me-3" asp-action="Create" style="height: 40px">
-									<i class="fa-solid fa-add"></i><span class="m-1">  Thêm mới</span>
+									<i class="fa-solid fa-add"></i><span class="m-1 text-white">  Thêm mới</span>
 								</a>
 								<div>
 									<span>Số dòng: </span>
@@ -109,7 +109,7 @@
 											</tr>
 										</thead>
 										<tbody>
-											@if (Model == null || items.Count == 0)
+											@if (items == null || items.Count == 0)
 											{
 												<tr>
 													<td colspan="5" class="text-center">Không có dữ liệu</td>
