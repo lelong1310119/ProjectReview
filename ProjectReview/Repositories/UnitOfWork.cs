@@ -13,6 +13,11 @@ namespace ProjectReview.Repositories
 		IUserRepository UserRepository { get; }
 		IDocumentTypeRepository DocumentTypeRepository { get; }
 		IPermissionGroupRepository PermissionGroupRepository { get; }
+		ICategoryProfileRepository CategoryProfileRepository { get; }
+		IJobProfileRepository JobProfileRepository { get; }
+		IProfileDocumentRepository ProfileDocumentRepository { get; }
+		IDocumentRepository DocumentRepository { get; }
+		IJobRepository JobRepository { get; }
 	}
 
 	public class UnitOfWork : IUnitOfWork
@@ -27,6 +32,11 @@ namespace ProjectReview.Repositories
 		public IUserRepository UserRepository { get; private set; }
 		public IDocumentTypeRepository DocumentTypeRepository { get; private set; }
 		public IPermissionGroupRepository PermissionGroupRepository { get; private set; }
+		public ICategoryProfileRepository CategoryProfileRepository { get; private set; }
+		public IJobProfileRepository JobProfileRepository { get; private set; }
+		public IProfileDocumentRepository ProfileDocumentRepository { get; private set; }
+		public IDocumentRepository DocumentRepository { get; private set; }
+		public IJobRepository JobRepository { get; private set; }
 
 		public UnitOfWork(DataContext context, IMapper mapper, ICurrentUser currentUser)
 		{
@@ -39,6 +49,11 @@ namespace ProjectReview.Repositories
 			UserRepository = new UserRepository(context, mapper);
 			DocumentTypeRepository = new DocumentTypeRepository(context, mapper, currentUser);
 			PermissionGroupRepository = new PermissionGroupRepository(context, mapper);
+			CategoryProfileRepository = new CategoryProfileRepository(context, mapper, currentUser);
+			JobProfileRepository = new JobProfileRepository(context, mapper, currentUser);
+			ProfileDocumentRepository = new ProfileDocumentRepository(context, mapper);
+			DocumentRepository = new DocumentRepository(context, mapper, currentUser);
+			JobRepository = new JobRepository(context, mapper, currentUser);
 		}
 
 		public void Save()

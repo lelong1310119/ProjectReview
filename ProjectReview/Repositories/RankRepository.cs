@@ -65,6 +65,8 @@ namespace ProjectReview.Repositories
         public async Task<RankDTO> Create(CreateRankDTO createRank)
         {
             var rank = _mapper.Map<CreateRankDTO, Rank>(createRank);
+            long maxId = await _dataContext.Ranks.MaxAsync(x => x.Id);
+            rank.Id = maxId + 1;
             rank.CreateDate = DateTime.Now;
             await _dataContext.Ranks.AddAsync(rank);
             await _dataContext.SaveChangesAsync();

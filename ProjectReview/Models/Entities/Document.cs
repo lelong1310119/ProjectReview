@@ -13,8 +13,8 @@
         public long DocumentTypeId { get; set; }
         public string Receiver { get; set; }
         public string FileName { get; set; }
-        public int Density { get; set; }
-        public int Urgency { get; set; }
+        public long DensityId { get; set; }
+        public long UrgencyId { get; set; }
         public int NumberPaper { get; set; }
         public string Language { get; set; }
         public string Signer { get; set; }
@@ -23,6 +23,8 @@
         public Boolean IsAssign { get; set; }
         public int Type { get; set; }
 
+        public virtual Urgency Urgency { get; set; }
+        public virtual Density Density { get; set; }
 		public virtual User CreateUser { get; set; }
         public virtual DocumentType DocumentType { get; set; }
         public virtual JobDocument JobDocument { get; set; }

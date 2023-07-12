@@ -23,6 +23,8 @@ namespace ProjectReview.Models
         public virtual DbSet<UserRole> UserRoles { get; set; }
         public virtual DbSet<RolePermission> RolePermissions { get; set; }
         public virtual DbSet<JobDocument> JobDocuments { get; set; }
+        public virtual DbSet<Density> Densities { get; set; }
+        public virtual DbSet<Urgency> Urgencies { get; set; }
 
 
         public DataContext()
@@ -32,22 +34,22 @@ namespace ProjectReview.Models
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
         }
-//        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-//        {
-//            if (!optionsBuilder.IsConfigured)
-//            {
-//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-//                optionsBuilder.UseSqlServer("Data Source=DESKTOP-PL7Q9Q6; Initial Catalog=Review;Integrated Security=True;TrustServerCertificate=True;");
-//            }
-//        }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Data Source=LAPTOP-TC1PJ34D\\LONG;Initial Catalog=Review;Integrated Security=True;TrustServerCertificate=True;");
+                optionsBuilder.UseSqlServer("Data Source=DESKTOP-PL7Q9Q6; Initial Catalog=Review;Integrated Security=True;TrustServerCertificate=True;");
             }
         }
+        //        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //        {
+        //            if (!optionsBuilder.IsConfigured)
+        //            {
+        //#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
+        //                optionsBuilder.UseSqlServer("Data Source=LAPTOP-TC1PJ34D\\LONG;Initial Catalog=Review;Integrated Security=True;TrustServerCertificate=True;");
+        //            }
+        //        }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 			base.OnModelCreating(modelBuilder);
@@ -55,7 +57,7 @@ namespace ProjectReview.Models
             {
                 entity.ToTable("Department");
                 entity.HasKey(x => x.Id);
-                entity.Property(x => x.Id).ValueGeneratedOnAdd();
+                entity.Property(x => x.Id).ValueGeneratedNever();
 
                 entity.Property(x => x.Name)
                     .IsRequired()
@@ -78,7 +80,7 @@ namespace ProjectReview.Models
             {
                 entity.ToTable("Documnet");
                 entity.HasKey(x => x.Id);
-                entity.Property(x => x.Id).ValueGeneratedOnAdd();
+                entity.Property(x => x.Id).ValueGeneratedNever();
 
                 entity.Property(x => x.Number).IsRequired();
                 entity.Property(x => x.Author)
@@ -94,8 +96,6 @@ namespace ProjectReview.Models
                 entity.Property(x => x.FileName)
                     .IsRequired()
                     .HasMaxLength(400); 
-                entity.Property(x => x.Density).IsRequired();
-                entity.Property(x => x.Urgency).IsRequired(); 
                 entity.Property(x => x.NumberPaper).IsRequired();
                 entity.Property(x => x.Language)
                     .IsRequired()
@@ -122,6 +122,18 @@ namespace ProjectReview.Models
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Documnent_User");
 
+                entity.HasOne(x => x.Density)
+                    .WithMany(y => y.Documents)
+                    .HasForeignKey(x => x.DensityId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Documnent_Density");
+
+                entity.HasOne(x => x.Urgency)
+                    .WithMany(y => y.Documents)
+                    .HasForeignKey(x => x.UrgencyId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Documnent_Urgency");
+
                 entity.HasOne(x => x.DocumentType)
                     .WithMany(y => y.Documents)
                     .HasForeignKey(x => x.DocumentTypeId)
@@ -133,7 +145,7 @@ namespace ProjectReview.Models
             {
                 entity.ToTable("DocumentType");
                 entity.HasKey(x => x.Id);
-                entity.Property(x => x.Id).ValueGeneratedOnAdd();
+                entity.Property(x => x.Id).ValueGeneratedNever();
 
                 entity.Property(x => x.Name)
                     .IsRequired()
@@ -173,7 +185,7 @@ namespace ProjectReview.Models
             {
                 entity.ToTable("Job");
                 entity.HasKey(x => x.Id);
-                entity.Property(x => x.Id).ValueGeneratedOnAdd();
+                entity.Property(x => x.Id).ValueGeneratedNever();
 
                 entity.Property(x => x.Request).IsRequired();
                 entity.Property(x => x.Content).IsRequired();
@@ -212,7 +224,7 @@ namespace ProjectReview.Models
             {
                 entity.ToTable("JobProfile");
                 entity.HasKey(x => x.Id);
-                entity.Property(x => x.Id).ValueGeneratedOnAdd();
+                entity.Property(x => x.Id).ValueGeneratedNever();
 
                 entity.Property(x => x.Name).IsRequired().HasMaxLength(400);
                 entity.Property(x => x.NumberPaper).IsRequired();
@@ -247,7 +259,7 @@ namespace ProjectReview.Models
             {
                 entity.ToTable("Opinion");
                 entity.HasKey(x => x.Id);
-                entity.Property(x => x.Id).ValueGeneratedOnAdd();
+                entity.Property(x => x.Id).ValueGeneratedNever();
 
                 entity.Property(x => x.Content).IsRequired();
                 entity.Property(x => x.FileName)
@@ -274,7 +286,7 @@ namespace ProjectReview.Models
             {
                 entity.ToTable("PermissionGroup");
                 entity.HasKey(x => x.Id);
-                entity.Property(x => x.Id).ValueGeneratedOnAdd();
+                entity.Property(x => x.Id).ValueGeneratedNever();
 
                 entity.Property(x => x.Status).IsRequired();
                 entity.Property(x => x.Name)
@@ -296,7 +308,7 @@ namespace ProjectReview.Models
             {
                 entity.ToTable("Position");
                 entity.HasKey(x => x.Id);
-                entity.Property(x => x.Id).ValueGeneratedOnAdd();
+                entity.Property(x => x.Id).ValueGeneratedNever();
 
                 entity.Property(x => x.Status).IsRequired();
                 entity.Property(x => x.Note).HasMaxLength(4000);
@@ -319,7 +331,7 @@ namespace ProjectReview.Models
             {
                 entity.ToTable("Profile");
                 entity.HasKey(x => x.Id);
-                entity.Property(x => x.Id).ValueGeneratedOnAdd();
+                entity.Property(x => x.Id).ValueGeneratedNever();
 
                 entity.Property(x => x.Symbol)
                     .IsRequired()
@@ -369,7 +381,7 @@ namespace ProjectReview.Models
             {
                 entity.ToTable("Rank");
                 entity.HasKey(x => x.Id);
-                entity.Property(x => x.Id).ValueGeneratedOnAdd();
+                entity.Property(x => x.Id).ValueGeneratedNever();
 
                 entity.Property(x => x.Status).IsRequired();
                 entity.Property(x => x.Note).HasMaxLength(4000);
@@ -392,7 +404,7 @@ namespace ProjectReview.Models
             {
                 entity.ToTable("User");
                 entity.HasKey(x => x.Id);
-                entity.Property(x => x.Id).ValueGeneratedOnAdd();
+                entity.Property(x => x.Id).ValueGeneratedNever();
 
                 entity.Property(x => x.FullName)
                     .IsRequired()
@@ -446,6 +458,7 @@ namespace ProjectReview.Models
             {
                 entity.ToTable("Role");
                 entity.HasKey(x => x.Id);
+                entity.Property(x => x.Id).ValueGeneratedNever();
 
                 entity.Property(x => x.Name).IsRequired();
             });
@@ -504,6 +517,20 @@ namespace ProjectReview.Models
 					.OnDelete(DeleteBehavior.ClientSetNull)
 					.HasConstraintName("FK_UserRole_Role");
 			});
+
+            modelBuilder.Entity<Density>(entity =>
+            {
+                entity.ToTable("Density");
+                entity.HasKey(x => x.Id);
+                entity.Property(x => x.Id).ValueGeneratedNever();
+            });
+
+            modelBuilder.Entity<Urgency>(entity =>
+            {
+                entity.ToTable("Urgency");
+                entity.HasKey(x => x.Id);
+                entity.Property(x => x.Id).ValueGeneratedNever();
+            });
         }
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
     }

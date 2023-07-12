@@ -5,170 +5,159 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using ProjectReview.DTO.JobProfiles;
 using ProjectReview.Models;
 using ProjectReview.Models.Entities;
+using ProjectReview.Paging;
+using ProjectReview.Services.JobProfiles;
 
 namespace ProjectReview.Controllers
 {
-    public class JobProfilesController : BaseController
-    {
-        private readonly DataContext _context;
+	public class JobProfilesController : BaseController
+	{
+		private readonly IJobProfileService _jobProfileService;
 
-        public JobProfilesController(DataContext context)
-        {
-            _context = context;
-        }
+		public JobProfilesController(IJobProfileService JobProfileService)
+		{
+			_jobProfileService = JobProfileService;
+		}
 
-        // GET: JobProfiles
-        public async Task<IActionResult> Index()
-        {
-            var dataContext = _context.JobProfiles.Include(j => j.CreateUser).Include(j => j.Profile);
-            return View(await dataContext.ToListAsync());
-        }
+		// GET: JobProfiles
+		public async Task<IActionResult> Index(int? page, int? size)
+		{
+			JobProfileFilter filter;
+			byte[] filterBytes = HttpContext.Session.Get("jobProfileFilter");
+			if (filterBytes != null)
+			{
+				var filterJson = System.Text.Encoding.UTF8.GetString(filterBytes);
+				filter = System.Text.Json.JsonSerializer.Deserialize<JobProfileFilter>(filterJson);
+			}
+			else
+			{
+				filter = new JobProfileFilter();
+			}
+			int pageNumber = (page ?? 1);
+			int pageSize = (size ?? 10);
+			ViewData["page"] = pageNumber;
+			ViewData["pageSize"] = pageSize;
+			CustomPaging<JobProfileDTO> result = await _jobProfileService.GetCustomPaging(filter.Name, pageNumber, pageSize);
+			int totalPage = result.TotalPage;
+			ViewData["totalPage"] = totalPage;
+			ViewData["items"] = result.Data;
+			HttpContext.Session.SetInt32("page", pageNumber);
+			HttpContext.Session.SetInt32("pageSize", pageSize);
+			return View(filter);
+		}
 
-        // GET: JobProfiles/Details/5
-        public async Task<IActionResult> Details(long? id)
-        {
-            if (id == null || _context.JobProfiles == null)
-            {
-                return NotFound();
-            }
+		public IActionResult ClearSession()
+		{
+			HttpContext.Session.Remove("jobProfileFilter");
+			HttpContext.Session.Remove("page");
+			HttpContext.Session.Remove("pageSize");
+			return RedirectToAction("Index");
+		}
 
-            var jobProfile = await _context.JobProfiles
-                .Include(j => j.CreateUser)
-                .Include(j => j.Profile)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (jobProfile == null)
-            {
-                return NotFound();
-            }
+		[HttpPost]
+		public async Task<ActionResult> Index([FromForm] JobProfileFilter filter)
+		{
+			var filterBytes = System.Text.Encoding.UTF8.GetBytes(System.Text.Json.JsonSerializer.Serialize(filter));
+			HttpContext.Session.Set("jobProfileFilter", filterBytes);
+			ViewData["page"] = 1;
+			ViewData["pageSize"] = 10;
+			var result = await _jobProfileService.GetCustomPaging(filter.Name, 1, 10);
+			int totalPage = result.TotalPage;
+			ViewData["totalPage"] = totalPage;
+			ViewData["items"] = result.Data;
+			HttpContext.Session.SetInt32("page", 1);
+			HttpContext.Session.SetInt32("pageSize", 10);
+			return View(filter);
+		}
 
-            return View(jobProfile);
-        }
 
-        // GET: JobProfiles/Create
-        public IActionResult Create()
-        {
-            ViewData["CreateUserId"] = new SelectList(_context.Users, "Id", "Email");
-            ViewData["ProfileId"] = new SelectList(_context.Profiles, "Id", "Expiry");
-            return View();
-        }
+		// GET: JobProfiles/Create
+		public async Task<IActionResult> Create()
+		{
+			ViewData["CategoryProfileId"] = new SelectList(await _jobProfileService.GetCategoryProfile(), "Id", "Title");
+			return View();
+		}
 
-        // POST: JobProfiles/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,ProfileId,StartDate,EndDate,Condition,NumberPaper,Status,CreateDate,CreateUserId")] JobProfile jobProfile)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(jobProfile);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["CreateUserId"] = new SelectList(_context.Users, "Id", "Email", jobProfile.CreateUserId);
-            ViewData["ProfileId"] = new SelectList(_context.Profiles, "Id", "Expiry", jobProfile.ProfileId);
-            return View(jobProfile);
-        }
+		// POST: JobProfiles/Create
+		// To protect from overposting attacks, enable the specific properties you want to bind to.
+		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> Create([FromForm] CreateJobProfileDTO createJobProfileDTO)
+		{
+			try
+			{
+				await _jobProfileService.Create(createJobProfileDTO);
+				return RedirectToAction(nameof(Index));
+			}
+			catch (Exception ex)
+			{
+                ViewData["CategoryProfileId"] = new SelectList(await _jobProfileService.GetCategoryProfile(), "Id", "Title");
+                ModelState.AddModelError("", ex.Message);
+				return View(createJobProfileDTO);
+			}
+		}
 
-        // GET: JobProfiles/Edit/5
-        public async Task<IActionResult> Edit(long? id)
-        {
-            if (id == null || _context.JobProfiles == null)
-            {
-                return NotFound();
-            }
+		// GET: JobProfiles/Edit/5
+		public async Task<IActionResult> Edit(long id)
+		{
+			ViewData["CategoryProfileId"] = new SelectList(await _jobProfileService.GetCategoryProfile(), "Id", "Title");
+			var result = await _jobProfileService.GetById(id);
+			if (result == null)
+			{
+				return NotFound();
+			}
+			return View(result);
+		}
 
-            var jobProfile = await _context.JobProfiles.FindAsync(id);
-            if (jobProfile == null)
-            {
-                return NotFound();
-            }
-            ViewData["CreateUserId"] = new SelectList(_context.Users, "Id", "Email", jobProfile.CreateUserId);
-            ViewData["ProfileId"] = new SelectList(_context.Profiles, "Id", "Expiry", jobProfile.ProfileId);
-            return View(jobProfile);
-        }
+		// POST: JobProfiles/Edit/5
+		// To protect from overposting attacks, enable the specific properties you want to bind to.
+		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> Edit([FromForm] UpdateJobProfileDTO jobProfile)
+		{
+			try
+			{
+				int? page = HttpContext.Session.GetInt32("page");
+				int? size = HttpContext.Session.GetInt32("pageSize");
+				await _jobProfileService.Update(jobProfile);
+				return RedirectToAction(nameof(Index), new { page, size });
+			}
+			catch (Exception ex)
+			{
+                ViewData["CategoryProfileId"] = new SelectList(await _jobProfileService.GetCategoryProfile(), "Id", "Title");
+                ModelState.AddModelError("", ex.Message);
+				return View(jobProfile);
+			}
+		}
 
-        // POST: JobProfiles/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(long id, [Bind("Id,ProfileId,StartDate,EndDate,Condition,NumberPaper,Status,CreateDate,CreateUserId")] JobProfile jobProfile)
-        {
-            if (id != jobProfile.Id)
-            {
-                return NotFound();
-            }
+		// GET: JobProfiles/Delete/5
+		public async Task<IActionResult> Delete(long id)
+		{
+			int? page = HttpContext.Session.GetInt32("page");
+			int? size = HttpContext.Session.GetInt32("pageSize");
+			await _jobProfileService.Delete(id);
+			return RedirectToAction(nameof(Index), new { page, size });
+		}
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(jobProfile);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!JobProfileExists(jobProfile.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["CreateUserId"] = new SelectList(_context.Users, "Id", "Email", jobProfile.CreateUserId);
-            ViewData["ProfileId"] = new SelectList(_context.Profiles, "Id", "Expiry", jobProfile.ProfileId);
-            return View(jobProfile);
-        }
+		public async Task<IActionResult> Active(long id)
+		{
+			int? page = HttpContext.Session.GetInt32("page");
+			int? size = HttpContext.Session.GetInt32("pageSize");
+			await _jobProfileService.Active(id);
+			return RedirectToAction(nameof(Index), new { page, size });
+		}
 
-        // GET: JobProfiles/Delete/5
-        public async Task<IActionResult> Delete(long? id)
-        {
-            if (id == null || _context.JobProfiles == null)
-            {
-                return NotFound();
-            }
-
-            var jobProfile = await _context.JobProfiles
-                .Include(j => j.CreateUser)
-                .Include(j => j.Profile)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (jobProfile == null)
-            {
-                return NotFound();
-            }
-
-            return View(jobProfile);
-        }
-
-        // POST: JobProfiles/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(long id)
-        {
-            if (_context.JobProfiles == null)
-            {
-                return Problem("Entity set 'DataContext.JobProfiles'  is null.");
-            }
-            var jobProfile = await _context.JobProfiles.FindAsync(id);
-            if (jobProfile != null)
-            {
-                _context.JobProfiles.Remove(jobProfile);
-            }
-            
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool JobProfileExists(long id)
-        {
-          return (_context.JobProfiles?.Any(e => e.Id == id)).GetValueOrDefault();
-        }
-    }
+		public async Task<IActionResult> Close(long id)
+		{
+			int? page = HttpContext.Session.GetInt32("page");
+			int? size = HttpContext.Session.GetInt32("pageSize");
+			await _jobProfileService.Close(id);
+			return RedirectToAction(nameof(Index), new { page, size });
+		}
+	}
 }

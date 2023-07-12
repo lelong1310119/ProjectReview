@@ -64,7 +64,9 @@ namespace ProjectReview.Repositories
 
 		public async Task<DepartmentDTO> Create(CreateDepartmentDTO createDepartment) {
 			var department = _mapper.Map<CreateDepartmentDTO, Department>(createDepartment);
-			department.CreateDate = DateTime.Now;
+            long maxId = await _dataContext.Departments.MaxAsync(x => x.Id);
+            department.Id = maxId + 1;
+            department.CreateDate = DateTime.Now;
 			await _dataContext.Departments.AddAsync(department);
 			await _dataContext.SaveChangesAsync();
 			return _mapper.Map<Department, DepartmentDTO>(department);

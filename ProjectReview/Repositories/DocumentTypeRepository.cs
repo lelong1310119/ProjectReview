@@ -68,6 +68,8 @@ namespace ProjectReview.Repositories
         public async Task<DocumentTypeDTO> Create(CreateDocumentTypeDTO createDocumentType)
         {
             var documentType = _mapper.Map<CreateDocumentTypeDTO, DocumentType>(createDocumentType);
+            long maxId = await _dataContext.DocumentTypes.MaxAsync(x => x.Id);
+            documentType.Id = maxId + 1;
             documentType.CreateDate = DateTime.Now;
             documentType.CreateUserId = _currentUser.UserId;
             await _dataContext.DocumentTypes.AddAsync(documentType);
@@ -123,6 +125,7 @@ namespace ProjectReview.Repositories
                                         .CountAsync();
             var result = await _dataContext.DocumentTypes
                                         .Where(x => x.Name.Contains(filter))
+                                        .Include(x => x.CreateUser)
                                         .Skip((page - 1) * pageSize)
                                         .Take(pageSize)
                                         .ToListAsync();

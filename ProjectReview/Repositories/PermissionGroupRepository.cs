@@ -71,11 +71,13 @@ namespace ProjectReview.Repositories
 
 		public async Task<PermissionGroupDTO> Create(CreatePermissionGroupDTO createPermissionGroup)
 		{
-			var PermissionGroup = _mapper.Map<CreatePermissionGroupDTO, PermissionGroup>(createPermissionGroup);
-			PermissionGroup.CreateDate = DateTime.Now;
-			await _dataContext.PermissionGroups.AddAsync(PermissionGroup);
+			var permissionGroup = _mapper.Map<CreatePermissionGroupDTO, PermissionGroup>(createPermissionGroup);
+            long maxId = await _dataContext.PermissionGroups.MaxAsync(x => x.Id);
+            permissionGroup.Id = maxId + 1;
+            permissionGroup.CreateDate = DateTime.Now;
+			await _dataContext.PermissionGroups.AddAsync(permissionGroup);
 			await _dataContext.SaveChangesAsync();
-			return _mapper.Map<PermissionGroup, PermissionGroupDTO>(PermissionGroup);
+			return _mapper.Map<PermissionGroup, PermissionGroupDTO>(permissionGroup);
 		}
 
 		public async Task<PermissionGroupDTO> Update(UpdatePermissionGroupDTO updatePermissionGroup)
@@ -96,7 +98,18 @@ namespace ProjectReview.Repositories
 									.Where(x => x.Id == id)
 									.FirstOrDefaultAsync();
 			if (permissionGroup == null) return null;
-			return _mapper.Map<PermissionGroup, UpdatePermissionGroupDTO>(permissionGroup);
+			var result = _mapper.Map<PermissionGroup, UpdatePermissionGroupDTO>(permissionGroup);
+			var ListRole = await _dataContext.RolePermissions
+								.Where(x => x.PermissionGroupId == id)
+								.ToListAsync();
+            result.ListRole = new List<long>();
+            if (ListRole.Count > 0)
+			{
+				foreach (var role in ListRole) {
+					result.ListRole.Add(role.RoleId);
+				}
+			}
+			return result;
 		}
 
 		public async Task<List<PermissionGroupDTO>> GetAll()

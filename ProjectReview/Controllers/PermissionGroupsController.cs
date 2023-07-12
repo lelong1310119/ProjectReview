@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualBasic;
 using ProjectReview.DTO.PermissionGroups;
+using ProjectReview.Enums;
 using ProjectReview.Models;
 using ProjectReview.Models.Entities;
 using ProjectReview.Paging;
@@ -85,6 +86,14 @@ namespace ProjectReview.Controllers
 			}
 			catch (Exception ex)
 			{
+				int? page = HttpContext.Session.GetInt32("page");
+				int? size = HttpContext.Session.GetInt32("pageSize");
+				int pageNumber = page ?? 1;
+				int pageSize = size ?? 10;
+				CustomPaging<PermissionGroupDTO> result = await _permissionGroupService.GetCustomPaging(pageNumber, pageSize);
+				int totalPage = result.TotalPage;
+				ViewData["totalPage"] = totalPage;
+				ViewData["items"] = result.Data;
 				ModelState.AddModelError("", ex.Message);
 				return View(createPermissionGroupDTO);
 			}
@@ -93,12 +102,13 @@ namespace ProjectReview.Controllers
 		// GET: PermissionGroups/Edit/5
 		public async Task<IActionResult> Edit(long id)
 		{
-			var result = await _permissionGroupService.GetById(id);
+            ViewData["RoleId"] = new SelectList(RoleEnum.RoleEnumList, "Id", "Detail");
+            var result = await _permissionGroupService.GetById(id);
 			if (result == null)
 			{
 				return NotFound();
 			}
-			return View(result);
+            return View(result);
 		}
 
 		// POST: PermissionGroups/Edit/5
@@ -106,19 +116,19 @@ namespace ProjectReview.Controllers
 		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Edit([FromForm] UpdatePermissionGroupDTO PermissionGroup)
+		public async Task<IActionResult> Edit([FromForm] UpdatePermissionGroupDTO permissionGroup)
 		{
 			try
 			{
 				int? page = HttpContext.Session.GetInt32("page");
 				int? size = HttpContext.Session.GetInt32("pageSize");
-				await _permissionGroupService.Update(PermissionGroup);
+				await _permissionGroupService.Update(permissionGroup);
 				return RedirectToAction(nameof(Index), new { page, size });
 			}
 			catch (Exception ex)
 			{
 				ModelState.AddModelError("", ex.Message);
-				return View(PermissionGroup);
+				return View(permissionGroup);
 			}
 		}
 

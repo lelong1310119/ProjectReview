@@ -12,11 +12,23 @@ namespace ProjectReview.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "Density",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Detail = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Density", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Department",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<long>(type: "bigint", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(400)", maxLength: 400, nullable: false),
                     Address = table.Column<string>(type: "nvarchar(400)", maxLength: 400, nullable: true),
                     Phone = table.Column<string>(type: "nvarchar(400)", maxLength: 400, nullable: true),
@@ -32,8 +44,7 @@ namespace ProjectReview.Migrations
                 name: "PermissionGroup",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<long>(type: "bigint", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(400)", maxLength: 400, nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
                     CreateDate = table.Column<DateTime>(type: "datetime", nullable: false)
@@ -47,8 +58,7 @@ namespace ProjectReview.Migrations
                 name: "Position",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<long>(type: "bigint", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(400)", maxLength: 400, nullable: false),
                     Note = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: true),
                     Status = table.Column<int>(type: "int", nullable: false),
@@ -63,8 +73,7 @@ namespace ProjectReview.Migrations
                 name: "Rank",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<long>(type: "bigint", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(400)", maxLength: 400, nullable: false),
                     Note = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: true),
                     Status = table.Column<int>(type: "int", nullable: false),
@@ -79,8 +88,7 @@ namespace ProjectReview.Migrations
                 name: "Role",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<long>(type: "bigint", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     NormalizedName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true)
@@ -91,11 +99,23 @@ namespace ProjectReview.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Urgency",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Detail = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Urgency", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "User",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<long>(type: "bigint", nullable: false),
                     FullName = table.Column<string>(type: "nvarchar(400)", maxLength: 400, nullable: false),
                     Birthday = table.Column<DateTime>(type: "datetime", nullable: false),
                     Gender = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -254,8 +274,7 @@ namespace ProjectReview.Migrations
                 name: "DocumentType",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<long>(type: "bigint", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(400)", maxLength: 400, nullable: false),
                     Note = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Status = table.Column<int>(type: "int", nullable: false),
@@ -276,8 +295,7 @@ namespace ProjectReview.Migrations
                 name: "Job",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<long>(type: "bigint", nullable: false),
                     HostId = table.Column<long>(type: "bigint", nullable: false),
                     InstructorId = table.Column<long>(type: "bigint", nullable: false),
                     CreateUserId = table.Column<long>(type: "bigint", nullable: false),
@@ -312,8 +330,7 @@ namespace ProjectReview.Migrations
                 name: "Profile",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<long>(type: "bigint", nullable: false),
                     Symbol = table.Column<string>(type: "nvarchar(400)", maxLength: 400, nullable: false),
                     Title = table.Column<string>(type: "nvarchar(400)", maxLength: 400, nullable: false),
                     Expiry = table.Column<string>(type: "nvarchar(125)", maxLength: 125, nullable: false),
@@ -359,8 +376,7 @@ namespace ProjectReview.Migrations
                 name: "Documnet",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<long>(type: "bigint", nullable: false),
                     CreateDate = table.Column<DateTime>(type: "datetime", nullable: false),
                     CreateUserId = table.Column<long>(type: "bigint", nullable: false),
                     Number = table.Column<int>(type: "int", nullable: false),
@@ -371,8 +387,8 @@ namespace ProjectReview.Migrations
                     DocumentTypeId = table.Column<long>(type: "bigint", nullable: false),
                     Receiver = table.Column<string>(type: "nvarchar(400)", maxLength: 400, nullable: false),
                     FileName = table.Column<string>(type: "nvarchar(400)", maxLength: 400, nullable: false),
-                    Density = table.Column<int>(type: "int", nullable: false),
-                    Urgency = table.Column<int>(type: "int", nullable: false),
+                    DensityId = table.Column<long>(type: "bigint", nullable: false),
+                    UrgencyId = table.Column<long>(type: "bigint", nullable: false),
                     NumberPaper = table.Column<int>(type: "int", nullable: false),
                     Language = table.Column<string>(type: "nvarchar(400)", maxLength: 400, nullable: false),
                     Signer = table.Column<string>(type: "nvarchar(400)", maxLength: 400, nullable: false),
@@ -385,9 +401,19 @@ namespace ProjectReview.Migrations
                 {
                     table.PrimaryKey("PK_Documnet", x => x.Id);
                     table.ForeignKey(
+                        name: "FK_Documnent_Density",
+                        column: x => x.DensityId,
+                        principalTable: "Density",
+                        principalColumn: "Id");
+                    table.ForeignKey(
                         name: "FK_Documnent_DocumentType",
                         column: x => x.DocumentTypeId,
                         principalTable: "DocumentType",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Documnent_Urgency",
+                        column: x => x.UrgencyId,
+                        principalTable: "Urgency",
                         principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Documnent_User",
@@ -422,8 +448,7 @@ namespace ProjectReview.Migrations
                 name: "Opinion",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<long>(type: "bigint", nullable: false),
                     Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     FileName = table.Column<string>(type: "nvarchar(400)", maxLength: 400, nullable: true),
                     CreateDate = table.Column<DateTime>(type: "datetime", nullable: false),
@@ -449,8 +474,7 @@ namespace ProjectReview.Migrations
                 name: "JobProfile",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<long>(type: "bigint", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(400)", maxLength: 400, nullable: false),
                     ProfileId = table.Column<long>(type: "bigint", nullable: false),
                     StartDate = table.Column<DateTime>(type: "datetime", nullable: false),
@@ -546,9 +570,19 @@ namespace ProjectReview.Migrations
                 column: "CreateUserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Documnet_DensityId",
+                table: "Documnet",
+                column: "DensityId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Documnet_DocumentTypeId",
                 table: "Documnet",
                 column: "DocumentTypeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Documnet_UrgencyId",
+                table: "Documnet",
+                column: "UrgencyId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Handler_JobId",
@@ -708,7 +742,13 @@ namespace ProjectReview.Migrations
                 name: "Role");
 
             migrationBuilder.DropTable(
+                name: "Density");
+
+            migrationBuilder.DropTable(
                 name: "DocumentType");
+
+            migrationBuilder.DropTable(
+                name: "Urgency");
 
             migrationBuilder.DropTable(
                 name: "Profile");

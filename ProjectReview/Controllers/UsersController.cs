@@ -92,6 +92,10 @@ namespace ProjectReview.Controllers
             }
             catch (Exception ex)
             {
+                ViewData["PositionId"] = new SelectList(await _userService.GetPosition(), "Id", "Name");
+                ViewData["PermissionGroupId"] = new SelectList(await _userService.GetPermissionGroup(), "Id", "Name");
+                ViewData["RankId"] = new SelectList(await _userService.GetRank(), "Id", "Name");
+                ViewData["DepartmentId"] = new SelectList(await _userService.GetDepartment(), "Id", "Name");
                 ModelState.AddModelError("", ex.Message);
                 return View(createUserDTO);
             }
@@ -128,10 +132,10 @@ namespace ProjectReview.Controllers
             }
             catch (Exception ex)
             {
-                //ViewData["PositionId"] = new SelectList(await _userService.GetPosition(), "Id", "Name");
-                //ViewData["PermissionGroupId"] = new SelectList(await _userService.GetPermissionGroup(), "Id", "Name");
-                //ViewData["RankId"] = new SelectList(await _userService.GetRank(), "Id", "Name");
-                //ViewData["DepartmentId"] = new SelectList(await _userService.GetDepartment(), "Id", "Name");
+                ViewData["PositionId"] = new SelectList(await _userService.GetPosition(), "Id", "Name");
+                ViewData["PermissionGroupId"] = new SelectList(await _userService.GetPermissionGroup(), "Id", "Name");
+                ViewData["RankId"] = new SelectList(await _userService.GetRank(), "Id", "Name");
+                ViewData["DepartmentId"] = new SelectList(await _userService.GetDepartment(), "Id", "Name");
                 ModelState.AddModelError("", ex.Message);
                 return View(user);
             }

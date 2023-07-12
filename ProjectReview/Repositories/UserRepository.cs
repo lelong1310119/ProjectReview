@@ -37,7 +37,9 @@ namespace ProjectReview.Repositories
 		public async Task<UserDTO> Create(CreateUserDTO userDTO)
 		{
 			var user = _mapper.Map<CreateUserDTO, User>(userDTO);
-			user.Status = 0;
+            long maxId = await _dataContext.Users.MaxAsync(x => x.Id);
+            user.Id = maxId + 1;
+            user.Status = 0;
             user.CreateDate = DateTime.Now;
 			await _dataContext.AddAsync(user);
             await _dataContext.SaveChangesAsync();

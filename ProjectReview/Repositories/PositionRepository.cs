@@ -65,7 +65,9 @@ namespace ProjectReview.Repositories
 		public async Task<PositionDTO> Create(CreatePositionDTO createPosition)
 		{
 			var position = _mapper.Map<CreatePositionDTO, Position>(createPosition);
-			position.CreateDate = DateTime.Now;
+            long maxId = await _dataContext.Positions.MaxAsync(x => x.Id);
+            position.Id = maxId + 1;
+            position.CreateDate = DateTime.Now;
 			await _dataContext.Positions.AddAsync(position);
 			await _dataContext.SaveChangesAsync();
 			return _mapper.Map<Position, PositionDTO>(position);

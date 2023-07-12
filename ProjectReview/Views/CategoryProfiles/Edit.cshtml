@@ -1,69 +1,64 @@
-﻿@model ProjectReview.Models.Entities.CategoryProfile
-
+﻿@model ProjectReview.DTO.CategoryProfiles.UpdateCategoryProfileDTO
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "CategoryProfile-Edit";
 }
 
-<h1>Edit</h1>
-
-<h4>Profile</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="Symbol" class="control-label"></label>
-                <input asp-for="Symbol" class="form-control" />
-                <span asp-validation-for="Symbol" class="text-danger"></span>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4><i class="far fa-folder-open"></i> Chỉnh sửa danh mục hồ sơ</h4>
+                </div>
+                <div class="card-body container-card">
+                    <div class="card-content col-md-6">
+                        <form asp-action="Edit">
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <input asp-for="Id" type="hidden">
+                            <div class="form-group m-3">
+                                <label asp-for="OrderBy" class="control-label">Số thứ tự</label>
+                                <input asp-for="OrderBy" class="form-control" type="number" min=1 />
+                                <span asp-validation-for="OrderBy" class="text-danger"></span>
+                            </div>
+                            <div class="form-group m-3">
+                                <label asp-for="Symbol" class="control-label">Số ký hiệu</label>
+                                <textarea asp-for="Symbol" class="form-control "></textarea>
+                                <span asp-validation-for="Symbol" class="text-danger"></span>
+                            </div>
+                            <div class="form-group m-3">
+                                <label asp-for="Title" class="control-label">Tiêu đề danh mục hồ sơ</label>
+                                <input asp-for="Title" class="form-control" />
+                                <span asp-validation-for="Title" class="text-danger"></span>
+                            </div>
+                            <div class="form-group m-3">
+                                <label asp-for="Expiry" class="control-label">Thời hạn bảo quản</label>
+                                <input asp-for="Expiry" class="form-control" />
+                                <span asp-validation-for="Expiry" class="text-danger"></span>
+                            </div>
+                            <div class="form-group m-3">
+                                <label asp-for="Deadline" class="control-label">Hạn nộp lưu</label>
+                                <input asp-for="Deadline" class="form-control" type="date" />
+                                <span asp-validation-for="Deadline" class="text-danger"></span>
+                            </div>
+                            <div class="form-group m-3" style="display: flex">
+                                <a type="button" class="btn btn-lg btn-secondary d-flex flex-column align-items-center justify-content-center" asp-area="" asp-controller="CategoryProfiles" asp-action="Index" asp-route-page="@ViewContext.HttpContext.Session.GetInt32("page")" style="width: 100px">
+                                    <i class="fa-solid fa-arrow-left"></i> Trở về
+                                </a>
+                                <button type="submit" class="btn btn-lg btn-primary mx-3 d-flex flex-column align-items-center justify-content-center" style="width: 100px">
+                                    <i class="fa-solid fa-save"></i>Lưu
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="Title" class="control-label"></label>
-                <input asp-for="Title" class="form-control" />
-                <span asp-validation-for="Title" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Expiry" class="control-label"></label>
-                <input asp-for="Expiry" class="form-control" />
-                <span asp-validation-for="Expiry" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Deadline" class="control-label"></label>
-                <input asp-for="Deadline" class="form-control" />
-                <span asp-validation-for="Deadline" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Status" class="control-label"></label>
-                <input asp-for="Status" class="form-control" />
-                <span asp-validation-for="Status" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="OrderBy" class="control-label"></label>
-                <input asp-for="OrderBy" class="form-control" />
-                <span asp-validation-for="OrderBy" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CreateDate" class="control-label"></label>
-                <input asp-for="CreateDate" class="form-control" />
-                <span asp-validation-for="CreateDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CreateUserId" class="control-label"></label>
-                <select asp-for="CreateUserId" class="form-control" asp-items="ViewBag.CreateUserId"></select>
-                <span asp-validation-for="CreateUserId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
+

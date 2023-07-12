@@ -21,6 +21,8 @@ namespace ProjectReview.Models
             await DocumentTypeInitialize(serviceProvider);
             await CategoryProfileInitialize(serviceProvider);
             await JobProfileInitialize(serviceProvider);
+            await UrgencyInitialize(serviceProvider);
+            await DensityInitialize(serviceProvider);
         }
 
         public static async Task DepartmentInitialize(IServiceProvider serviceProvider)
@@ -32,12 +34,12 @@ namespace ProjectReview.Models
                 if (await departmentSet.AnyAsync()) return;
 
                 List<Department> departments = new List<Department>();
-                departments.Add(new Department { Name = "Ban lãnh đạo", Address = "144 Xuân Thủy, Cầu Giấy, Hà Nội", Phone = "", Status = 1, CreateDate = DateTime.Now});
-                departments.Add(new Department { Name = "Hành chính - Tổ chức", Address = "144 Xuân Thủy, Cầu Giấy, Hà Nội", Phone = "", Status = 0, CreateDate = DateTime.Now });
-                departments.Add(new Department { Name = "Kế toán - Tài vụ", Address = "144 Xuân Thủy, Cầu Giấy, Hà Nội", Phone = "", Status = 0, CreateDate = DateTime.Now });
-                departments.Add(new Department { Name = "Tổ chuyên môn", Address = "144 Xuân Thủy, Cầu Giấy, Hà Nội", Phone = "", Status = 0, CreateDate = DateTime.Now });
-                departments.Add(new Department { Name = "Tổ kỹ thuật", Address = "144 Xuân Thủy, Cầu Giấy, Hà Nội", Phone = "", Status = 0, CreateDate = DateTime.Now });
-                departments.Add(new Department { Name = "Quản trị hệ thống", Address = "144 Xuân Thủy, Cầu Giấy, Hà Nội", Phone = "", Status = 0, CreateDate = DateTime.Now });
+                departments.Add(new Department { Id = 1, Name = "Ban lãnh đạo", Address = "144 Xuân Thủy, Cầu Giấy, Hà Nội", Phone = "", Status = 1, CreateDate = DateTime.Now});
+                departments.Add(new Department { Id = 2, Name = "Hành chính - Tổ chức", Address = "144 Xuân Thủy, Cầu Giấy, Hà Nội", Phone = "", Status = 0, CreateDate = DateTime.Now });
+                departments.Add(new Department { Id = 3, Name = "Kế toán - Tài vụ", Address = "144 Xuân Thủy, Cầu Giấy, Hà Nội", Phone = "", Status = 0, CreateDate = DateTime.Now });
+                departments.Add(new Department { Id = 4, Name = "Tổ chuyên môn", Address = "144 Xuân Thủy, Cầu Giấy, Hà Nội", Phone = "", Status = 0, CreateDate = DateTime.Now });
+                departments.Add(new Department { Id = 5, Name = "Tổ kỹ thuật", Address = "144 Xuân Thủy, Cầu Giấy, Hà Nội", Phone = "", Status = 0, CreateDate = DateTime.Now });
+                departments.Add(new Department { Id = 6, Name = "Quản trị hệ thống", Address = "144 Xuân Thủy, Cầu Giấy, Hà Nội", Phone = "", Status = 0, CreateDate = DateTime.Now });
 
 
                 foreach (var item in departments)
@@ -58,12 +60,12 @@ namespace ProjectReview.Models
                 if (await positionSet.AnyAsync()) return;
 
                 List<Position> positions = new List<Position>();
-                positions.Add(new Position { Name = "Quản trị hệ thống", Note = "", Status = 1, CreateDate = DateTime.Now });
-                positions.Add(new Position { Name = "Trưởng phòng", Note = "", Status = 0, CreateDate = DateTime.Now });
-                positions.Add(new Position { Name = "Phó trưởng phòng", Note = "", Status = 0, CreateDate = DateTime.Now });
-                positions.Add(new Position { Name = "Cán bộ", Note = "", Status = 0, CreateDate = DateTime.Now });
-                positions.Add(new Position { Name = "Nhân viên văn thư", Note = "", Status = 0, CreateDate = DateTime.Now });
-                positions.Add(new Position { Name = "Kế toán", Note = "", Status = 0, CreateDate = DateTime.Now });
+                positions.Add(new Position { Id = 1, Name = "Quản trị hệ thống", Note = "", Status = 1, CreateDate = DateTime.Now });
+                positions.Add(new Position { Id = 2, Name = "Trưởng phòng", Note = "", Status = 0, CreateDate = DateTime.Now });
+                positions.Add(new Position { Id = 3, Name = "Phó trưởng phòng", Note = "", Status = 0, CreateDate = DateTime.Now });
+                positions.Add(new Position { Id = 4, Name = "Cán bộ", Note = "", Status = 0, CreateDate = DateTime.Now });
+                positions.Add(new Position { Id = 5, Name = "Nhân viên văn thư", Note = "", Status = 0, CreateDate = DateTime.Now });
+                positions.Add(new Position { Id = 6, Name = "Kế toán", Note = "", Status = 0, CreateDate = DateTime.Now });
 
 
                 foreach (var item in positions)
@@ -84,16 +86,16 @@ namespace ProjectReview.Models
                 if (await rankSet.AnyAsync()) return;
 
                 List<Rank> ranks = new List<Rank>();
-                ranks.Add(new Rank { Name = "Thiếu úy", Note = "", Status = 0, CreateDate = DateTime.Now });
-                ranks.Add(new Rank { Name = "Trung úy", Note = "", Status = 0, CreateDate = DateTime.Now });
-                ranks.Add(new Rank { Name = "Thượng úy", Note = "", Status = 0, CreateDate = DateTime.Now });
-                ranks.Add(new Rank { Name = "Đại úy", Note = "", Status = 0, CreateDate = DateTime.Now });
-                ranks.Add(new Rank { Name = "Thiếu tá", Note = "", Status = 0, CreateDate = DateTime.Now });
-                ranks.Add(new Rank { Name = "Trung tá", Note = "", Status = 0, CreateDate = DateTime.Now });
-                ranks.Add(new Rank { Name = "Thượng tá", Note = "", Status = 0, CreateDate = DateTime.Now });
-                ranks.Add(new Rank { Name = "Đại tá", Note = "", Status = 1, CreateDate = DateTime.Now });
-                ranks.Add(new Rank { Name = "Thiếu tướng", Note = "", Status = 0, CreateDate = DateTime.Now });
-                ranks.Add(new Rank { Name = "Trung tướng", Note = "", Status = 0, CreateDate = DateTime.Now });
+                ranks.Add(new Rank { Id = 1, Name = "Thiếu úy", Note = "", Status = 0, CreateDate = DateTime.Now });
+                ranks.Add(new Rank { Id = 2, Name = "Trung úy", Note = "", Status = 0, CreateDate = DateTime.Now });
+                ranks.Add(new Rank { Id = 3, Name = "Thượng úy", Note = "", Status = 0, CreateDate = DateTime.Now });
+                ranks.Add(new Rank { Id = 4, Name = "Đại úy", Note = "", Status = 0, CreateDate = DateTime.Now });
+                ranks.Add(new Rank { Id = 5, Name = "Thiếu tá", Note = "", Status = 0, CreateDate = DateTime.Now });
+                ranks.Add(new Rank { Id = 6, Name = "Trung tá", Note = "", Status = 0, CreateDate = DateTime.Now });
+                ranks.Add(new Rank { Id = 7, Name = "Thượng tá", Note = "", Status = 0, CreateDate = DateTime.Now });
+                ranks.Add(new Rank { Id = 8, Name = "Đại tá", Note = "", Status = 1, CreateDate = DateTime.Now });
+                ranks.Add(new Rank { Id = 9, Name = "Thiếu tướng", Note = "", Status = 0, CreateDate = DateTime.Now });
+                ranks.Add(new Rank { Id = 10, Name = "Trung tướng", Note = "", Status = 0, CreateDate = DateTime.Now });
 
                 foreach (var item in ranks)
                 {
@@ -117,7 +119,52 @@ namespace ProjectReview.Models
                 {
                     await roleSet.AddAsync(new Role
                     {
+                        Id = item.Id,
                         Name = item.Name
+                    });
+                }
+                await context.SaveChangesAsync();
+            }
+        }
+
+        public static async Task DensityInitialize(IServiceProvider serviceProvider)
+        {
+            var context = serviceProvider.GetService<DataContext>();
+            if (context != null)
+            {
+                var densitySet = context.Densities;
+                if (await densitySet.AnyAsync()) return;
+
+                var seed = DensityEnum.DensityEnumList;
+                foreach (var item in seed)
+                {
+                    await densitySet.AddAsync(new Density
+                    {
+                        Id = item.Id,
+                        Name = item.Name,
+                        Detail = item.Detail
+                    });
+                }
+                await context.SaveChangesAsync();
+            }
+        }
+
+        public static async Task UrgencyInitialize(IServiceProvider serviceProvider)
+        {
+            var context = serviceProvider.GetService<DataContext>();
+            if (context != null)
+            {
+                var urgencySet = context.Urgencies;
+                if (await urgencySet.AnyAsync()) return;
+
+                var seed = UrgencyEnum.UrgencyEnumList;
+                foreach (var item in seed)
+                {
+                    await urgencySet.AddAsync(new Urgency
+                    {
+                        Id = item.Id,
+                        Name = item.Name,
+                        Detail = item.Detail
                     });
                 }
                 await context.SaveChangesAsync();
@@ -133,11 +180,11 @@ namespace ProjectReview.Models
                 if (await permissionSet.AnyAsync()) return;
 
                 List<PermissionGroup> permissions = new List<PermissionGroup>();
-                permissions.Add(new PermissionGroup { Name = "Quản trị hệ thống", Status = 1, CreateDate = DateTime.Now });
-                permissions.Add(new PermissionGroup { Name = "Trưởng phòng", Status = 0, CreateDate = DateTime.Now });
-                permissions.Add(new PermissionGroup { Name = "Phó trưởng phòng", Status = 0, CreateDate = DateTime.Now });
-                permissions.Add(new PermissionGroup { Name = "Cán bộ", Status = 0, CreateDate = DateTime.Now });
-                permissions.Add(new PermissionGroup { Name = "Văn thư", Status = 0, CreateDate = DateTime.Now });
+                permissions.Add(new PermissionGroup { Id = 1, Name = "Quản trị hệ thống", Status = 1, CreateDate = DateTime.Now });
+                permissions.Add(new PermissionGroup { Id = 2, Name = "Trưởng phòng", Status = 0, CreateDate = DateTime.Now });
+                permissions.Add(new PermissionGroup { Id = 3, Name = "Phó trưởng phòng", Status = 0, CreateDate = DateTime.Now });
+                permissions.Add(new PermissionGroup { Id = 4, Name = "Cán bộ", Status = 0, CreateDate = DateTime.Now });
+                permissions.Add(new PermissionGroup { Id = 5, Name = "Văn thư", Status = 0, CreateDate = DateTime.Now });
 
                 foreach (var item in permissions)
                 {
@@ -186,6 +233,7 @@ namespace ProjectReview.Models
 
                 User user = new User
                 {
+                    Id = 1,
                     FullName = "SuperAdmin",
                     Birthday = DateTime.Now,
                     CreateDate = DateTime.Now,
@@ -234,14 +282,14 @@ namespace ProjectReview.Models
                 if (await documentTypeSet.AnyAsync()) return;
 
                 List<DocumentType> documentTypes = new List<DocumentType>();
-                documentTypes.Add(new DocumentType { Name = "Công văn", Status = 0, Note = "", CreateDate = DateTime.Now, CreateUserId = 1 });
-                documentTypes.Add(new DocumentType { Name = "Báo cáo", Status = 0, Note = "", CreateDate = DateTime.Now, CreateUserId = 1 });
-                documentTypes.Add(new DocumentType { Name = "Giấy mời", Status = 0, Note = "", CreateDate = DateTime.Now, CreateUserId = 1 });
-                documentTypes.Add(new DocumentType { Name = "Quyết định", Status = 0, Note = "", CreateDate = DateTime.Now, CreateUserId = 1 });
-                documentTypes.Add(new DocumentType { Name = "Nghị định", Status = 0, Note = "", CreateDate = DateTime.Now, CreateUserId = 1 });
-                documentTypes.Add(new DocumentType { Name = "Thông báo", Status = 0, Note = "", CreateDate = DateTime.Now, CreateUserId = 1 });
-                documentTypes.Add(new DocumentType { Name = "Tờ trình", Status = 0, Note = "", CreateDate = DateTime.Now, CreateUserId = 1 });
-                documentTypes.Add(new DocumentType { Name = "Thông tư", Status = 0, Note = "", CreateDate = DateTime.Now, CreateUserId = 1 });
+                documentTypes.Add(new DocumentType { Id = 1, Name = "Công văn", Status = 0, Note = "", CreateDate = DateTime.Now, CreateUserId = 1 });
+                documentTypes.Add(new DocumentType { Id = 2, Name = "Báo cáo", Status = 0, Note = "", CreateDate = DateTime.Now, CreateUserId = 1 });
+                documentTypes.Add(new DocumentType { Id = 3, Name = "Giấy mời", Status = 0, Note = "", CreateDate = DateTime.Now, CreateUserId = 1 });
+                documentTypes.Add(new DocumentType { Id = 4, Name = "Quyết định", Status = 0, Note = "", CreateDate = DateTime.Now, CreateUserId = 1 });
+                documentTypes.Add(new DocumentType { Id = 5, Name = "Nghị định", Status = 0, Note = "", CreateDate = DateTime.Now, CreateUserId = 1 });
+                documentTypes.Add(new DocumentType { Id = 6, Name = "Thông báo", Status = 0, Note = "", CreateDate = DateTime.Now, CreateUserId = 1 });
+                documentTypes.Add(new DocumentType { Id = 7, Name = "Tờ trình", Status = 0, Note = "", CreateDate = DateTime.Now, CreateUserId = 1 });
+                documentTypes.Add(new DocumentType { Id = 8, Name = "Thông tư", Status = 0, Note = "", CreateDate = DateTime.Now, CreateUserId = 1 });
 
                 foreach (var item in documentTypes)
                 {
@@ -259,7 +307,7 @@ namespace ProjectReview.Models
                 var categoryProfileSet = context.Profiles;
                 if (await categoryProfileSet.AnyAsync()) return;
 
-                CategoryProfile profile =  new CategoryProfile { Symbol = "123/NĐ", Title = "Hồ sơ nguyên tắc", Expiry = "Lâu dài", CreateUserId = 1, CreateDate = DateTime.Now, Status = 1, Deadline = DateTime.Now.AddMonths(1), OrderBy = 1};
+                CategoryProfile profile =  new CategoryProfile {Id = 1, Symbol = "123/NĐ", Title = "Hồ sơ nguyên tắc", Expiry = "Lâu dài", CreateUserId = 1, CreateDate = DateTime.Now, Status = 1, Deadline = DateTime.Now.AddMonths(1), OrderBy = 1};
                 await categoryProfileSet.AddAsync(profile);
                 await context.SaveChangesAsync();
             }
@@ -273,7 +321,7 @@ namespace ProjectReview.Models
                 var jobProfileSet = context.JobProfiles;
                 if (await jobProfileSet.AnyAsync()) return;
 
-                JobProfile profile = new JobProfile { ProfileId = 1, Condition = "", Name = "Hồ sơ quản lý nghiệp vụ", CreateUserId = 1, CreateDate = DateTime.Now, Status = 1, StartDate = DateTime.Now, EndDate = DateTime.Now.AddMonths(1), NumberPaper = 5 };
+                JobProfile profile = new JobProfile {Id = 1, ProfileId = 1, Condition = "", Name = "Hồ sơ quản lý nghiệp vụ", CreateUserId = 1, CreateDate = DateTime.Now, Status = 1, StartDate = DateTime.Now, EndDate = DateTime.Now.AddMonths(1), NumberPaper = 5 };
                 await jobProfileSet.AddAsync(profile);
                 await context.SaveChangesAsync();
             }

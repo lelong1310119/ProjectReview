@@ -113,10 +113,7 @@ namespace ProjectReview.Migrations
             modelBuilder.Entity("ProjectReview.Models.Entities.CategoryProfile", b =>
                 {
                     b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("datetime");
@@ -155,13 +152,28 @@ namespace ProjectReview.Migrations
                     b.ToTable("Profile", (string)null);
                 });
 
+            modelBuilder.Entity("ProjectReview.Models.Entities.Density", b =>
+                {
+                    b.Property<long>("Id")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Detail")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Density", (string)null);
+                });
+
             modelBuilder.Entity("ProjectReview.Models.Entities.Department", b =>
                 {
                     b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<string>("Address")
                         .HasMaxLength(400)
@@ -190,10 +202,7 @@ namespace ProjectReview.Migrations
             modelBuilder.Entity("ProjectReview.Models.Entities.Document", b =>
                 {
                     b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<string>("Author")
                         .IsRequired()
@@ -213,8 +222,8 @@ namespace ProjectReview.Migrations
                     b.Property<DateTime>("DateIssued")
                         .HasColumnType("datetime");
 
-                    b.Property<int>("Density")
-                        .HasColumnType("int");
+                    b.Property<long>("DensityId")
+                        .HasColumnType("bigint");
 
                     b.Property<long>("DocumentTypeId")
                         .HasColumnType("bigint");
@@ -264,14 +273,18 @@ namespace ProjectReview.Migrations
                     b.Property<int>("Type")
                         .HasColumnType("int");
 
-                    b.Property<int>("Urgency")
-                        .HasColumnType("int");
+                    b.Property<long>("UrgencyId")
+                        .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CreateUserId");
 
+                    b.HasIndex("DensityId");
+
                     b.HasIndex("DocumentTypeId");
+
+                    b.HasIndex("UrgencyId");
 
                     b.ToTable("Documnet", (string)null);
                 });
@@ -279,10 +292,7 @@ namespace ProjectReview.Migrations
             modelBuilder.Entity("ProjectReview.Models.Entities.DocumentType", b =>
                 {
                     b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("datetime");
@@ -326,10 +336,7 @@ namespace ProjectReview.Migrations
             modelBuilder.Entity("ProjectReview.Models.Entities.Job", b =>
                 {
                     b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<string>("Content")
                         .IsRequired()
@@ -395,10 +402,7 @@ namespace ProjectReview.Migrations
             modelBuilder.Entity("ProjectReview.Models.Entities.JobProfile", b =>
                 {
                     b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<string>("Condition")
                         .HasMaxLength(4000)
@@ -442,10 +446,7 @@ namespace ProjectReview.Migrations
             modelBuilder.Entity("ProjectReview.Models.Entities.Opinion", b =>
                 {
                     b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<string>("Content")
                         .IsRequired()
@@ -476,10 +477,7 @@ namespace ProjectReview.Migrations
             modelBuilder.Entity("ProjectReview.Models.Entities.PermissionGroup", b =>
                 {
                     b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("datetime");
@@ -500,10 +498,7 @@ namespace ProjectReview.Migrations
             modelBuilder.Entity("ProjectReview.Models.Entities.Position", b =>
                 {
                     b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("datetime");
@@ -543,10 +538,7 @@ namespace ProjectReview.Migrations
             modelBuilder.Entity("ProjectReview.Models.Entities.Rank", b =>
                 {
                     b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("datetime");
@@ -571,10 +563,7 @@ namespace ProjectReview.Migrations
             modelBuilder.Entity("ProjectReview.Models.Entities.Role", b =>
                 {
                     b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -614,13 +603,28 @@ namespace ProjectReview.Migrations
                     b.ToTable("RolePermission", (string)null);
                 });
 
+            modelBuilder.Entity("ProjectReview.Models.Entities.Urgency", b =>
+                {
+                    b.Property<long>("Id")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Detail")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Urgency", (string)null);
+                });
+
             modelBuilder.Entity("ProjectReview.Models.Entities.User", b =>
                 {
                     b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
@@ -797,15 +801,31 @@ namespace ProjectReview.Migrations
                         .IsRequired()
                         .HasConstraintName("FK_Documnent_User");
 
+                    b.HasOne("ProjectReview.Models.Entities.Density", "Density")
+                        .WithMany("Documents")
+                        .HasForeignKey("DensityId")
+                        .IsRequired()
+                        .HasConstraintName("FK_Documnent_Density");
+
                     b.HasOne("ProjectReview.Models.Entities.DocumentType", "DocumentType")
                         .WithMany("Documents")
                         .HasForeignKey("DocumentTypeId")
                         .IsRequired()
                         .HasConstraintName("FK_Documnent_DocumentType");
 
+                    b.HasOne("ProjectReview.Models.Entities.Urgency", "Urgency")
+                        .WithMany("Documents")
+                        .HasForeignKey("UrgencyId")
+                        .IsRequired()
+                        .HasConstraintName("FK_Documnent_Urgency");
+
                     b.Navigation("CreateUser");
 
+                    b.Navigation("Density");
+
                     b.Navigation("DocumentType");
+
+                    b.Navigation("Urgency");
                 });
 
             modelBuilder.Entity("ProjectReview.Models.Entities.DocumentType", b =>
@@ -1019,6 +1039,11 @@ namespace ProjectReview.Migrations
                     b.Navigation("JobProfiles");
                 });
 
+            modelBuilder.Entity("ProjectReview.Models.Entities.Density", b =>
+                {
+                    b.Navigation("Documents");
+                });
+
             modelBuilder.Entity("ProjectReview.Models.Entities.Department", b =>
                 {
                     b.Navigation("Users");
@@ -1074,6 +1099,11 @@ namespace ProjectReview.Migrations
                     b.Navigation("RolePermissions");
 
                     b.Navigation("UserRoles");
+                });
+
+            modelBuilder.Entity("ProjectReview.Models.Entities.Urgency", b =>
+                {
+                    b.Navigation("Documents");
                 });
 
             modelBuilder.Entity("ProjectReview.Models.Entities.User", b =>

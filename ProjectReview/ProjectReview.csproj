@@ -34,6 +34,8 @@
 
   <ItemGroup>
     <Folder Include="Migrations\" />
+    <Folder Include="wwwroot\Document\" />
+    <Folder Include="wwwroot\Job\" />
   </ItemGroup>
 
 </Project>
