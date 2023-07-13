@@ -11,7 +11,8 @@
         public string Request { get; set; }
         //public long UserId { get; set; }
         public int Status { get; set; }
-        public string FileName { get; set; }
+        public string? FileName { get; set; }
+        public string? FilePath { get; set; }
         public string Content { get; set; }
 
 		public virtual User Host { get; set; }

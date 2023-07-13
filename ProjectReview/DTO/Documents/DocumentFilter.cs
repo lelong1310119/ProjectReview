@@ -2,6 +2,6 @@
 {
     public class DocumentFilter
     {
-        public string Content { get; set; }
+        public string? Content { get; set; }
     }
 }

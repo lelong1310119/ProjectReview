@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using ProjectReview.DTO.CategoryProfiles;
 using ProjectReview.DTO.Departments;
+using ProjectReview.DTO.Documents;
 using ProjectReview.DTO.DocumentTypes;
 using ProjectReview.DTO.JobProfiles;
+using ProjectReview.DTO.Jobs;
 using ProjectReview.DTO.PermissionGroups;
 using ProjectReview.DTO.Positions;
 using ProjectReview.DTO.Ranks;
@@ -47,6 +49,12 @@ namespace ProjectReview.DTO
             CreateMap<CreateJobProfileDTO, JobProfile>();
             CreateMap<UpdateJobProfileDTO, JobProfile>();
             CreateMap<JobProfile, UpdateJobProfileDTO>();
-        }
+			CreateMap<Job, JobDTO>();
+			CreateMap<CreateJobDTO, Job>();
+			CreateMap<CreateDocumentDTO, Document>();
+			CreateMap<UpdateDocumentTypeDTO, Document>();
+			CreateMap<Document, DocumentDTO>();
+			CreateMap<Document, UpdateDocumentDTO>();
+		}
 	}
 }

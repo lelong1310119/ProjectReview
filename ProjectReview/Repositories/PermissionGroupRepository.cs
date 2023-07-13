@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using ProjectReview.DTO.PermissionGroups;
-using ProjectReview.DTO.PermissionGroups;
 using ProjectReview.Models;
 using ProjectReview.Models.Entities;
 using ProjectReview.Paging;

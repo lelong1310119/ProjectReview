@@ -5,6 +5,7 @@ using ProjectReview.Models;
 using ProjectReview.Repositories;
 using ProjectReview.Services.CategoryProfiles;
 using ProjectReview.Services.Departments;
+using ProjectReview.Services.Documents;
 using ProjectReview.Services.DocumentTypes;
 using ProjectReview.Services.JobProfiles;
 using ProjectReview.Services.PermissionGroups;
@@ -24,10 +25,10 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
-//builder.Services.AddDbContext<DataContext>(options =>
-//        options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddDbContext<DataContext>(options =>
-        options.UseSqlServer("Data Source=LAPTOP-TC1PJ34D\\LONG;Initial Catalog=Review;Integrated Security=True;TrustServerCertificate=True;"));
+        options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+//builder.Services.AddDbContext<DataContext>(options =>
+//        options.UseSqlServer("Data Source=LAPTOP-TC1PJ34D\\LONG;Initial Catalog=Review;Integrated Security=True;TrustServerCertificate=True;"));
 builder.Services.AddScoped<DbSeeder>();
 builder.Services.AddSingleton<ICurrentUser, CurrentUser>();
 builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
@@ -49,6 +50,7 @@ builder.Services.AddScoped<IJobProfileRepository, JobProfileRepository>();
 builder.Services.AddScoped<IProfileDocumentRepository, ProfileDocumentRepository>();
 builder.Services.AddScoped<IJobProfileService, JobProfileService>();
 builder.Services.AddScoped<IDocumentRepository, DocumentRepository>();
+builder.Services.AddScoped<IDocumentService, DocumentService>();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 var app = builder.Build();

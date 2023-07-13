@@ -1,4 +1,6 @@
-﻿using ProjectReview.Models.Entities;
+﻿using ProjectReview.DTO.Jobs;
+using ProjectReview.DTO.Users;
+using ProjectReview.Models.Entities;
 
 namespace ProjectReview.DTO.Documents
 {
@@ -13,8 +15,7 @@ namespace ProjectReview.DTO.Documents
         public DateTime DateIssued { get; set; }
         public string Content { get; set; }
         public long DocumentTypeId { get; set; }
-        public string Receiver { get; set; }
-        public string FileName { get; set; }
+        public string? FileName { get; set; }
         public long DensityId { get; set; }
         public long UrgencyId { get; set; }
         public int NumberPaper { get; set; }
@@ -26,7 +27,9 @@ namespace ProjectReview.DTO.Documents
 
         public Urgency Urgency { get; set; }
         public Density Density { get; set; }    
-        public virtual User CreateUser { get; set; }
-        public virtual DocumentType DocumentType { get; set; }
+        public User CreateUser { get; set; }
+        public DocumentType DocumentType { get; set; }
+        public JobDTO Job { get; set; }
+        public List<UserDTO> Users { get; set; }
     }
 }

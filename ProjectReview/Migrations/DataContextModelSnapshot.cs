@@ -229,9 +229,11 @@ namespace ProjectReview.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<string>("FileName")
-                        .IsRequired()
                         .HasMaxLength(400)
                         .HasColumnType("nvarchar(400)");
+
+                    b.Property<string>("FilePath")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsAssign")
                         .HasColumnType("bit");
@@ -251,11 +253,6 @@ namespace ProjectReview.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Position")
-                        .IsRequired()
-                        .HasMaxLength(400)
-                        .HasColumnType("nvarchar(400)");
-
-                    b.Property<string>("Receiver")
                         .IsRequired()
                         .HasMaxLength(400)
                         .HasColumnType("nvarchar(400)");
@@ -352,9 +349,11 @@ namespace ProjectReview.Migrations
                         .HasColumnType("datetime");
 
                     b.Property<string>("FileName")
-                        .IsRequired()
                         .HasMaxLength(400)
                         .HasColumnType("nvarchar(400)");
+
+                    b.Property<string>("FilePath")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<long>("HostId")
                         .HasColumnType("bigint");

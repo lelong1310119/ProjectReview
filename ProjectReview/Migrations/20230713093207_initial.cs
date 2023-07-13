@@ -303,7 +303,8 @@ namespace ProjectReview.Migrations
                     Deadline = table.Column<DateTime>(type: "datetime", nullable: false),
                     Request = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
-                    FileName = table.Column<string>(type: "nvarchar(400)", maxLength: 400, nullable: false),
+                    FileName = table.Column<string>(type: "nvarchar(400)", maxLength: 400, nullable: true),
+                    FilePath = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Content = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
@@ -385,8 +386,8 @@ namespace ProjectReview.Migrations
                     DateIssued = table.Column<DateTime>(type: "datetime", nullable: false),
                     Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DocumentTypeId = table.Column<long>(type: "bigint", nullable: false),
-                    Receiver = table.Column<string>(type: "nvarchar(400)", maxLength: 400, nullable: false),
-                    FileName = table.Column<string>(type: "nvarchar(400)", maxLength: 400, nullable: false),
+                    FileName = table.Column<string>(type: "nvarchar(400)", maxLength: 400, nullable: true),
+                    FilePath = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DensityId = table.Column<long>(type: "bigint", nullable: false),
                     UrgencyId = table.Column<long>(type: "bigint", nullable: false),
                     NumberPaper = table.Column<int>(type: "int", nullable: false),

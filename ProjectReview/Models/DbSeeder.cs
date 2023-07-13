@@ -282,8 +282,8 @@ namespace ProjectReview.Models
                 if (await documentTypeSet.AnyAsync()) return;
 
                 List<DocumentType> documentTypes = new List<DocumentType>();
-                documentTypes.Add(new DocumentType { Id = 1, Name = "Công văn", Status = 0, Note = "", CreateDate = DateTime.Now, CreateUserId = 1 });
-                documentTypes.Add(new DocumentType { Id = 2, Name = "Báo cáo", Status = 0, Note = "", CreateDate = DateTime.Now, CreateUserId = 1 });
+                documentTypes.Add(new DocumentType { Id = 1, Name = "Công văn", Status = 1, Note = "", CreateDate = DateTime.Now, CreateUserId = 1 });
+                documentTypes.Add(new DocumentType { Id = 2, Name = "Báo cáo", Status = 1, Note = "", CreateDate = DateTime.Now, CreateUserId = 1 });
                 documentTypes.Add(new DocumentType { Id = 3, Name = "Giấy mời", Status = 0, Note = "", CreateDate = DateTime.Now, CreateUserId = 1 });
                 documentTypes.Add(new DocumentType { Id = 4, Name = "Quyết định", Status = 0, Note = "", CreateDate = DateTime.Now, CreateUserId = 1 });
                 documentTypes.Add(new DocumentType { Id = 5, Name = "Nghị định", Status = 0, Note = "", CreateDate = DateTime.Now, CreateUserId = 1 });

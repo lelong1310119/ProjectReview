@@ -7,7 +7,11 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/layout.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/style.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/font-awesome/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.4.2/chosen.css" />
     <link rel="stylesheet" href="~/ProjectReview.styles.css" asp-append-version="true" />
     <script type="text/javascript">
         function initMenu() {
@@ -31,8 +35,9 @@
     </script>
 </head>
 <body>
-    <header>
+    <header class="d-flex align-items-center justify-content-between">
         <img src="https://localhost:7123/images/logo.png" class="logo"/>
+        <a type="button" asp-action="Logout" asp-controller="Home" class="btn btn-danger m-2" style="height: 40px">Đăng xuất</a>
     </header>
     <div class="main">
         <div class="left main-sidebar">
@@ -46,13 +51,13 @@
                             </a>
                         </li>
                         <li class="submenu">
-                            <a id="vanbanden" asp-area="" asp-controller="Documents" asp-action="Index">
+                            <a id="vanbanden" asp-area="" asp-controller="DocumentReceived" asp-action="Index">
                                 <img src="https://localhost:7123/images/vbden.png" />
                                 <span> Quản lý Văn bản đến</span>
                             </a>
                         </li>
                         <li class="submenu">
-                            <a id="vanbandi" asp-area="" asp-controller="Documents" asp-action="Index">
+                            <a id="vanbandi" asp-area="" asp-controller="DocumentSent" asp-action="Index">
                                 <img src="https://localhost:7123/images/vbdi.png" />
                                 <span> Quản lý Văn bản đi</span>
                             </a>
@@ -121,6 +126,13 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/bootstrap.min.js" asp-append-version="true"></script>
+    <script src="~/js/jquery.min.js" asp-append-version="true"></script>
+    <script src="~/js/main.js" asp-append-version="true"></script>
+    <script src="~/js/popper.js" asp-append-version="true"></script>
+    <script src="~/js/bootstrap-multiselect.js" asp-append-version="true"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.4.2/chosen.jquery.js"></script>
+
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>

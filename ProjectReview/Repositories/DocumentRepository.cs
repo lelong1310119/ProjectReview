@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using ProjectReview.Common;
 using ProjectReview.DTO.Documents;
-using ProjectReview.DTO.Documents;
 using ProjectReview.Models;
 using ProjectReview.Models.Entities;
 using ProjectReview.Paging;
@@ -17,6 +16,12 @@ namespace ProjectReview.Repositories
         Task<DocumentDTO> CreateDocumentReceived(CreateDocumentDTO createDocument);
         Task<DocumentDTO> CreateDocumentSent(CreateDocumentDTO createDocument);
         Task<DocumentDTO> Update(UpdateDocumentDTO updateDocument);
+        Task<CustomPaging<DocumentDTO>> GetListDocumentSent(string filter, int page, int pageSize);
+        Task<CustomPaging<DocumentDTO>> GetListDocumentReceived(string filter, int page, int pageSize);
+        Task<List<Density>> GetListDensity();
+        Task<List<Urgency>> GetListUrgency();
+
+
     }
 
     public class DocumentRepository : IDocumentRepository
@@ -31,9 +36,19 @@ namespace ProjectReview.Repositories
             _currentUser = currentUser;
         }
 
+        public async Task<List<Density>> GetListDensity()
+        {
+            return await _dataContext.Densities.ToListAsync();
+        }
+
+        public async Task<List<Urgency>> GetListUrgency()
+        {
+            return await _dataContext.Urgencies.ToListAsync();
+        }
+
         public async Task Delete(long id)
         {
-            await _dataContext.JobDocuments
+            await _dataContext.ProfileDocuments
                             .Where(x => x.DocumentId == id)
                             .ExecuteDeleteAsync();
             await _dataContext.Documents
@@ -67,7 +82,11 @@ namespace ProjectReview.Repositories
         public async Task<DocumentDTO> CreateDocumentSent(CreateDocumentDTO createDocument)
         {
             var document = _mapper.Map<CreateDocumentDTO, Document>(createDocument);
-            long maxId = await _dataContext.Documents.MaxAsync(x => x.Id);
+            long maxId = 0;
+            if (await _dataContext.Documents.AnyAsync())
+            {
+                maxId = await _dataContext.Documents.MaxAsync(x => x.Id);
+            }
             document.Id = maxId + 1;
             document.CreateDate = DateTime.Now;
             document.CreateUserId = _currentUser.UserId;
@@ -81,7 +100,11 @@ namespace ProjectReview.Repositories
         public async Task<DocumentDTO> CreateDocumentReceived(CreateDocumentDTO createDocument)
         {
             var document = _mapper.Map<CreateDocumentDTO, Document>(createDocument);
-            long maxId = await _dataContext.Documents.MaxAsync(x => x.Id);
+            long maxId = 0;
+            if (await _dataContext.Documents.AnyAsync())
+            {
+                maxId = await _dataContext.Documents.MaxAsync(x => x.Id);
+            }
             document.Id = maxId + 1;
             document.CreateDate = DateTime.Now;
             document.CreateUserId = _currentUser.UserId;
@@ -104,7 +127,6 @@ namespace ProjectReview.Repositories
             document.DateIssued = updateDocument.DateIssued;
             document.Content = updateDocument.Content;
             document.DocumentTypeId = updateDocument.DocumentTypeId;
-            document.Receiver = updateDocument.Receiver;
             document.FileName = updateDocument.FileName;
             document.DensityId = updateDocument.DensityId;
             document.UrgencyId = updateDocument.UrgencyId;
@@ -119,13 +141,13 @@ namespace ProjectReview.Repositories
             return _mapper.Map<Document, DocumentDTO>(document);
         }
 
-        public async Task<CustomPaging<DocumentDTO>> GetCustomPaging(string filter, int page, int pageSize)
+        public async Task<CustomPaging<DocumentDTO>> GetListDocumentSent(string filter, int page, int pageSize)
         {
             int count = await _dataContext.Documents
-                                        .Where(x => x.Content.Contains(filter))
+                                        .Where(x =>( x.Content.Contains(filter) && x.Type == 1))
                                         .CountAsync();
             var result = await _dataContext.Documents
-                                        .Where(x => x.Content.Contains(filter))
+                                        .Where(x => (x.Content.Contains(filter) && x.Type == 1))
                                         .Include(x => x.CreateUser)
                                         .Include(x => x.DocumentType)
                                         .Include(x => x.Density)
@@ -143,5 +165,30 @@ namespace ProjectReview.Repositories
             };
             return paging;
         }
-    }
+
+		public async Task<CustomPaging<DocumentDTO>> GetListDocumentReceived(string filter, int page, int pageSize)
+		{
+			int count = await _dataContext.Documents
+										.Where(x => (x.Content.Contains(filter) && x.Type == 0))
+										.CountAsync();
+			var result = await _dataContext.Documents
+										.Where(x => (x.Content.Contains(filter) && x.Type == 0))
+										.Include(x => x.CreateUser)
+										.Include(x => x.DocumentType)
+										.Include(x => x.Density)
+										.Include(x => x.Urgency)
+										.Skip((page - 1) * pageSize)
+										.Take(pageSize)
+										.ToListAsync();
+			int totalPage = (count % pageSize == 0) ? (count / pageSize) : (count / pageSize + 1);
+			var Documents = _mapper.Map<List<Document>, List<DocumentDTO>>(result);
+			CustomPaging<DocumentDTO> paging = new CustomPaging<DocumentDTO>
+			{
+				TotalPage = totalPage,
+				PageSize = pageSize,
+				Data = Documents
+			};
+			return paging;
+		}
+	}
 }

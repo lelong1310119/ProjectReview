@@ -1,5 +1,4 @@
 ﻿using ProjectReview.DTO.DocumentTypes;
-using ProjectReview.DTO.DocumentTypes;
 using ProjectReview.Paging;
 using ProjectReview.Repositories;
 

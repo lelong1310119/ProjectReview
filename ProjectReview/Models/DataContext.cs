@@ -34,22 +34,22 @@ namespace ProjectReview.Models
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
         }
-        //        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        //        {
-        //            if (!optionsBuilder.IsConfigured)
-        //            {
-        //#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-        //                optionsBuilder.UseSqlServer("Data Source=DESKTOP-PL7Q9Q6; Initial Catalog=Review;Integrated Security=True;TrustServerCertificate=True;");
-        //            }
-        //        }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Data Source=LAPTOP-TC1PJ34D\\LONG;Initial Catalog=Review;Integrated Security=True;TrustServerCertificate=True;");
+                optionsBuilder.UseSqlServer("Data Source=DESKTOP-PL7Q9Q6; Initial Catalog=Review;Integrated Security=True;TrustServerCertificate=True;");
             }
         }
+//        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+//        {
+//            if (!optionsBuilder.IsConfigured)
+//            {
+//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
+//                optionsBuilder.UseSqlServer("Data Source=LAPTOP-TC1PJ34D\\LONG;Initial Catalog=Review;Integrated Security=True;TrustServerCertificate=True;");
+//            }
+//        }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 			base.OnModelCreating(modelBuilder);
@@ -90,11 +90,7 @@ namespace ProjectReview.Models
                     .IsRequired()
                     .HasMaxLength(400);
                 entity.Property(x => x.Content).IsRequired(); 
-                entity.Property(x => x.Receiver)
-                    .IsRequired()
-                    .HasMaxLength(400);
                 entity.Property(x => x.FileName)
-                    .IsRequired()
                     .HasMaxLength(400); 
                 entity.Property(x => x.NumberPaper).IsRequired();
                 entity.Property(x => x.Language)
@@ -190,7 +186,6 @@ namespace ProjectReview.Models
                 entity.Property(x => x.Request).IsRequired();
                 entity.Property(x => x.Content).IsRequired();
                 entity.Property(x => x.FileName)
-                    .IsRequired()
                     .HasMaxLength(400);
                 entity.Property(x => x.Status).IsRequired();
 

@@ -1,7 +1,5 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using ProjectReview.DTO.Positions;
-using ProjectReview.DTO.Users;
 using ProjectReview.DTO.Users;
 using ProjectReview.Models;
 using ProjectReview.Models.Entities;
