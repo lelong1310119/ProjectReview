@@ -12,7 +12,7 @@ namespace ProjectReview.Controllers
 {
     public class JobsController : BaseController
     {
-        private readonly DataContext _context;
+        private readonly IJo
 
         public JobsController(DataContext context)
         {
