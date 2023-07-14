@@ -36,6 +36,7 @@
     <Folder Include="Migrations\" />
     <Folder Include="wwwroot\Document\" />
     <Folder Include="wwwroot\Job\" />
+    <Folder Include="wwwroot\file\" />
   </ItemGroup>
 
 </Project>

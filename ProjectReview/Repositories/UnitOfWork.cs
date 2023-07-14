@@ -18,6 +18,8 @@ namespace ProjectReview.Repositories
 		IProfileDocumentRepository ProfileDocumentRepository { get; }
 		IDocumentRepository DocumentRepository { get; }
 		IJobRepository JobRepository { get; }
+		IJobUserRepository JobUserRepository { get; }
+		IOpinionRepository	OpinionRepository { get; }
 	}
 
 	public class UnitOfWork : IUnitOfWork
@@ -37,6 +39,8 @@ namespace ProjectReview.Repositories
 		public IProfileDocumentRepository ProfileDocumentRepository { get; private set; }
 		public IDocumentRepository DocumentRepository { get; private set; }
 		public IJobRepository JobRepository { get; private set; }
+		public IJobUserRepository JobUserRepository { get; private set; }
+		public IOpinionRepository OpinionRepository { get; private set; }
 
 		public UnitOfWork(DataContext context, IMapper mapper, ICurrentUser currentUser)
 		{
@@ -54,6 +58,8 @@ namespace ProjectReview.Repositories
 			ProfileDocumentRepository = new ProfileDocumentRepository(context, mapper);
 			DocumentRepository = new DocumentRepository(context, mapper, currentUser);
 			JobRepository = new JobRepository(context, mapper, currentUser);
+			JobUserRepository = new JobUserRepository(context);
+			OpinionRepository = new OpinionRepository(context, mapper, currentUser);
 		}
 
 		public void Save()

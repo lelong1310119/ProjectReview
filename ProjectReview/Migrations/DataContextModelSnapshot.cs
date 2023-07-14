@@ -461,6 +461,9 @@ namespace ProjectReview.Migrations
                         .HasMaxLength(400)
                         .HasColumnType("nvarchar(400)");
 
+                    b.Property<string>("FilePath")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<long>("JobId")
                         .HasColumnType("bigint");
 

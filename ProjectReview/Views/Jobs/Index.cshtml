@@ -8,6 +8,7 @@
 	int currentPage = (int)(ViewData["page"] ?? 0);
 	int totalPage = (int)(ViewData["totalPage"] ?? 0);
 	int pageSize = (int)(ViewData["pageSize"] ?? 10);
+	long id = (long)ViewData["Id"];
 	var count = currentPage * 10 - 9;
 }
 
@@ -80,7 +81,7 @@
 							<div class="mb-3 col-md-4 ms-auto">
 								<form method="POST" class="needs-validation" novalidate="" autocomplete="off">
 									<div class="mb-3">
-										<label asp-for="Content" class="mb-1 fw-bold">Họ tên</label>
+										<label asp-for="Content" class="mb-1 fw-bold">Nội dung công việc</label>
 										<input asp-for="Content" class="form-control" aria-required="true">
 										<span asp-validation-for="Content" class="text-danger"></span>
 									</div>
@@ -128,7 +129,6 @@
 														<td class="text-center">@item.Content</td>
 														<td class="text-center">@item.CreateUser.FullName</td>
 														<td class="text-center">@item.Request</td>
-														<td class="text-center">
 														<td>
 															<b>Chủ trì: </b><br />
 																@item.Host.FullName<br />
@@ -144,23 +144,53 @@
 														</td>
 														<td class="text-center">@item.CreateDate.ToString("dd/MM/yyyy")</td>
 														<td class="text-center">@item.Deadline.ToString("dd/MM/yyyy")</td>
-														@if (item.Status == 0)
+														@if (item.Deadline.Date < DateTime.Now.Date)
 														{
-															<td class="text-center"><a type="button" class="btn btn-success" asp-area="" asp-controller="Jobs" asp-action="Active" asp-route-id="@item.Id">Kích hoạt</a></td>
+															<td class="text-center">Quá hạn</td>
 														}
-														else
+														else if (item.Status == 0)
 														{
-															<td class="text-center">Hoạt động</td>
+															<td class="text-center">Đang chờ duyệt</td>
+														} else if (item.Status == 1)
+														{
+															<td class="text-center">Đang xử lý</td>
+														} else
+														{
+															<td class="text-center">Đã hoàn thành</td>
 														}
 														<td class=" text-center">
-															<a type="button" class="btn btn-warning btn-xs" asp-area="" asp-controller="Jobs" asp-action="Edit" asp-route-id="@item.Id">
-																<i class="fas fa-pencil-alt"></i>
-															</a>
-															@if (item.Status == 0)
+															@if (item.Deadline.Date >= DateTime.Now.Date)
 															{
-																<a type="button" class="btn btn-danger btn-xs" onclick="return confirm('Bạn chắc chắn muốn xóa thông tin này?');" asp-area="" asp-controller="Jobs" asp-action="Delete" asp-route-id="@item.Id">
-																	<i class="fas fa-trash-alt"></i>
-																</a>
+																@if(item.Status == 0 && item.HostId == id)
+																{
+																	<a type="button" class="btn btn-success m-2" asp-area="" asp-controller="Jobs" asp-action="Active" asp-route-id="@item.Id">
+																		Duyệt
+																	</a>
+																}
+																@if (item.Status == 1)
+																{
+																	<a type="button" class="btn btn-success m-2" asp-area="" asp-controller="Jobs" asp-action="Edit" asp-route-id="@item.Id">
+																		Xử lý
+																	</a>
+																}
+																@if (item.Status == 2)
+																{
+																	<a type="button" class="btn btn-success m-2" asp-area="" asp-controller="Jobs" asp-action="Edit" asp-route-id="@item.Id">
+																		Chi tiết
+																	</a>
+																}
+																@if(item.CreateUserId == id)
+																{
+																	<a type="button" class="btn btn-warning m-2" asp-area="" asp-controller="Jobs" asp-action="Edit" asp-route-id="@item.Id">
+																		Sửa
+																	</a>
+																}
+																@if (item.CreateUserId == id)
+																{
+																	<a type="button" class="btn btn-danger m-2" onclick="return confirm('Bạn chắc chắn muốn xóa thông tin này?');" asp-area="" asp-controller="Jobs" asp-action="Delete" asp-route-id="@item.Id">
+																		Xóa
+																	</a>
+																}
 															}
 														</td>
 													</tr>

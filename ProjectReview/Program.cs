@@ -8,6 +8,7 @@ using ProjectReview.Services.Departments;
 using ProjectReview.Services.Documents;
 using ProjectReview.Services.DocumentTypes;
 using ProjectReview.Services.JobProfiles;
+using ProjectReview.Services.Jobs;
 using ProjectReview.Services.PermissionGroups;
 using ProjectReview.Services.Positions;
 using ProjectReview.Services.Ranks;
@@ -31,26 +32,19 @@ builder.Services.AddDbContext<DataContext>(options =>
 //        options.UseSqlServer("Data Source=LAPTOP-TC1PJ34D\\LONG;Initial Catalog=Review;Integrated Security=True;TrustServerCertificate=True;"));
 builder.Services.AddScoped<DbSeeder>();
 builder.Services.AddSingleton<ICurrentUser, CurrentUser>();
-builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
 builder.Services.AddScoped<IDepartmentService, DepartmentService>();
-builder.Services.AddScoped<IPositionRepository,PositionRepository>();
 builder.Services.AddScoped<IPositionService, PositionService>();
-builder.Services.AddScoped<IRankRepository, RankRepository>();
 builder.Services.AddScoped<IRankService, RankService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IDocumentTypeRepository, DocumentTypeRepository>();
 builder.Services.AddScoped<IDocumentTypeService, DocumentTypeService>();
-builder.Services.AddScoped<IPermissionGroupRepository, PermissionGroupRepository>();
 builder.Services.AddScoped<IPermissionGroupService, PermissionGroupService>();
-builder.Services.AddScoped<ICategoryProfileRepository, CategoryProfileRepository>();
 builder.Services.AddScoped<ICategoryProfileService, CategoryProfileService>();
 builder.Services.AddScoped<IJobProfileRepository, JobProfileRepository>();
-builder.Services.AddScoped<IProfileDocumentRepository, ProfileDocumentRepository>();
 builder.Services.AddScoped<IJobProfileService, JobProfileService>();
-builder.Services.AddScoped<IDocumentRepository, DocumentRepository>();
 builder.Services.AddScoped<IDocumentService, DocumentService>();
+builder.Services.AddScoped<IJobService, JobService>();
+
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 var app = builder.Build();

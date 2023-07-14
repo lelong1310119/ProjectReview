@@ -19,6 +19,7 @@ namespace ProjectReview.Repositories
         Task<List<UserDTO>> GetAllActive();
         Task<CustomPaging<UserDTO>> GetCustomPaging(string filter, int page, int pageSize);
         Task<UpdateUserDTO> GetById(long id);
+        Task<List<UserDTO>> GetAllUser();
     }
 
 	public class UserRepository : IUserRepository
@@ -123,6 +124,14 @@ namespace ProjectReview.Repositories
         {
             var result = await _dataContext.Users
                                     .Where(x => ((x.Status == 1) && (x.UserName != "superadmin")))
+                                    .ToListAsync();
+            return _mapper.Map<List<User>, List<UserDTO>>(result);
+        }
+
+        public async Task<List<UserDTO>> GetAllUser()
+        {
+            var result = await _dataContext.Users
+                                    .Where(x => x.Status == 1)
                                     .ToListAsync();
             return _mapper.Map<List<User>, List<UserDTO>>(result);
         }

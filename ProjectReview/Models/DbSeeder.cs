@@ -214,7 +214,7 @@ namespace ProjectReview.Models
                 rolePermissions.Add(new RolePermission { PermissionGroupId = 1, RoleId = 8 });
                 rolePermissions.Add(new RolePermission { PermissionGroupId = 1, RoleId = 9 });
 
-                foreach (var item in rolePermissions)
+				foreach (var item in rolePermissions)
                 {
                     await rolePermissionSet.AddAsync(item);
                 }
@@ -230,25 +230,15 @@ namespace ProjectReview.Models
             {
                 var userSet = context.Users;
                 if (await userSet.AnyAsync()) return;
+                List<User> users = new List<User>();
+                users.Add(new User { Id = 1, FullName = "SuperAdmin", Birthday = DateTime.Now, CreateDate = DateTime.Now, Gender = "Nam", PermissionGroupId = 1, RankId = 8, PositionId = 1, DepartmentId = 1, UserName = "superadmin", Note = "", Status = 1, PasswordHash = HashPassword("123456"), Email = "superadmin@gmail.com" });
+                users.Add(new User { Id = 2, FullName = "Admin", Birthday = DateTime.Now, CreateDate = DateTime.Now, Gender = "Nam", PermissionGroupId = 1, RankId = 8, PositionId = 1, DepartmentId = 1, UserName = "admin", Note = "", Status = 1, PasswordHash = HashPassword("123456"), Email = "superadmin@gmail.com" });
+				users.Add(new User { Id = 3, FullName = "Long Lê", Birthday = DateTime.Now, CreateDate = DateTime.Now, Gender = "Nam", PermissionGroupId = 1, RankId = 8, PositionId = 1, DepartmentId = 1, UserName = "lelong", Note = "", Status = 1, PasswordHash = HashPassword("123456"), Email = "superadmin@gmail.com" });
 
-                User user = new User
+                foreach (var user in users)
                 {
-                    Id = 1,
-                    FullName = "SuperAdmin",
-                    Birthday = DateTime.Now,
-                    CreateDate = DateTime.Now,
-                    Gender = "Nam",
-                    PermissionGroupId = 1,
-                    RankId = 8,
-                    PositionId = 1,
-                    DepartmentId = 1,
-                    UserName = "superadmin",
-                    Note = "",
-                    Status = 0,
-                    PasswordHash = HashPassword("123456"),
-                    Email = "superadmin@gmail.com"
-                };
-                await userSet.AddAsync(user);
+					await userSet.AddAsync(user);
+				}
                 await context.SaveChangesAsync();
 
                 var userRoleSet = context.UserRoles;
@@ -263,8 +253,26 @@ namespace ProjectReview.Models
                 userRoles.Add(new UserRole { UserId = 1, RoleId = 7 });
                 userRoles.Add(new UserRole { UserId = 1, RoleId = 8 });
                 userRoles.Add(new UserRole { UserId = 1, RoleId = 9 });
+				userRoles.Add(new UserRole { UserId = 2, RoleId = 1 });
+				userRoles.Add(new UserRole { UserId = 2, RoleId = 2 });
+				userRoles.Add(new UserRole { UserId = 2, RoleId = 3 });
+				userRoles.Add(new UserRole { UserId = 2, RoleId = 4 });
+				userRoles.Add(new UserRole { UserId = 2, RoleId = 5 });
+				userRoles.Add(new UserRole { UserId = 2, RoleId = 6 });
+				userRoles.Add(new UserRole { UserId = 2, RoleId = 7 });
+				userRoles.Add(new UserRole { UserId = 2, RoleId = 8 });
+				userRoles.Add(new UserRole { UserId = 2, RoleId = 9 });
+				userRoles.Add(new UserRole { UserId = 3, RoleId = 1 });
+				userRoles.Add(new UserRole { UserId = 3, RoleId = 2 });
+				userRoles.Add(new UserRole { UserId = 3, RoleId = 3 });
+				userRoles.Add(new UserRole { UserId = 3, RoleId = 4 });
+				userRoles.Add(new UserRole { UserId = 3, RoleId = 5 });
+				userRoles.Add(new UserRole { UserId = 3, RoleId = 6 });
+				userRoles.Add(new UserRole { UserId = 3, RoleId = 7 });
+				userRoles.Add(new UserRole { UserId = 3, RoleId = 8 });
+				userRoles.Add(new UserRole { UserId = 3, RoleId = 9 });
 
-                foreach (var item in userRoles)
+				foreach (var item in userRoles)
                 {
                     await userRoleSet.AddAsync(item);
                 }

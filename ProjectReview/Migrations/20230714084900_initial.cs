@@ -452,6 +452,7 @@ namespace ProjectReview.Migrations
                     Id = table.Column<long>(type: "bigint", nullable: false),
                     Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     FileName = table.Column<string>(type: "nvarchar(400)", maxLength: 400, nullable: true),
+                    FilePath = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreateDate = table.Column<DateTime>(type: "datetime", nullable: false),
                     CreateUserId = table.Column<long>(type: "bigint", nullable: false),
                     JobId = table.Column<long>(type: "bigint", nullable: false)

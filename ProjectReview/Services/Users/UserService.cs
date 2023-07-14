@@ -1,9 +1,11 @@
-﻿using ProjectReview.Common;
+﻿using Microsoft.AspNetCore.Identity;
+using ProjectReview.Common;
 using ProjectReview.DTO.Departments;
 using ProjectReview.DTO.PermissionGroups;
 using ProjectReview.DTO.Positions;
 using ProjectReview.DTO.Ranks;
 using ProjectReview.DTO.Users;
+using ProjectReview.Models.Entities;
 using ProjectReview.Paging;
 using ProjectReview.Repositories;
 using System.Security.Cryptography;
@@ -28,7 +30,7 @@ namespace ProjectReview.Services.Users
 	{
 		private readonly IUnitOfWork _UOW;
 		private readonly ICurrentUser _currentUser;
-		public UserService(IUnitOfWork UOW, ICurrentUser currentUser)
+        public UserService(IUnitOfWork UOW, ICurrentUser currentUser)
 		{
 			_UOW = UOW;
 			_currentUser = currentUser;

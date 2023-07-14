@@ -16,6 +16,8 @@
     <script type="text/javascript">
         function initMenu() {
             var profile = document.getElementById("profile");
+            var input = document.querySelector('.search-field');
+            console.log(input);
             var list = document.getElementById("list-profile");
             profile.addEventListener("click", function () {
                 list.classList.toggle("hidden");

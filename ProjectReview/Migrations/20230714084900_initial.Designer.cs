@@ -12,7 +12,7 @@ using ProjectReview.Models;
 namespace ProjectReview.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230713093207_initial")]
+    [Migration("20230714084900_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -463,6 +463,9 @@ namespace ProjectReview.Migrations
                     b.Property<string>("FileName")
                         .HasMaxLength(400)
                         .HasColumnType("nvarchar(400)");
+
+                    b.Property<string>("FilePath")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<long>("JobId")
                         .HasColumnType("bigint");
