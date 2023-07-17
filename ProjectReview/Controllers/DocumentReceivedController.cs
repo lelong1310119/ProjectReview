@@ -1,18 +1,24 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using ProjectReview.DTO.CategoryProfiles;
+using ProjectReview.DTO.Departments;
 using ProjectReview.DTO.Documents;
 using ProjectReview.DTO.Users;
 using ProjectReview.Paging;
 using ProjectReview.Services.Documents;
+using ProjectReview.Services.Jobs;
 
 namespace ProjectReview.Controllers
 {
 	public class DocumentReceivedController : BaseController
 	{
 		private readonly IDocumentService _documentService;
-		public DocumentReceivedController(IDocumentService documentService)
+		private readonly IJobService _jobService;
+
+		public DocumentReceivedController(IDocumentService documentService, IJobService jobService)
 		{
 			_documentService = documentService;
+			_jobService = jobService;
 		}
 
 		public async Task<IActionResult> Index(int? page, int? size)
@@ -57,6 +63,14 @@ namespace ProjectReview.Controllers
 			return RedirectToAction(nameof(Index), new { page, size });
 		}
 
+		public async Task<IActionResult> Recall(long id)
+		{
+			int? page = HttpContext.Session.GetInt32("page");
+			int? size = HttpContext.Session.GetInt32("pageSize");
+			await _documentService.Recall(id);
+			return RedirectToAction(nameof(Index), new { page, size });
+		}
+
 		[HttpPost]
 		public async Task<ActionResult> Index([FromForm] DocumentFilter filter)
 		{
@@ -81,10 +95,48 @@ namespace ProjectReview.Controllers
             return View();
         }
 
-        // POST: Users/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
+		public async Task<IActionResult> Assign(long id)
+		{
+			var result = await _documentService.GetById(id);
+			if (result == null)
+			{
+				return NotFound();
+			}
+			ViewData["HostId"] = new SelectList(await _jobService.GetHostUser(), "Id", "FullName");
+			ViewData["InstructorId"] = new SelectList(await _jobService.GetHostUser(), "Id", "FullName");
+			ViewData["UserId"] = new SelectList(await _jobService.GetListUser(), "Id", "FullName");
+			AssignDocumentDTO assignDocumentDTO = new AssignDocumentDTO { DocumentId = result.Id, Content = result.Content, FileName = result.FileName, FilePath = result.FilePath , Deadline = DateTime.Now};
+			return View(assignDocumentDTO);
+		}
+
+		// POST: CategoryProfiles/Edit/5
+		// To protect from overposting attacks, enable the specific properties you want to bind to.
+		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> Assign([FromForm] AssignDocumentDTO assignDocumentDTO)
+		{
+			try
+			{
+				int? page = HttpContext.Session.GetInt32("page");
+				int? size = HttpContext.Session.GetInt32("pageSize");
+				await _documentService.Assign(assignDocumentDTO);
+				return RedirectToAction(nameof(Index), new { page, size });
+			}
+			catch (Exception ex)
+			{
+				ViewData["HostId"] = new SelectList(await _jobService.GetHostUser(), "Id", "FullName");
+				ViewData["InstructorId"] = new SelectList(await _jobService.GetHostUser(), "Id", "FullName");
+				ViewData["UserId"] = new SelectList(await _jobService.GetListUser(), "Id", "FullName");
+				ModelState.AddModelError("", ex.Message);
+				return View(assignDocumentDTO);
+			}
+		}
+
+		// POST: Users/Create
+		// To protect from overposting attacks, enable the specific properties you want to bind to.
+		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+		[HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([FromForm] CreateDocumentDTO createDocumentDTO)
         {
@@ -102,5 +154,37 @@ namespace ProjectReview.Controllers
                 return View(createDocumentDTO);
             }
         }
-	}
+
+        // GET: Departments/Edit/5
+        public async Task<IActionResult> Edit(long id)
+        {
+			var result = await _documentService.GetUpdate(id);
+            if (result == null)
+            {
+                return NotFound();
+            }
+            return View(result);
+        }
+
+        // POST: Departments/Edit/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Edit([FromForm] UpdateDocumentDTO documentDTO)
+        //{
+        //    try
+        //    {
+        //        int? page = HttpContext.Session.GetInt32("page");
+        //        int? size = HttpContext.Session.GetInt32("pageSize");
+        //        await _documentService;
+        //        return RedirectToAction(nameof(Index), new { page, size });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        ModelState.AddModelError("", ex.Message);
+        //        return View(department);
+        //    }
+        //}
+    }
 }

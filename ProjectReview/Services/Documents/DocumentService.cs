@@ -5,6 +5,7 @@ using ProjectReview.Models;
 using ProjectReview.Paging;
 using ProjectReview.Repositories;
 using ProjectReview.DTO.DocumentTypes;
+using ProjectReview.DTO.Jobs;
 
 namespace ProjectReview.Services.Documents
 {
@@ -18,8 +19,11 @@ namespace ProjectReview.Services.Documents
 		Task<DocumentDTO> CreateDocumentSent(CreateDocumentDTO createDocumentDTO);
 		Task<DocumentDTO> CreateDocumentReceived(CreateDocumentDTO createDocumentDTO);
 		Task Delete(long id);
-
-	}
+		Task<DocumentDTO> GetById(long id);
+		Task Assign(AssignDocumentDTO assignDocumentDTO);
+		Task Recall(long id);
+		Task<UpdateDocumentDTO> GetUpdate(long id);
+    }
 	public class DocumentService : IDocumentService
 	{
 		private readonly IUnitOfWork _UOW;
@@ -28,6 +32,21 @@ namespace ProjectReview.Services.Documents
 			_UOW = unitOfWork;
 		}
 
+		public async Task<UpdateDocumentDTO> GetUpdate(long id)
+		{
+			return await _UOW.DocumentRepository.GetUpdate(id);
+		}
+
+		public async Task Recall(long id)
+		{
+			await _UOW.DocumentRepository.Recall(id);
+		}
+
+		public async Task<DocumentDTO> GetById(long id)
+		{
+			return await _UOW.DocumentRepository.GetById(id);
+		}
+			 
 		public async Task Delete(long id)
 		{
 			await _UOW.DocumentRepository.Delete(id);
@@ -57,6 +76,31 @@ namespace ProjectReview.Services.Documents
 		{
 			return await _UOW.DocumentRepository.CreateDocumentReceived(createDocumentDTO);
 		}
+
+		public async Task Assign(AssignDocumentDTO assignDocumentDTO)
+		{
+			if (assignDocumentDTO.ListUserId == null || assignDocumentDTO.ListUserId.Count == 0)
+			{
+				throw new Exception("Bạn chưa chọn người xử lý công việc.");
+			}
+			CreateJobDTO createJobDTO = new CreateJobDTO
+			{
+				Content = assignDocumentDTO.Content,
+				FilePath = assignDocumentDTO.FilePath,
+				FileName = assignDocumentDTO.FileName,
+				Request = assignDocumentDTO.Request,
+				Deadline = assignDocumentDTO.Deadline,
+				HostId = assignDocumentDTO.HostId,
+				InstructorId = assignDocumentDTO.InstructorId
+			};
+			var result = await _UOW.JobRepository.Create(createJobDTO);
+			if (result != null)
+			{
+				await _UOW.JobRepository.CreateJobDocument(result.Id, assignDocumentDTO.DocumentId);
+				await _UOW.JobUserRepository.Create(assignDocumentDTO.ListUserId, result.Id);
+				await _UOW.DocumentRepository.Assign(assignDocumentDTO.DocumentId);
+			}
+		} 
 
 		public async Task<CustomPaging<DocumentDTO>> GetListDocumentSent(string? filter, int page, int pageSize)
 		{

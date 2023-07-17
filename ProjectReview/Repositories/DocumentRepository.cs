@@ -22,6 +22,9 @@ namespace ProjectReview.Repositories
         Task<List<Urgency>> GetListUrgency();
         Task<int> QuantityDocumentSent(DateTime date);
         Task<int> QuantityDocumentReceived(DateTime date);
+        Task<DocumentDTO> GetById(long id);
+        Task<UpdateDocumentDTO> GetUpdate(long id);
+
     }
 
     public class DocumentRepository : IDocumentRepository
@@ -34,6 +37,24 @@ namespace ProjectReview.Repositories
             _dataContext = dataContext; 
             _mapper = mapper;
             _currentUser = currentUser;
+        }
+
+        public async Task<UpdateDocumentDTO> GetUpdate(long id)
+        {
+            var result = await _dataContext.Documents
+                                    .Where(x => x.Id == id)
+                                    .FirstOrDefaultAsync();
+            if (result == null) return null;
+            return _mapper.Map<Document, UpdateDocumentDTO>(result);
+        }
+
+        public async Task<DocumentDTO> GetById(long id)
+        {
+            var result = await _dataContext.Documents
+                                    .Where(x => x.Id == id)
+                                    .FirstOrDefaultAsync();
+            if (result == null) return null;
+            return _mapper.Map<Document, DocumentDTO>(result);
         }
 
         public async Task<List<Density>> GetListDensity()
@@ -87,6 +108,15 @@ namespace ProjectReview.Repositories
             var result = await _dataContext.Documents
                             .Where(x => x.Id == id)
                             .FirstOrDefaultAsync();
+            if (result == null) return;
+            var jobDocument = await _dataContext.JobDocuments.Where(x => x.DocumentId == result.Id).FirstOrDefaultAsync();
+            if (jobDocument != null)
+            {
+                await _dataContext.Opinions.Where(x => x.JobId == jobDocument.JobId).ExecuteDeleteAsync();
+                await _dataContext.JobDocuments.Where(x => x.DocumentId == result.Id).ExecuteDeleteAsync();
+                await _dataContext.Handlers.Where(x => x.JobId == jobDocument.JobId).ExecuteDeleteAsync();
+                await _dataContext.Jobs.Where(x => x.Id == jobDocument.JobId).ExecuteDeleteAsync();
+            }
             if (result == null) return;
             result.IsAssign = false;
             _dataContext.Documents.Update(result);

@@ -20,7 +20,9 @@ namespace ProjectReview.Services.Jobs
 		Task Delete(long id);
 		Task<UpdateJobDTO> GetById(long id);
 		Task<JobDTO> Update(UpdateJobDTO updateJobDTO);
-    }
+		Task<List<UserDTO>> GetHostUser();
+
+	}
 
 	public class JobService : IJobService
 	{
@@ -55,26 +57,31 @@ namespace ProjectReview.Services.Jobs
 			return await _UOW.JobRepository.Update(updateJobDTO);
 		}
 
+		public async Task<List<UserDTO>> GetHostUser()
+		{
+			return await _UOW.UserRepository.GetHostUser();
+		}
+
 		public async Task<JobDTO> Create(CreateJobDTO createJobDTO)
 		{
-			if (createJobDTO.ListUserId.Count > 0) throw new Exception("Bạn chưa chọn người xử lý");
+			if (createJobDTO.ListUserId == null || createJobDTO.ListUserId .Count == 0) throw new Exception("Bạn chưa chọn người xử lý");
 			List<long> longs = createJobDTO.ListUserId;
 			var job = await _UOW.JobRepository.Create(createJobDTO);
-			if (job == null) return null;
+			if (job == null) throw new Exception("Null");
 			CreateOpinionDTO createOpinionDTO = new CreateOpinionDTO { Content = "Thêm mới công việc và phân công xử lý", JobId = job.Id };
 			await _UOW.OpinionRepository.Create(createOpinionDTO);
 			await _UOW.JobUserRepository.Create(longs, job.Id);
-			//if (createJobDTO.FormFile != null)
-			//{
-			//	job.FileName = createJobDTO.FormFile.FileName;
-   //             var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "file", "Job_" + job.Id.ToString() + "_" + job.FileName);
-   //             using (var fileStream = new FileStream(filePath, FileMode.Create))
-   //             {
-   //                 await createJobDTO.FormFile.CopyToAsync(fileStream);
-   //             }
-			//	job.FilePath = "Job_" + job.Id.ToString() + "_" + job.FileName;
-			//	return await _UOW.JobRepository.UpdateFile(job);
-			//}
+			if (createJobDTO.FormFile != null)
+			{
+				job.FileName = createJobDTO.FormFile.FileName;
+				var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "file", "Job_" + job.Id.ToString() + "_" + job.FileName);
+				using (var fileStream = new FileStream(filePath, FileMode.Create))
+				{
+					await createJobDTO.FormFile.CopyToAsync(fileStream);
+				}
+				job.FilePath = "Job_" + job.Id.ToString() + "_" + job.FileName;
+				return await _UOW.JobRepository.UpdateFile(job);
+			}
 			return job;
 		}
 

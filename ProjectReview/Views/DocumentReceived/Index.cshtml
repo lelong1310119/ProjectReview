@@ -136,16 +136,16 @@
 																<a type="button" class="m-2" onclick="return confirm('Bạn chắc chắn muốn xóa thông tin này?');" asp-area="" asp-controller="DocumentReceived" asp-action="Delete" asp-route-id="@item.Id">
 																	<img src="https://localhost:7123/icons/delete.gif" title="Xóa văn bản">
 																</a>
-																<a type="button" class="m-2" asp-area="" asp-controller="DocumentReceived" asp-action="Edit" asp-route-id="@item.Id">
-																	<img src="https://localhost:7123/icons/folders.png" title="Chuyển văn bản vòa hồ sơ">
+																<a type="button" class="m-2" asp-area="" asp-controller="DocumentReceived" asp-action="Assign" asp-route-id="@item.Id">
+																	<img src="https://localhost:7123/icons/folders.png" title="Đưa văn bản vào hồ sơ">
 																</a>
 															}
-															<a type="button" class="m-2" asp-area="" asp-controller="DocumentReceived" asp-action="Edit" asp-route-id="@item.Id">
+															<a type="button" class="m-2" asp-area="" asp-controller="DocumentReceived" asp-action="Assign" asp-route-id="@item.Id">
 																<img src="https://localhost:7123/icons/phanxl.png" title="Phân xử lý công việc">
 															</a>
 															@if (item.IsAssign == true)
 															{
-																<a type="button" class="m-2" asp-area="" asp-controller="DocumentReceived" asp-action="Edit" asp-route-id="@item.Id">
+																<a type="button" class="m-2" onclick="return confirm('Nếu thu hồi văn bản, các thông tin liên quan sẽ bị xóa. Bạn vẫn muốn thu hồi thông tin này?');" asp-area="" asp-controller="DocumentReceived" asp-action="Recall" asp-route-id="@item.Id">
 																	<img class="h-150" src="https://localhost:7123/icons/redo.png" title="Thu hồi văn bản">
 																</a>
 															}

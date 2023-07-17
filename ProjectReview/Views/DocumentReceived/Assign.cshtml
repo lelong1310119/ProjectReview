@@ -1,9 +1,8 @@
-﻿@model ProjectReview.DTO.Jobs.CreateJobDTO
+﻿@model ProjectReview.DTO.Documents.AssignDocumentDTO;
 @using ProjectReview.DTO.Users;
 
 @{
-    ViewData["Title"] = "Job-Create";
-    var users = ViewData["users"] as List<UserDTO>;
+    ViewData["Title"] = "DocumentReceived-Assign";
 }
 @*@section Scripts {
     <script>
@@ -21,7 +20,8 @@
                 </div>
                 <div class="card-body container-card">
                     <div class="card-content">
-                        <form asp-action="Create" enctype="multipart/form-data">
+                        <form asp-action="Assign" enctype="multipart/form-data">
+                            <input type="hidden" asp-for="DocumentId" />
                             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                             <div class="row">
                                 <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
@@ -37,14 +37,14 @@
                                     </div>
                                     <div class="form-group m-3">
                                         <label asp-for="Deadline" class="control-label">Hạn xử lý</label>
-                                        <input asp-for="Deadline" class="form-control" type="date"/>
+                                        <input asp-for="Deadline" class="form-control" type="date" />
                                         <span asp-validation-for="Deadline" class="text-danger"></span>
                                     </div>
-                                    <div class="form-group m-3">
-                                        <label asp-for="FormFile" class="control-label">Đính kèm tệp</label>
-                                        <input asp-for="FormFile" class="form-control" type="file" accept=".doc,.docx,.xls,.xlsx,.csv,.pdf" />
-                                        <span asp-validation-for="FormFile" class="text-danger"></span>
-                                    </div>
+                                    @*<div class="form-group m-3">
+                                    <label asp-for="FormFile" class="control-label">Đính kèm tệp</label>
+                                    <input asp-for="FormFile" class="form-control" type="file" accept=".doc,.docx,.xls,.xlsx,.csv,.pdf" />
+                                    <span asp-validation-for="FormFile" class="text-danger"></span>
+                                    </div>*@
                                 </div>
                                 <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                     <div class="form-group m-3">
@@ -62,11 +62,11 @@
                                 </div>
                             </div>
                             <div class="form-group m-3 d-flex justify-content-center align-items-center">
-                                <a type="button" class="btn btn-lg btn-secondary d-flex flex-column align-items-center justify-content-center" asp-area="" asp-controller="Jobs" asp-action="Index" asp-route-page="@ViewContext.HttpContext.Session.GetInt32("page")" style="width: 100px">
+                                <a type="button" class="btn btn-lg btn-secondary d-flex flex-column align-items-center justify-content-center" asp-area="" asp-controller="DocumentReceived" asp-action="Index" asp-route-page="@ViewContext.HttpContext.Session.GetInt32("page")" style="width: 100px">
                                     <i class="fa-solid fa-arrow-left"></i> Trở về
                                 </a>
                                 <button type="submit" class="btn btn-lg btn-primary mx-3 d-flex flex-column align-items-center justify-content-center" style="width: 100px">
-                                    <i class="fa-solid fa-save"></i>Thêm
+                                    <i class="fa-solid fa-save"></i>Chuyển
                                 </button>
                             </div>
                         </form>

@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using ProjectReview.DTO.Jobs;
 using ProjectReview.DTO.Users;
 using ProjectReview.Models;
 using ProjectReview.Models.Entities;
+using ProjectReview.Services;
 using ProjectReview.Services.Users;
 using System.Diagnostics;
 
@@ -12,14 +14,16 @@ namespace ProjectReview.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IUserService _userService;
+		private readonly IGenericService _genericService;
 
-        public HomeController(ILogger<HomeController> logger, IUserService userService)
+        public HomeController(ILogger<HomeController> logger, IUserService userService, IGenericService genericService)
         {
             _logger = logger;
             _userService = userService;
+			_genericService = genericService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index(int? filter)
         {
             if (HttpContext.Session.GetString("username") is null)
             {
@@ -27,7 +31,29 @@ namespace ProjectReview.Controllers
             }
             else
             {
-                return View();
+				int check = (filter) ?? 1;
+				DateTime date = DateTime.Now;	
+				ListJobDTO listJobDTO = await _genericService.ListJob(date);
+				ViewData["Birthday"] = await _genericService.GetListByBirthday(date);
+				ViewData["Profile"] = await _genericService.QuantityProfile();
+				ViewData["DocumentSent"] = await _genericService.QuantityDocumentSent(date);
+				ViewData["DocumentReceived"] = await _genericService.QuantityDocumentReceived(date);
+				ViewData["Year"] = date.Year;
+				ViewData["Notification"] = listJobDTO.Pending.Count + listJobDTO.Processing.Count;
+				ViewData["filter"] = filter;
+				if(filter == 3)
+				{
+					return View(listJobDTO.Processed);
+				}
+				if(filter == 1)
+				{
+					return View(listJobDTO.Pending);
+				}
+				if(filter == 4)
+				{
+					return View(listJobDTO.OutOfDate);
+				}
+                return View(listJobDTO.Processing);
             }
         }
 

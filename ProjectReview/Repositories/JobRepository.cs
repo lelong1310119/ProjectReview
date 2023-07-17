@@ -27,7 +27,8 @@ namespace ProjectReview.Repositories
         Task<JobDTO> Update(UpdateJobDTO updateJob);
         Task<UpdateJobDTO> GetById(long id);
         Task<List<JobDTO>> GetList();
-    }
+        Task CreateJobDocument(long jobId, long documentId);
+	}
 
     public class JobRepository : IJobRepository
     {
@@ -55,6 +56,19 @@ namespace ProjectReview.Repositories
 							.Where(x => x.Id == id)
 							.FirstOrDefaultAsync();
 			if (result == null) return;
+            var jobDocument = await _dataContext.JobDocuments.Where(x => x.JobId == id).FirstOrDefaultAsync();
+            if (jobDocument != null)
+            {
+                var document = await _dataContext.Documents
+                            .Where(x => x.Id == jobDocument.DocumentId)
+                            .FirstOrDefaultAsync();
+                if (document != null)
+                {
+                    document.IsAssign = false;
+                    _dataContext.Documents.Update(document);
+                }
+            }
+            await _dataContext.JobDocuments.Where(x => x.JobId == id).ExecuteDeleteAsync();
             if (result.FilePath != null && result.FilePath != "")
             {
 				var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "file", result.FilePath);
@@ -63,8 +77,8 @@ namespace ProjectReview.Repositories
 					System.IO.File.Delete(filePath);
 				}
 			}
-			_dataContext.Jobs.Remove(result);
-			await _dataContext.SaveChangesAsync();
+            _dataContext.Jobs.Remove(result);
+            await _dataContext.SaveChangesAsync();
 		}
 
         public async Task<CustomPaging<JobDTO>> GetCustomPaging(string filter, int page, int pageSize)
@@ -261,6 +275,12 @@ namespace ProjectReview.Repositories
             await _dataContext.Jobs.AddAsync(job);
             await _dataContext.SaveChangesAsync();
             return _mapper.Map<Job, JobDTO>(job);
+        }
+
+        public async Task CreateJobDocument(long jobId, long documentId)
+        {
+            await _dataContext.JobDocuments.AddAsync(new JobDocument { JobId = jobId, DocumentId = documentId });
+            await _dataContext.SaveChangesAsync();
         }
 
         public async Task<JobDTO> GetByDocument(long id)

@@ -4,6 +4,7 @@ using ProjectReview.DTO.Users;
 using ProjectReview.Models;
 using ProjectReview.Models.Entities;
 using ProjectReview.Paging;
+using System.Net.WebSockets;
 
 namespace ProjectReview.Repositories
 {
@@ -21,7 +22,8 @@ namespace ProjectReview.Repositories
         Task<UpdateUserDTO> GetById(long id);
         Task<List<UserDTO>> GetAllUser();
         Task<List<UserDTO>> GetUserByBirthday(DateTime date);
-    }
+        Task<List<UserDTO>> GetHostUser();
+	}
 
 	public class UserRepository : IUserRepository
 	{
@@ -144,6 +146,14 @@ namespace ProjectReview.Repositories
                                     .ToListAsync();
             return _mapper.Map<List<User>, List<UserDTO>>(result);
         }
+
+        public async Task<List<UserDTO>> GetHostUser()
+        {
+			var result = await _dataContext.Users
+									.Where(x => (x.Status == 1 && x.DepartmentId == 1))
+									.ToListAsync();
+			return _mapper.Map<List<User>, List<UserDTO>>(result);
+		}
 
         public async Task<CustomPaging<UserDTO>> GetCustomPaging(string filter, int page, int pageSize)
         {

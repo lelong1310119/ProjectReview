@@ -1,5 +1,44 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model IList<ProjectReview.DTO.Jobs.JobDTO>
+@using ProjectReview.DTO.Users;
+
+@{
+	ViewData["Title"] = "Home Page";
+	var users = ViewData["Birthday"] as List<UserDTO>;
+	var filter = (int) (ViewData["filter"] ?? 1);
+	var check1 = false;
+	var check2 = false;
+	var check3 = false;
+	var check4 = false;
+	if (filter == 1) { check1 = true; }
+	else if (filter == 2) { check2 = true; }
+	else if (filter == 3) { check3 = true; }
+	else { check4 = true; }
+}
+
+@section Scripts{
+	<script type="text/javascript">
+		$('input[name="filter"]').on('change', function () {
+			// Lấy giá trị của radio button được chọn
+			var filter = $('input[name="filter"]:checked').val();
+
+			// Gọi hàm goToPage() và truyền giá trị của radio button được chọn
+			goToPage(filter);
+		});
+		$(document).ready(function () {
+			$('#radio1').click(function () {
+				window.location.href = '/Home/Index?filter=1';
+			});
+			$('#radio2').click(function () {
+				window.location.href = '/Home/Index?filter=2';
+			});
+			$('#radio3').click(function () {
+				window.location.href = '/Home/Index?filter=3';
+			});
+			$('#radio4').click(function () {
+				window.location.href = '/Home/Index?filter=4';
+			});
+		});
+	</script>
 }
 
 <div class="container-fluid">
@@ -7,16 +46,16 @@
 		<div class="col-xs-12 col-md-6 col-lg-6 col-xl-3">
 			<div class="card-box noradius noborder bg-danger">
 				<i class="far fa-envelope float-right text-white"></i>
-				<h6 class="text-white m-b-20">Văn bản đến (2023)</h6>
-				<h1 class="m-b-20 text-white counter">1</h1>
+				<h6 class="text-white m-b-20">Văn bản đến (@ViewData["Year"])</h6>
+				<h1 class="m-b-20 text-white counter">@ViewData["DocumentReceived"]</h1>
 			</div>
 		</div>
 
 		<div class="col-xs-12 col-md-6 col-lg-6 col-xl-3">
 			<div class="card-box noradius noborder bg-primary">
 				<i class="fas fa-envelope float-right text-white"></i>
-				<h6 class="text-white m-b-20">Văn bản đi (2023)</h6>
-				<h1 class="m-b-20 text-white counter">1</h1>
+				<h6 class="text-white m-b-20">Văn bản đi (@ViewData["Year"])</h6>
+				<h1 class="m-b-20 text-white counter">@ViewData["DocumentSent"]</h1>
 			</div>
 		</div>
 
@@ -24,7 +63,7 @@
 			<div class="card-box noradius noborder bg-warning">
 				<i class="fas fa-tasks float-right text-white"></i>
 				<h6 class="text-white m-b-20">Danh mục hồ sơ</h6>
-				<h1 class="m-b-20 text-white counter">2</h1>
+				<h1 class="m-b-20 text-white counter">@ViewData["Profile"]</h1>
 
 			</div>
 		</div>
@@ -32,20 +71,20 @@
 		<div class="col-xs-12 col-md-6 col-lg-6 col-xl-3">
 			<div class="card-box noradius noborder bg-info">
 				<i class="fab fa-app-store float-right text-white"></i>
-				<h6 class="text-white m-b-20">Nhiệm vụ - Thông báo</h6>
-				<h1 class="m-b-20 text-white counter">1</h1>
+				<h6 class="text-white m-b-20">Nhiệm vụ cần giải quyết</h6>
+				<h1 class="m-b-20 text-white counter">@ViewData["Notification"]</h1>
 			</div>
 		</div>
 	</div>
 	<div class="row">
 		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-9 col-xl-9">
-			<div class="row">
+			@*<div class="row">
 
 				<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6 col-xl-6">
 					<div class="card mb-3 card-border">
 						<div class="card-header card-title">
 							<h3><a href="?cate=vanbanden"><i class="far fa-envelope"></i> Văn bản đến</a></h3>
-							<div class="time-update small text-muted">Cập nhật: 13/05/2023</div>
+							<div class="time-update small text-muted">Cập nhật: @DateTime.Now.Date</div>
 						</div>
 
 						<div class="card-body">
@@ -65,7 +104,6 @@
 						</div>
 
 					</div>
-					<!-- end card-->
 				</div>
 
 
@@ -73,7 +111,7 @@
 					<div class="card mb-3 card-border">
 						<div class="card-header card-title">
 							<h3><a href="?cate=vanbandi"><i class="fas fa-envelope"></i> Văn bản đi</a></h3>
-							<div class="time-update small text-muted">Cập nhật: 13/05/2023</div>
+							<div class="time-update small text-muted">Cập nhật: @DateTime.Now.Date</div>
 						</div>
 
 						<div class="card-body">
@@ -93,507 +131,84 @@
 							<a href="?cate=vanbandi">Xem thêm <i class="fas fa-angle-double-right"></i></a>
 						</div>
 					</div>
-					<!-- end card-->
 				</div>
-			</div>
-
-			<!-- Modal mở công văn đến -->
-			<div class="modal fade" role="dialog" aria-labelledby="frViewVanbanden" aria-hidden="true" data-backdrop="static" id="frViewVanbanden">
-				<div class="modal-dialog">
-					<div class="modal-content">
-						<div class="modal-header">
-							<h5 class="modal-title">Thông tin chi tiết văn bản đến</h5>
-							<button type="button" class="close" data-dismiss="modal">
-								<span aria-hidden="true">×</span>
-								<span class="sr-only">Close</span>
-							</button>
-						</div>
-
-						<div class="modal-body view-detail">
-							<div class="row">
-								<div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 col-xl-3">
-									<div class="form-group">
-										<label>Ngày đến: </label>
-										<span id="txtngayden"></span>
-									</div>
-								</div>
-								<div class="col-xs-12 col-sm-12 col-md-2 col-lg-2 col-xl-2">
-									<div class="form-group">
-										<label>Số đến: </label>
-										<span id="txtsoden"></span>
-									</div>
-								</div>
-								<div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 col-xl-3">
-									<div class="form-group">
-										<label>Số ký hiệu: </label>
-										<span id="txtsokyhieuvanbanden"></span>
-									</div>
-								</div>
-								<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 col-xl-4">
-									<div class="form-group">
-										<label>Ngày tháng văn bản: </label>
-										<span id="txtngaythangvanbanden"></span>
-									</div>
-								</div>
-							</div>
-
-							<div class="row">
-
-								<div class="col-xs-12 col-sm-12 col-md-8 col-lg-8 col-xl-8">
-									<div class="form-group">
-										<label>Cơ quan ban hành văn bản: </label>
-										<span id="txtcoquanbanhanhvanbanden"></span>
-									</div>
-								</div>
-								<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 col-xl-4">
-									<div class="form-group">
-										<label>Tên loại văn bản: </label>
-										<span id="txttenloaivanbanden"></span>
-									</div>
-								</div>
-
-							</div>
-
-							<div class="row">
-								<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
-									<div class="form-group">
-										<label>Trích yếu nội dung: </label>
-										<span id="txttrichyeuvanbanden"></span>
-									</div>
-								</div>
-							</div>
-
-							<div class="row">
-								<div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 col-xl-3">
-									<div class="form-group">
-										<label>Độ mật: </label>
-										<span id="txtdomatvanbanden"></span>
-									</div>
-								</div>
-								<div class="col-xs-12 col-sm-12 col-md-2 col-lg-2 col-xl-2">
-									<div class="form-group">
-										<label>Độ khẩn: </label>
-										<span id="txtdokhanvanbanden"></span>
-									</div>
-								</div>
-								<div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 col-xl-3">
-									<div class="form-group">
-										<label>Số tờ: </label>
-										<span id="txtsotrangvanbanden"></span>
-									</div>
-								</div>
-
-								<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 col-xl-4">
-
-									<div class="form-group">
-										<label>Ngày chuyển: </label>
-										<span id="txtngaychuyenvanbanden"></span>
-									</div>
-								</div>
-							</div>
-
-							<div class="row">
-								<div class="col-xs-12 col-sm-12 col-md-5 col-lg-5 col-xl-5">
-									<div class="form-group">
-										<label>Đơn vị hoặc người nhận: </label><br>
-										<span id="txtdonvinhanvanbanden"></span>
-									</div>
-								</div>
-								<div class="col-xs-12 col-sm-12 col-md-7 col-lg-7 col-xl-7">
-									<div class="form-group">
-										<label>Nội dung yêu cầu xử lý: </label><br>
-										<span id="txtnoidungnhiemvuvanbanden"></span>
-									</div>
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
-									<div class="form-group">
-										<label>Danh mục hồ sơ: </label>
-										<span id="txtdanhmuchosovanbanden"></span>
-									</div>
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
-									<div class="form-group">
-										<label>Tệp đính kèm: </label>
-										<div id="listfilevanbanden"></div>
-									</div>
-								</div>
-							</div>
-						</div>
-
-						<div class="modal-footer">
-							<button type="button" class="btn btn-sm btn-danger" data-dismiss="modal"><i class="fas fa-times"></i> Đóng</button>
-						</div>
-					</div>
-				</div>
-			</div>
-			<!-- End modal -->
-			<!-- Modal mở công văn đi -->
-			<div class="modal fade" role="dialog" aria-labelledby="frViewVanbandi" aria-hidden="true" data-backdrop="static" id="frViewVanbandi">
-				<div class="modal-dialog">
-					<div class="modal-content">
-						<div class="modal-header">
-							<h5 class="modal-title">Thông tin chi tiết văn bản đi</h5>
-							<button type="button" class="close" data-dismiss="modal">
-								<span aria-hidden="true">×</span>
-								<span class="sr-only">Close</span>
-							</button>
-						</div>
-
-						<div class="modal-body view-detail">
-							<div class="row">
-								<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 col-xl-4">
-									<div class="form-group">
-										<label>Ngày ban hành: </label>
-										<span id="txtngaybanhanh"></span>
-									</div>
-								</div>
-								<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 col-xl-4">
-									<div class="form-group">
-										<label>Số ký hiệu: </label>
-										<span id="txtsokyhieuvanbandi"></span>
-									</div>
-								</div>
-								<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 col-xl-4">
-									<div class="form-group">
-										<label>Loại văn bản: </label>
-										<span id="txtloaivanbandi"></span>
-									</div>
-								</div>
-							</div>
-
-							<div class="row">
-								<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
-									<div class="form-group">
-										<label>Trích yếu nội dung: </label>
-										<span id="txttrichyeuvanbandi"></span>
-									</div>
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 col-xl-4">
-									<div class="form-group">
-										<label>Ngày chuyển: </label>
-										<span id="txtngaychuyenvanbandi"></span>
-									</div>
-								</div>
-								<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 col-xl-4">
-									<div class="form-group">
-										<label>Độ mật: </label>
-										<span id="txtdomatvanbandi"></span>
-									</div>
-								</div>
-								<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 col-xl-4">
-									<div class="form-group">
-										<label>Độ khẩn: </label>
-										<span id="txtdokhanvanbandi"></span>
-									</div>
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 col-xl-4">
-									<div class="form-group">
-										<label>Số bản: </label>
-										<span id="txtsobanvanbandi"></span>
-									</div>
-								</div>
-								<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 col-xl-4">
-									<div class="form-group">
-										<label>Số tờ: </label>
-										<span id="txtsotrangvanbandi"></span>
-									</div>
-								</div>
-								<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 col-xl-4">
-									<div class="form-group">
-										<label>Ngôn ngữ: </label>
-										<span id="txtngonnguvanbandi"></span>
-									</div>
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
-									<div class="form-group">
-										<label>Thuộc hồ sơ: </label>
-										<span id="txtdanhmuchosovanbandi"></span>
-									</div>
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-xs-12 col-sm-12 col-md-8 col-lg-8 col-xl-8">
-									<div class="form-group">
-										<label>Đơn vị soạn văn bản: </label>
-										<span id="txtdonvisoanvanbandi"></span>
-									</div>
-								</div>
-								<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 col-xl-4">
-									<div class="form-group">
-										<label>Người ký: </label>
-										<span id="txtnguoikyvanbandi"></span>
-									</div>
-								</div>
-
-							</div>
-							<div class="row">
-								<div class="col-xs-12 col-sm-12 col-md-8 col-lg-8 col-xl-8">
-									<div class="form-group">
-										<label>Đơn vị hoặc người nhận: </label><br>
-										<span id="txtdonvinhanvanbandi"></span>
-									</div>
-								</div>
-
-								<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 col-xl-4">
-									<div class="form-group">
-										<label>Đơn vị, người nhận bản lưu: </label><br>
-										<span id="txtnguoinhanluu_vanbandi"></span>
-									</div>
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
-									<div class="form-group">
-										<label>Tệp đính kèm: </label>
-										<div id="listfilevanbandi"></div>
-									</div>
-								</div>
-							</div>
-						</div>
-
-						<div class="modal-footer">
-							<button type="button" class="btn btn-sm btn-danger" data-dismiss="modal"><i class="fas fa-times"></i> Đóng</button>
-						</div>
-					</div>
-				</div>
-			</div>
-			<!-- End modal -->
-
-			<script>
-
-				// mở văn bản
-				function OpenVanbandi(idvanban) {
-
-					$.ajax({
-						url: 'vanban/vanbandi/actionVanbandi.php',
-						type: 'post',
-						data: { request: 5, idvanban: idvanban },
-						dataType: 'json',
-						success: function (response) {
-							if (response.status == 1) {
-
-								$('#txtngaybanhanh').html(response.data.txtngaybanhanh);
-								$('#txtsokyhieuvanbandi').html(response.data.txtsokihieu);
-								$('#txttrichyeuvanbandi').html(response.data.txttrichyeu);
-								$('#txtdonvisoanvanbandi').html(response.data.txtdonvisoan);
-								$('#txtloaivanbandi').html(response.data.txtloaivanban);
-								$('#txtdomatvanbandi').html(response.data.txtdomat);
-								$('#txtdokhanvanbandi').html(response.data.txtdokhan);
-								$('#txtsotrangvanbandi').html(response.data.txtsotrang);
-								$("#txtsobanvanbandi").html(response.data.txtsoban);
-								$("#txtngonnguvanbandi").html(response.data.txtngonngu);
-								$('#txtdanhmuchosovanbandi').html(response.data.txtdanhmuchoso);
-								$('#txtnguoikyvanbandi').html(response.data.txtnguoiky);
-								$('#txtdonvinhanvanbandi').html(response.data.txtdonvinhan);
-
-								$('#txtnguoinhanluu_vanbandi').html(response.data.txtnguoinhanvanbanluu);
-								$('#txtngaychuyenvanbandi').html(response.data.txtngaychuyen);
-								$('#listfilevanbandi').html(response.data.listfile);
-
-								$("#frViewVanbandi").modal("show"); // false
-								$('.modal-title').html('<img src="assets/icons/add_vb.png"> Xem chi tiết văn bản đi');
-
-							} else {
-								alert(response.data);
-							}
-						},
-						error: function (data) {
-							alert(data.msg);
-						}
-					});
-				}
-
-				// mở văn bản
-				function OpenVanbanden(idvanban) {
-
-					$.ajax({
-						url: 'vanban/vanbanden/actionVanbanden.php',
-						type: 'post',
-						data: { request: 5, idvanban: idvanban },
-						dataType: 'json',
-						success: function (response) {
-							if (response.status == 1) {
-
-								$('#txtngayden').html(response.data.txtngayden);
-								$('#txtsoden').html(response.data.txtsoden);
-								$('#txtsokyhieuvanbanden').html(response.data.txtsokihieu);
-								$('#txtngaythangvanbanden').html(response.data.txtngaybanhanh);
-								$('#txtcoquanbanhanhvanbanden').html(response.data.txttacgia);
-								$('#txttenloaivanbanden').html(response.data.txtloaivanban);
-								$('#txttrichyeuvanbanden').html(response.data.txttrichyeu);
-								$('#txtdomatvanbanden').html(response.data.txtdomat);
-								$('#txtdokhanvanbanden').html(response.data.txtdokhan);
-
-								$('#txtsotrangvanbanden').html(response.data.txtsotrang);
-								$('#txtdanhmuchosovanbanden').html(response.data.txtdanhmuchoso);
-								$('#txtdonvinhanvanbanden').html(response.data.txtnoinhan);
-								$('#txtnoidungnhiemvuvanbanden').html(response.data.txtnoidungtrinh);
-								$('#txtngaychuyenvanbanden').html(response.data.txtngaychuyen);
-								$('#listfilevanbanden').html(response.data.listfile);
-
-								$("#frViewVanbanden").modal("show"); // false
-								$('.modal-title').html('<img src="assets/icons/add_vb.png"> Xem chi tiết văn bản đến');
-
-							} else {
-								alert(response.data);
-							}
-						},
-						error: function (data) {
-							alert(data.msg);
-						}
-					});
-				}
-
-
-			</script>
+			</div>*@
 
 			<div class="row">
 				<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
 					<div class="card mb-3 card-border-workflow">
 						<div class="card-header card-title">
-							<h3><a href="?cate=Workflow"><i class="fas fa-tasks"></i> Danh sách nhiệm vụ</a></h3>
-							<div class="time-update small text-muted"><a href="?cate=Workflow">Xem thêm <i class="fas fa-angle-double-right"></i></a></div>
+							<h3><i class="fas fa-tasks"></i> Danh sách nhiệm vụ</h3>
+							<div class="time-update small text-muted m-4 pt-1"><a href="?cate=Workflow">Xem thêm <i class="fas fa-angle-double-right"></i></a></div>
 						</div>
-						<div class="toolbar">
-							<label class="custom-control custom-radio custom-control-inline">
-								<input type="radio" name="radWorkflow" class="custom-control-input" checked="" value="1">
-								<span class="custom-control-label">Đang xử lý</span>
-							</label>
-							<label class="custom-control custom-radio custom-control-inline">
-								<input type="radio" name="radWorkflow" class="custom-control-input" value="2">
-								<span class="custom-control-label">Đã hoàn thành</span>
-							</label>
-							<label class="custom-control custom-radio custom-control-inline">
-								<input type="radio" name="radWorkflow" class="custom-control-input" value="3">
-								<span class="custom-control-label">Quá hạn xử lý</span>
-							</label>
-							<label class="custom-control custom-radio custom-control-inline">
-								<input type="radio" name="radWorkflow" class="custom-control-input" value="4">
+						<div class="toolbar m-3">
+							<label class="custom-control custom-radio custom-control-inline me-3">
+								<input type="radio" name="filter" id="radio1" class="custom-control-input" value=1 checked=@check1>
 								<span class="custom-control-label">Đang chờ duyệt</span>
 							</label>
+							<label class="custom-control custom-radio custom-control-inline me-3">
+								<input type="radio" name="filter" id="radio2" class="custom-control-input" value=2 checked=@check2>
+								<span class="custom-control-label">Đang xử lý</span>
+							</label>
+							<label class="custom-control custom-radio custom-control-inline me-3">
+								<input type="radio" name="filter" id="radio3" class="custom-control-input" value=3 checked=@check3>
+								<span class="custom-control-label">Đã xử lý</span>
+							</label>
+							<label class="custom-control custom-radio custom-control-inline">
+								<input type="radio" name="filter" id="radio4" class="custom-control-input" value=4 checked=@check4>
+								<span class="custom-control-label">Quá hạn xử lý</span>
+							</label>
 						</div>
 						<div class="card-body">
-
 							<div class="widget-messages nicescroll" tabindex="5002" style="overflow: hidden; outline: none;">
-								<div id="listWorkflow">Không có nhiệm vụ nào</div>
+								@if(Model == null || Model.Count == 0)
+								{
+									<div id="listWorkflow">Không có nhiệm vụ nào</div>
+								} else
+								{
+									@foreach(var item in Model)
+									{
+										<div class="mb-4">
+											<p class="text-danger"><b class="text-primary">Nhiệm vụ: </b>@item.Content</p>
+											<p><b class="text-black">Bắt đầu: </b>@item.CreateDate.ToString("dd/MM/yyyy")</p>
+											<p><b class="text-black">Ngày hết hạn: </b>@item.Deadline.ToString("dd/MM/yyyy")</p>
+											<p><b class="text-black">Người giao: </b>@item.CreateUser.FullName</p>
+										</div>
+									}
+								}
 							</div>
-
 						</div>
 
 					</div>
-					<!-- end card-->
 				</div>
 			</div>
-			<script>
-				var idcanbologin = 18;
-				var idnhomquyen = 1;
-
-				// Load dữ liệu ra phần hiển thị ý kiến
-				function viewListWorkflow(idcanbologin, radWorkflow) {
-					$.ajax({
-						url: 'dashboard/actionWorkflow.php',
-						type: 'post',
-						data: { idcanbo: idcanbologin, radWorkflow: radWorkflow },
-						success: function (response) {
-							$("#listWorkflow").html(response);
-						},
-						error: function (data) {
-							alert(data.msg);
-						}
-					});
-				};
-
-				$(document).ready(function () {
-
-					var radWorkflow = $("input[name='radWorkflow']:checked").val();
-					viewListWorkflow(idcanbologin, radWorkflow);
-
-					$("input[name='radWorkflow']").change('click', function () {
-						var radWorkflow = $("input[name='radWorkflow']:checked").val();
-						viewListWorkflow(idcanbologin, radWorkflow);
-					});
-
-				});
-			</script>
-			<div class="row">
-
-				<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6 col-xl-6">
-					<div class="card mb-3 card-border-dmhs">
-						<div class="card-header card-title">
-							<h3><a href="?cate=laphoso&amp;subcat=danhmuchoso"><i class="fas fa-newspaper"></i> Danh mục hồ sơ</a></h3>
-							<div class="time-update small text-muted"><a href="?cate=laphoso&amp;subcat=danhmuchoso">Xem thêm <i class="fas fa-angle-double-right"></i></a></div>
-						</div>
-
-						<div class="card-body">
-
-							<div class="widget-messages nicescroll" tabindex="5003" style="overflow: hidden; outline: none;">
-
-								<div class="message-item">
-									<p class="message-item-user">Ký hiệu: 02/HSNT-HCTC</p>
-									<p class="message-item-msg">Tiêu đề: <a href="?cate=laphoso&amp;subcat=danhmuchoso&amp;iddanhmuchoso=23">Hồ sơ nguyên tắc</a></p>
-									<p class="message-item-date">Đang thực hiện</p>
-								</div><div class="message-item">
-									<p class="message-item-user">Ký hiệu: 01/HSQLNV</p>
-									<p class="message-item-msg">Tiêu đề: <a href="?cate=laphoso&amp;subcat=danhmuchoso&amp;iddanhmuchoso=22">Hồ sơ quản lý nghiệp vụ</a></p>
-									<p class="message-item-date">Đang thực hiện</p>
-								</div>
-							</div>
-						</div>
-
-					</div>
-					<!-- end card-->
-				</div>
-
-
-				<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6 col-xl-6">
-					<div class="card mb-3 card-border-hscv">
-						<div class="card-header card-title">
-							<h3><a href="?cate=laphoso&amp;subcat=hosocongviec"><i class="fas fa-tasks"></i> Hồ sơ công việc điện tử</a></h3>
-							<div class="time-update small text-muted"><a href="?cate=laphoso&amp;subcat=hosocongviec">Xem thêm <i class="fas fa-angle-double-right"></i></a></div>
-						</div>
-
-						<div class="card-body">
-
-							<div class="widget-messages nicescroll" tabindex="5004" style="overflow: hidden; outline: none;">
-								<div class="message-item">
-									<p class="message-item-user">Danh mục: Hồ sơ quản lý nghiệp vụ</p>
-									<p class="message-item-msg">Tiêu đề hồ sơ: <a href="?cate=laphoso&amp;subcat=hosocongviec&amp;idhoso=35">Hồ sơ quản lý nghiệp vụ</a></p>
-								</div><div class="message-item">
-									<p class="message-item-user">Danh mục: Hồ sơ quản lý nghiệp vụ</p>
-									<p class="message-item-msg">Tiêu đề hồ sơ: <a href="?cate=laphoso&amp;subcat=hosocongviec&amp;idhoso=34">Tạo hồ sơ điện tử</a></p>
-								</div>
-							</div>
-
-						</div>
-
-					</div>
-					<!-- end card-->
-				</div>
-			</div>
-		</div><div class="col-xs-12 col-sm-12 col-md-12 col-lg-3 col-xl-3">
+		</div>
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-3 col-xl-3">
 			<div class="card mb-3 card-border-birthday">
 				<div class="card-header card-title-birthday">
-					<h3><i class="fas fa-birthday-cake"></i> Thông báo sinh nhật <span class="totalCanboBirth">(0 cán bộ)</span></h3>
+					<h3><i class="fas fa-birthday-cake me-2"></i> Thông báo sinh nhật <span class="totalCanboBirth">(@users.Count cán bộ)</span></h3>
 
 				</div>
 
 				<div class="card-body">
-					<div class="birthday">
+					@if (users == null || users.Count == 0)
+					{
+						<div class="birthday">
 
-						Hôm nay không có ai sinh nhật
-					</div>
+							Hôm nay không có ai sinh nhật
+						</div>
+					} else
+					{
+						<h4 class="text-danger m-2 mb-4">Chúc mừng sinh nhật</h4>
+						<ul>
+							@foreach (var item in users)
+							{
+								<li class="m-2"><i class="fa-solid fa-star me-2"></i> @item.FullName (@item.Birthday.ToString("dd/MM/yyyy"))</li>
+							}
+						</ul>
+					}
 				</div>
-			</div><div class="card mb-3 card-border-alert-congviec">
+			@*</div><div class="card mb-3 card-border-alert-congviec">
 				<div class="card-header card-title-alert-congviec">
 					<h3><i class="fab fa-app-store"></i> Nhiệm vụ mới <span class="totalCongviec">( công việc)</span></h3>
 				</div>
@@ -601,37 +216,8 @@
 				<div class="card-body">
 					<div class="widget-messages nicescroll" tabindex="5005" style="overflow: hidden; outline: none;">
 					</div>
-				</div>
-			</div>
-		</div>
-	</div><!-- Modal hiển thị danh sách các công việc đến hạn giải quyết -->
-	<div class="modal fade" role="dialog" aria-labelledby="frAlertWorlflow" aria-hidden="true" data-backdrop="static" id="frAlertWorlflow">
-		<div class="modal-dialog modal-dialog-workflow">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title">Hệ thống nhắc việc</h5>
-					<button type="button" class="close" data-dismiss="modal">
-						<span aria-hidden="true">×</span>
-						<span class="sr-only">Close</span>
-					</button>
-				</div>
-
-				<div class="modal-body bg-modal-body">
-				</div>
+				</div>*@
 			</div>
 		</div>
 	</div>
-	<!-- End modal -->
-	<script>
-		var onNewWF = 0;
-		var onLimitWF = 0;
-
-		jQuery(document).ready(function ($) {
-			if ((onNewWF > 0) || (onLimitWF > 0)) {
-				$('#frAlertWorlflow').modal('show');
-				$('.modal-title').html("<img src='assets/icons/add_vb.png'> Hệ thống nhắc việc");
-			}
-		});
-	</script>
-
 </div>

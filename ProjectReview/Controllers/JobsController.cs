@@ -83,8 +83,8 @@ namespace ProjectReview.Controllers
 
         public async Task<IActionResult> Create()
         {
-            ViewData["HostId"] = new SelectList(_context.Users, "Id", "FullName");
-            ViewData["InstructorId"] = new SelectList(_context.Users, "Id", "FullName");
+            ViewData["HostId"] = new SelectList( await _jobService.GetHostUser(), "Id", "FullName");
+            ViewData["InstructorId"] = new SelectList(await _jobService.GetHostUser(), "Id", "FullName");
             ViewData["UserId"] =  new SelectList(await _jobService.GetListUser(), "Id", "FullName");
             return View();
         }
@@ -103,8 +103,8 @@ namespace ProjectReview.Controllers
             }
             catch (Exception ex)
             {
-                ViewData["HostId"] = new SelectList(_context.Users, "Id", "FullName");
-                ViewData["InstructorId"] = new SelectList(_context.Users, "Id", "FullName");
+                ViewData["HostId"] = new SelectList(await _jobService.GetHostUser(), "Id", "FullName");
+                ViewData["InstructorId"] = new SelectList(await _jobService.GetHostUser(), "Id", "FullName");
                 ViewData["UserId"] = new SelectList(await _jobService.GetListUser(), "Id", "FullName");
                 ModelState.AddModelError("", ex.Message);
                 return View(createJobDTO);
@@ -113,8 +113,8 @@ namespace ProjectReview.Controllers
 
         public async Task<IActionResult> Edit(long id)
         {
-            ViewData["HostId"] = new SelectList(_context.Users, "Id", "FullName");
-            ViewData["InstructorId"] = new SelectList(_context.Users, "Id", "FullName");
+            ViewData["HostId"] = new SelectList(await _jobService.GetHostUser(), "Id", "FullName");
+            ViewData["InstructorId"] = new SelectList(await _jobService.GetHostUser(), "Id", "FullName");
             ViewData["UserId"] = new SelectList(await _jobService.GetListUser(), "Id", "FullName");
             var result = await _jobService.GetById(id);
             if (result == null)
@@ -140,8 +140,8 @@ namespace ProjectReview.Controllers
             }
             catch (Exception ex)
             {
-                ViewData["HostId"] = new SelectList(_context.Users, "Id", "FullName");
-                ViewData["InstructorId"] = new SelectList(_context.Users, "Id", "FullName");
+                ViewData["HostId"] = new SelectList(await _jobService.GetHostUser(), "Id", "FullName");
+                ViewData["InstructorId"] = new SelectList(await _jobService.GetHostUser(), "Id", "FullName");
                 ViewData["UserId"] = new SelectList(await _jobService.GetListUser(), "Id", "FullName");
                 ModelState.AddModelError("", ex.Message);
                 return View(job);

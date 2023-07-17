@@ -8,6 +8,14 @@
 	int currentPage = (int)(ViewData["page"] ?? 0);
 	int totalPage = (int)(ViewData["totalPage"] ?? 0);
 	int pageSize = (int)(ViewData["pageSize"] ?? 10);
+	var check1 = false;
+	var check2 = false;
+	var check3 = false;
+	var check4 = false;
+	if (pageSize == 10) { check1 = true; }
+	else if (pageSize == 20) { check2 = true; }
+	else if (pageSize == 50) { check3 = true; }
+	else { check4 = true; }
 	var count = currentPage * 10 - 9;
 }
 
@@ -69,11 +77,11 @@
 								</a>
 								<div>
 									<span>Số dòng: </span>
-									<select id="selectPageSize" class="form-select mb-3" aria-label="Default select example" value=@pageSize style="width: 90px">
-										<option value=10>10</option>
-										<option value=20>20</option>
-										<option value=50>50</option>
-										<option value=100>100</option>
+									<select id="selectPageSize" class="form-select mb-3" style="width: 90px">
+										<option value=10 checked=@check1>10</option>
+										<option value=20 checked=@check2>20</option>
+										<option value=50 checked=@check3>50</option>
+										<option value=100 checked=@check4>100</option>
 									</select>
 								</div>
 							</div>
