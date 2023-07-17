@@ -26,6 +26,7 @@ namespace ProjectReview.Repositories
         Task Delete(long id);
         Task<JobDTO> Update(UpdateJobDTO updateJob);
         Task<UpdateJobDTO> GetById(long id);
+        Task<List<JobDTO>> GetList();
     }
 
     public class JobRepository : IJobRepository
@@ -82,7 +83,6 @@ namespace ProjectReview.Repositories
 											.Include(x => x.CreateUser)
 											.Include(x => x.Host)
 				                            .Include(x => x.Instructor)
-											.Include(x => x.JobDocument)
 											.Skip((page - 1) * pageSize)
 				                            .Take(pageSize)
 											.ToListAsync();
@@ -134,7 +134,6 @@ namespace ProjectReview.Repositories
 											.Include(x => x.CreateUser)
 											.Include(x => x.Host)
 											.Include(x => x.Instructor)
-											.Include(x => x.JobDocument)
 											.Skip((page - 1) * pageSize)
 											.Take(pageSize)
 											.ToListAsync();
@@ -176,6 +175,50 @@ namespace ProjectReview.Repositories
             _dataContext.Jobs.Update(job);
             await _dataContext.SaveChangesAsync();
             return _mapper.Map<Job, JobDTO>(job);
+        }
+
+        public async Task<List<JobDTO>> GetList()
+        {
+            List<long> jobIds = new List<long>();
+            var handler = await _dataContext.Handlers
+                            .Where(x => x.UserId == _currentUser.UserId)
+                            .ToListAsync();
+            if (handler.Count > 0)
+            {
+                foreach (var i in handler)
+                {
+                    jobIds.Add(i.JobId);
+                }
+            }
+            int count = await _dataContext.Jobs
+                                    .Where(x => (x.HostId == _currentUser.UserId || x.InstructorId == _currentUser.UserId || jobIds.Contains(x.Id)))
+                                    .CountAsync();
+            var result = await _dataContext.Jobs
+                                        .Where(x => (x.HostId == _currentUser.UserId || x.InstructorId == _currentUser.UserId || jobIds.Contains(x.Id)))
+                                        .Include(x => x.CreateUser)
+                                        .Include(x => x.Host)
+                                        .Include(x => x.Instructor)
+                                        .ToListAsync();
+            var jobs = _mapper.Map<List<Job>, List<JobDTO>>(result);
+            if (jobs.Count > 0)
+            {
+                foreach (var item in jobs)
+                {
+                    item.Users = new List<User>();
+                    List<Handler> handlers = await _dataContext.Handlers
+                                            .Where(x => x.JobId == item.Id)
+                                            .Include(x => x.User)
+                                            .ToListAsync();
+                    if (handlers.Count > 0)
+                    {
+                        foreach (var j in handlers)
+                        {
+                            item.Users.Add(j.User);
+                        }
+                    }
+                }
+            }
+            return jobs;
         }
 
         public async Task<JobDTO> Update(UpdateJobDTO updateJob)

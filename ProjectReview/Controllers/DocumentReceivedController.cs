@@ -90,7 +90,7 @@ namespace ProjectReview.Controllers
         {
             try
             {
-				await _documentService.Create(createDocumentDTO);
+				await _documentService.CreateDocumentReceived(createDocumentDTO);
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)

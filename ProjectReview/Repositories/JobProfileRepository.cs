@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using ProjectReview.Common;
 using ProjectReview.DTO.JobProfiles;
-using ProjectReview.DTO.JobProfiles;
 using ProjectReview.Models;
 using ProjectReview.Models.Entities;
 using ProjectReview.Paging;
@@ -24,8 +23,9 @@ namespace ProjectReview.Repositories
 		Task<List<JobProfileDTO>> GetAll();
 		Task<List<JobProfileDTO>> GetAllActive();
 		Task<CustomPaging<JobProfileDTO>> GetCustomPaging(string filter, int page, int pageSize);
+		Task<int> QuantityProfile();
 
-	}
+    }
 	public class JobProfileRepository : IJobProfileRepository
 	{
 		private readonly DataContext _dataContext;
@@ -68,6 +68,13 @@ namespace ProjectReview.Repositories
 				_dataContext.JobProfiles.Update(profile);
 			}
 			await _dataContext.SaveChangesAsync();
+		}
+
+		public async Task<int> QuantityProfile()
+		{
+			return await _dataContext.JobProfiles
+								.Where(x => x.Status == 1)
+								.CountAsync();
 		}
 
 		public async Task CloseList(long id)

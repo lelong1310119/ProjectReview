@@ -3,7 +3,7 @@
 @using ProjectReview.Models.Entities;
 
 @{
-	ViewData["Title"] = "Document";
+	ViewData["Title"] = "DocumentReceived";
 	var items = ViewData["items"] as List<DocumentDTO>;
 	int currentPage = (int)(ViewData["page"] ?? 0);
 	int totalPage = (int)(ViewData["totalPage"] ?? 0);
@@ -26,7 +26,7 @@
 				const size = choose.value;
 				console.log(size);
 				console.log(choose)
-				window.location.href = '/DocumentSent/Index?size=' + size;
+				window.location.href = '/DocumentReceived/Index?size=' + size;
 			});
 
 		btnGo.addEventListener('click', function (e) {
@@ -39,7 +39,7 @@
 				input.classList.add('is-invalid');
 				return;
 			}
-			window.location.href = '/DocumentSent/Index?page=' + page + '&size=' + pageSize;
+			window.location.href = '/DocumentReceived/Index?page=' + page + '&size=' + pageSize;
 		});
 
 		input.addEventListener('input', function () {
@@ -48,7 +48,7 @@
 			input.classList.remove('is-invalid');
 		});
 		function goToPage(page) {
-			window.location.href = "/DocumentSent/Index?page=" + page + '&size=' + pageSize;
+			window.location.href = "/DocumentReceived/Index?page=" + page + '&size=' + pageSize;
 		}
 	</script>
 }

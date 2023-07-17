@@ -20,6 +20,7 @@ namespace ProjectReview.Repositories
         Task<CustomPaging<UserDTO>> GetCustomPaging(string filter, int page, int pageSize);
         Task<UpdateUserDTO> GetById(long id);
         Task<List<UserDTO>> GetAllUser();
+        Task<List<UserDTO>> GetUserByBirthday(DateTime date);
     }
 
 	public class UserRepository : IUserRepository
@@ -45,6 +46,14 @@ namespace ProjectReview.Repositories
 			await UpdateRole(user.Id, user.PermissionGroupId);
 			return _mapper.Map<User, UserDTO>(user);
 		}
+
+        public async Task<List<UserDTO>> GetUserByBirthday(DateTime date)
+        {
+            var result = await _dataContext.Users
+                                    .Where(x => (x.Birthday.Day == date.Day && x.Birthday.Month == date.Month && x.Status == 1))
+                                    .ToListAsync();
+            return _mapper.Map<List<User>, List<UserDTO>>(result);   
+        }
 
         public async Task<UserDTO> Update(UpdateUserDTO updateUser)
         {
@@ -105,7 +114,7 @@ namespace ProjectReview.Repositories
 		public async Task<bool> GetUserByEmail(string email)
 		{
 			var result = await _dataContext.Users
-							.Where(x => x.Email == email)
+							.Where(x => (x.Email == email && x.Status == 1))
 							.FirstOrDefaultAsync();
 			if (result == null) return false;
 			return true;

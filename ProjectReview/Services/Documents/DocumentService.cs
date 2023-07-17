@@ -15,7 +15,8 @@ namespace ProjectReview.Services.Documents
         Task<List<Density>> GetListDensity();
         Task<List<Urgency>> GetListUrgency();
 		Task<List<DocumentTypeDTO>> GetListDocument();
-		Task<DocumentDTO> Create(CreateDocumentDTO createDocumentDTO);
+		Task<DocumentDTO> CreateDocumentSent(CreateDocumentDTO createDocumentDTO);
+		Task<DocumentDTO> CreateDocumentReceived(CreateDocumentDTO createDocumentDTO);
 		Task Delete(long id);
 
 	}
@@ -47,12 +48,17 @@ namespace ProjectReview.Services.Documents
             return await _UOW.DocumentRepository.GetListUrgency();
         }
 
-		public async Task<DocumentDTO> Create(CreateDocumentDTO createDocumentDTO)
+		public async Task<DocumentDTO> CreateDocumentReceived(CreateDocumentDTO createDocumentDTO)
 		{
 			return await _UOW.DocumentRepository.CreateDocumentReceived(createDocumentDTO);
 		}
 
-        public async Task<CustomPaging<DocumentDTO>> GetListDocumentSent(string? filter, int page, int pageSize)
+		public async Task<DocumentDTO> CreateDocumentSent(CreateDocumentDTO createDocumentDTO)
+		{
+			return await _UOW.DocumentRepository.CreateDocumentReceived(createDocumentDTO);
+		}
+
+		public async Task<CustomPaging<DocumentDTO>> GetListDocumentSent(string? filter, int page, int pageSize)
 		{
 			filter = (filter ?? "");
 			var result = await _UOW.DocumentRepository.GetListDocumentSent(filter, page, pageSize);

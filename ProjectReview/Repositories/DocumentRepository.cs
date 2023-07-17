@@ -20,8 +20,8 @@ namespace ProjectReview.Repositories
         Task<CustomPaging<DocumentDTO>> GetListDocumentReceived(string filter, int page, int pageSize);
         Task<List<Density>> GetListDensity();
         Task<List<Urgency>> GetListUrgency();
-
-
+        Task<int> QuantityDocumentSent(DateTime date);
+        Task<int> QuantityDocumentReceived(DateTime date);
     }
 
     public class DocumentRepository : IDocumentRepository
@@ -55,6 +55,20 @@ namespace ProjectReview.Repositories
                             .Where(x => x.Id == id)
                             .ExecuteDeleteAsync();
             await _dataContext.SaveChangesAsync();
+        }
+
+        public async Task<int> QuantityDocumentSent(DateTime date)
+        {
+            return await _dataContext.Documents
+                                .Where(x => (x.CreateDate.Year == date.Year && x.Type == 1))
+                                .CountAsync();
+        }
+
+        public async Task<int> QuantityDocumentReceived(DateTime date)
+        {
+            return await _dataContext.Documents
+                                .Where(x => (x.CreateDate.Year == date.Year && x.Type == 0))
+                                .CountAsync();
         }
 
         public async Task Assign(long id)
