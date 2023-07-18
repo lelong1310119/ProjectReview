@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualBasic;
+using ProjectReview.DTO.Departments;
 using ProjectReview.DTO.PermissionGroups;
 using ProjectReview.Enums;
 using ProjectReview.Models;
@@ -66,34 +67,25 @@ namespace ProjectReview.Controllers
 		}
 
 
-		// GET: PermissionGroups/Create
-		public IActionResult Create()
-		{
-			return View();
-		}
+        public IActionResult Create()
+        {
+            return View();
+        }
 
-		// POST: PermissionGroups/Create
-		// To protect from overposting attacks, enable the specific properties you want to bind to.
-		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-		[HttpPost]
+
+        [HttpPost]
 		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> Create([FromForm] CreatePermissionGroupDTO createPermissionGroupDTO)
 		{
 			try
 			{
+				if (createPermissionGroupDTO.RoleIds == null) throw new Exception("null");
+				if (createPermissionGroupDTO.RoleIds.Count > 0) throw new Exception("test");
 				await _permissionGroupService.Create(createPermissionGroupDTO);
 				return RedirectToAction(nameof(Index));
 			}
 			catch (Exception ex)
 			{
-				int? page = HttpContext.Session.GetInt32("page");
-				int? size = HttpContext.Session.GetInt32("pageSize");
-				int pageNumber = page ?? 1;
-				int pageSize = size ?? 10;
-				CustomPaging<PermissionGroupDTO> result = await _permissionGroupService.GetCustomPaging(pageNumber, pageSize);
-				int totalPage = result.TotalPage;
-				ViewData["totalPage"] = totalPage;
-				ViewData["items"] = result.Data;
 				ModelState.AddModelError("", ex.Message);
 				return View(createPermissionGroupDTO);
 			}

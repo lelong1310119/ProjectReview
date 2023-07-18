@@ -8,9 +8,17 @@
 
   <ItemGroup>
     <Compile Remove="Enums\Roles\**" />
+    <Compile Remove="wwwroot\Document\**" />
+    <Compile Remove="wwwroot\Job\**" />
     <Content Remove="Enums\Roles\**" />
+    <Content Remove="wwwroot\Document\**" />
+    <Content Remove="wwwroot\Job\**" />
     <EmbeddedResource Remove="Enums\Roles\**" />
+    <EmbeddedResource Remove="wwwroot\Document\**" />
+    <EmbeddedResource Remove="wwwroot\Job\**" />
     <None Remove="Enums\Roles\**" />
+    <None Remove="wwwroot\Document\**" />
+    <None Remove="wwwroot\Job\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -34,8 +42,6 @@
 
   <ItemGroup>
     <Folder Include="Migrations\" />
-    <Folder Include="wwwroot\Document\" />
-    <Folder Include="wwwroot\Job\" />
     <Folder Include="wwwroot\file\" />
     <Folder Include="wwwroot\file\" />
   </ItemGroup>
