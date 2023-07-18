@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using ProjectReview.Common;
 using ProjectReview.DTO.Documents;
+using ProjectReview.DTO.Jobs;
 using ProjectReview.Models;
 using ProjectReview.Models.Entities;
 using ProjectReview.Paging;
@@ -24,7 +25,8 @@ namespace ProjectReview.Repositories
         Task<int> QuantityDocumentReceived(DateTime date);
         Task<DocumentDTO> GetById(long id);
         Task<UpdateDocumentDTO> GetUpdate(long id);
-
+        Task<long> GetJobId(long id);
+        Task<DocumentDTO> UpdateFile(DocumentDTO update);
     }
 
     public class DocumentRepository : IDocumentRepository
@@ -39,6 +41,15 @@ namespace ProjectReview.Repositories
             _currentUser = currentUser;
         }
 
+        public async Task<DocumentDTO> UpdateFile(DocumentDTO update)
+        {
+            var document = await _dataContext.Documents.Where(x => x.Id == update.Id).FirstOrDefaultAsync();
+            document.FileName = update.FileName;
+            document.FilePath = update.FilePath;
+            _dataContext.Documents.Update(document);
+            await _dataContext.SaveChangesAsync();
+            return _mapper.Map<Document, DocumentDTO>(document);
+        }
         public async Task<UpdateDocumentDTO> GetUpdate(long id)
         {
             var result = await _dataContext.Documents
@@ -103,6 +114,20 @@ namespace ProjectReview.Repositories
             await _dataContext.SaveChangesAsync();
         }
 
+        public async Task<long> GetJobId(long id)
+        {
+			var result = await _dataContext.Documents
+							.Where(x => x.Id == id)
+							.FirstOrDefaultAsync();
+			if (result == null) return 0;
+			var jobDocument = await _dataContext.JobDocuments.Where(x => x.DocumentId == result.Id).FirstOrDefaultAsync();
+			if (jobDocument != null)
+			{
+				return jobDocument.JobId;
+			}
+            return 0;
+		}
+
         public async Task Recall(long id)
         {
             var result = await _dataContext.Documents
@@ -112,7 +137,6 @@ namespace ProjectReview.Repositories
             var jobDocument = await _dataContext.JobDocuments.Where(x => x.DocumentId == result.Id).FirstOrDefaultAsync();
             if (jobDocument != null)
             {
-                await _dataContext.Opinions.Where(x => x.JobId == jobDocument.JobId).ExecuteDeleteAsync();
                 await _dataContext.JobDocuments.Where(x => x.DocumentId == result.Id).ExecuteDeleteAsync();
                 await _dataContext.Handlers.Where(x => x.JobId == jobDocument.JobId).ExecuteDeleteAsync();
                 await _dataContext.Jobs.Where(x => x.Id == jobDocument.JobId).ExecuteDeleteAsync();

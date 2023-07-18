@@ -1,0 +1,188 @@
+﻿@model ProjectReview.DTO.Opinions.CreateOpinionDTO;
+@using ProjectReview.DTO.Jobs;
+
+@{
+	ViewData["Title"] = "Detail-Jobs";
+	var job = ViewData["Job"] as JobDTO;
+	var id = (long)(ViewData["Id"] ?? 0);
+}
+@section Scripts {
+	<script>
+		$(document).ready(function () {
+			var maxHeight = Math.max(
+				$('.card-equal-height .card-body').eq(0).outerHeight(),
+				$('.card-equal-height .card-body').eq(1).outerHeight()
+			);
+			$('.card-equal-height .card-body').css('height', maxHeight);
+		});
+	</script>
+}
+
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-xs-12 col-md-12 col-lg-3 col-xl-3">
+			<div class="card mb-3 card-border-workflow card-equal-height">
+				<div class="card-header card-title">
+					<h3><i class="fas fa-folder-open"></i> Luồng xử lý</h3>
+				</div>
+				<div class="card-body">
+					<ul>
+						<li class="text-primary">
+							<b><i class="fa-solid fa-layer-group me-2"></i>Luồng xử lý</b>
+							<ul class="ms-3">
+								<li class="text-black"><i class="fas fa-user text-warning me-2"></i>@job.Host.FullName (Người chủ trì)</li>
+								<li class="text-black"><i class="fas fa-user text-warning me-2"></i>@job.CreateUser.FullName (Người giao việc)</li>
+								<li class="text-black"><i class="fas fa-user text-warning me-2"></i>@job.Instructor.FullName (Người theo dõi)</li>
+								<li class="text-black"><i class="fas fa-star text-primary me-2"></i>
+									Phối hợp giải quyết
+									<ul class="ms-4">
+										@foreach (var item in job.Users)
+										{
+											<li><i class="fas fa-user text-warning me-2"></i>@item.FullName</li>
+										}
+									</ul>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<div class="col-xs-12 col-md-12 col-lg-9 col-xl-9">
+			<div class="card mb-3 card-border-workflow card-equal-height">
+				<div class="card-header card-title">
+					<h3><i class="fas fa-folder-open"></i> Nội dung công việc</h3>
+				</div>
+				<div class="card-body">
+					<div class="d-flex">
+						<div class="row col-xs-12 col-md-12 col-lg-6 col-xl-6">
+							<ul>
+								<li class="m-2">
+									<i class="fas fa-arrow-alt-circle-right me-2 text-warning"></i>
+									<b>Nội dung công việc: </b>@job.Content
+								</li>
+								<li class="m-2">
+									<i class="fas fa-arrow-alt-circle-right me-2 text-warning"></i>
+									<b>Ngày tạo công việc: </b>@job.CreateDate.ToString("dd/MM/yyyy")
+								</li>
+								<li class="m-2">
+									<i class="fas fa-arrow-alt-circle-right me-2 text-warning"></i>
+									<b>Người tạo và giao việc: </b>@job.CreateUser.FullName
+								</li>
+								<li class="m-2">
+									<i class="fas fa-arrow-alt-circle-right me-2 text-warning"></i>
+									<b>Tệp đính kèm: </b>
+									@if (job.FileName != null && job.FileName != "")
+									{
+										<a href="https://localhost:7123/file.@job.FilePath">@job.FileName</a>
+									}
+								</li>
+							</ul>
+						</div>
+						<div class="row col-xs-12 col-md-12 col-lg-6 col-xl-6">
+							<ul>
+								<li class="m-2">
+									<i class="fas fa-arrow-alt-circle-right me-2 text-warning"></i>
+									<b>Cán bộ chủ trì: </b>@job.Host.FullName
+								</li>
+								<li class="m-2">
+									<i class="fas fa-arrow-alt-circle-right me-2 text-warning"></i>
+									<b>Người theo dõi: </b>@job.Instructor.FullName
+								</li>
+								<li class="m-2">
+									<i class="fas fa-arrow-alt-circle-right me-2 text-warning"></i>
+									<b>Hạn xử lý: </b>@job.Deadline.ToString("dd/MM/yyyy")
+								</li>
+								<li class="m-2">
+									<i class="fas fa-arrow-alt-circle-right me-2 text-warning"></i>
+									<b>Yêu cầu xử lý: </b>@job.Request
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		
+	</div>
+	<div class="row">
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+			<div class="card mb-3 card-border-workflow ">
+				<div class="card-header card-title">
+					<h3><i class="fas fa-folder-open"></i> Ý kiến xử lý</h3>
+				</div>
+				<div class="card-body">
+					<div class="card-content">
+						@if (job.Status == 1)
+						{
+							<form asp-action="Detail" enctype="multipart/form-data" method="post" asp-controller="Jobs">
+								<input asp-for="JobId" type="hidden">
+								<div class="d-flex">
+									<div class="form-group m-3 col-xs-12 col-sm-12 col-md-12 col-lg-6 col-xl-6">
+										<label asp-for="Content" class="control-label mb-2">Thêm ý kiến</label>
+										<textarea asp-for="Content" class="form-control"></textarea>
+										<span asp-validation-for="Content" class="text-danger"></span>
+									</div>
+									<div class="form-group m-3 col-xs-9 col-sm-6 col-md-6 col-lg-3 col-xl-3">
+										<label asp-for="FormFile" class="control-label mb-2">Thêm tệp đính kèm</label>
+										<input asp-for="FormFile" class="form-control" type="file" accept=".doc,.docx,.xls,.xlsx,.csv,.pdf" />
+									</div>
+								</div>
+								<div class="form-group m-3" style="display: flex">
+									<button type="submit" class="btn btn-primary d-flex flex-column align-items-center justify-content-center">
+										Thêm
+									</button>
+								</div>
+							</form>
+						}
+						<div>
+							<ul>
+								@foreach(var item in job.Opinions)
+								{
+									<li class="m-3 mt-4">
+										<i class="fas fa-user me-3"></i>
+										<span>
+											<b class="text-primary">@item.CreateUser.FullName:</b>  Gửi lúc @item.CreateDate
+											@if (item.FilePath != "" && item.FilePath != null)
+											{
+												<p class="mt-2">
+													<i class="fas fa-arrow-alt-circle-right me-3"></i>@item.Content (Tệp đính kèm: <a href="https://localhost:7123/file/@item.FilePath">@item.FileName</a>)
+												</p>
+											} else
+											{
+												<p class="mt-2">
+													<i class="fas fa-arrow-alt-circle-right me-3"></i>@item.Content
+												</p>
+											}
+										</span>
+									</li>
+								}
+							</ul>
+						</div>
+						<div>
+							<a type="button" class="btn btn-secondary m-3 mt-5" asp-area="" asp-action="Index" asp-controller="Jobs">
+								Trở về
+							</a>
+							@if (job.HostId == id)
+							{
+								@if(job.Status == 1)
+								{
+									<a type="button" class="btn btn-success m-3 me-1 mt-5" asp-area="" asp-action="Finish" asp-controller="Jobs" asp-route-id="@job.Id">
+										Kết thúc công việc
+									</a>
+								}
+								@if (job.Status == 2 && DateTime.Now.Date <= job.Deadline.Date)
+								{
+									<a type="button" class="btn btn-success m-3 me-1 mt-5" asp-area="" asp-action="Open" asp-controller="Jobs" asp-route-id="@job.Id">
+										Mở lại công việc
+									</a>
+								}
+							}
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

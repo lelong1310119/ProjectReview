@@ -18,5 +18,6 @@
         public string Signer { get; set; }
         public string Position { get; set; }
         public string? Note { get; set; }
+        public List<long>? ProfileIds { get; set; }
     }
 }

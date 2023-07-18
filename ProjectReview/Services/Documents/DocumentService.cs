@@ -6,6 +6,7 @@ using ProjectReview.Paging;
 using ProjectReview.Repositories;
 using ProjectReview.DTO.DocumentTypes;
 using ProjectReview.DTO.Jobs;
+using ProjectReview.DTO.JobProfiles;
 
 namespace ProjectReview.Services.Documents
 {
@@ -37,8 +38,18 @@ namespace ProjectReview.Services.Documents
 			return await _UOW.DocumentRepository.GetUpdate(id);
 		}
 
+		public async Task<DocumentDTO> Update(UpdateDocumentDTO updateDocumentDTO)
+		{
+			return await _UOW.DocumentRepository.Update(updateDocumentDTO);
+		}
+
 		public async Task Recall(long id)
 		{
+			long jobId = await _UOW.DocumentRepository.GetJobId(id);
+			if (jobId !=0 )
+			{
+				await _UOW.OpinionRepository.Delete(jobId);
+			}
 			await _UOW.DocumentRepository.Recall(id);
 		}
 
@@ -50,6 +61,11 @@ namespace ProjectReview.Services.Documents
 		public async Task Delete(long id)
 		{
 			await _UOW.DocumentRepository.Delete(id);
+		}
+
+		public async Task<List<JobProfileDTO>> GetListProfile()
+		{
+			return await _UOW.JobProfileRepository.GetAllActive();
 		}
 
 		public async Task<List<DocumentTypeDTO>> GetListDocument()
@@ -74,7 +90,7 @@ namespace ProjectReview.Services.Documents
 
 		public async Task<DocumentDTO> CreateDocumentSent(CreateDocumentDTO createDocumentDTO)
 		{
-			return await _UOW.DocumentRepository.CreateDocumentReceived(createDocumentDTO);
+			return await _UOW.DocumentRepository.CreateDocumentSent(createDocumentDTO);
 		}
 
 		public async Task Assign(AssignDocumentDTO assignDocumentDTO)

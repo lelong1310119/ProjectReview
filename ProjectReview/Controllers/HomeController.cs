@@ -41,15 +41,15 @@ namespace ProjectReview.Controllers
 				ViewData["Year"] = date.Year;
 				ViewData["Notification"] = listJobDTO.Pending.Count + listJobDTO.Processing.Count;
 				ViewData["filter"] = filter;
-				if(filter == 3)
+				if(check == 3)
 				{
 					return View(listJobDTO.Processed);
 				}
-				if(filter == 1)
+				if(check == 1)
 				{
 					return View(listJobDTO.Pending);
 				}
-				if(filter == 4)
+				if(check == 4)
 				{
 					return View(listJobDTO.OutOfDate);
 				}

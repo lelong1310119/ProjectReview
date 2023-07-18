@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ProjectReview.Common;
 using ProjectReview.DTO.Jobs;
+using ProjectReview.DTO.Opinions;
 using ProjectReview.DTO.Users;
 using ProjectReview.Models;
 using ProjectReview.Models.Entities;
@@ -148,18 +149,68 @@ namespace ProjectReview.Controllers
             }
         }
 
-        private bool JobExists(long id)
-        {
-          return (_context.Jobs?.Any(e => e.Id == id)).GetValueOrDefault();
-        }
+		public async Task<IActionResult> Detail(long id)
+		{
+			ViewData["Id"] = _currentUser.UserId;
+			ViewData["Job"] = await _jobService.GetJob(id);
+			CreateOpinionDTO createOpinionDTO = new CreateOpinionDTO { JobId = id }; 
+			return View(createOpinionDTO);
+		}
 
-        public async Task<IActionResult> Active(long id)
+		// POST: Users/Edit/5
+		// To protect from overposting attacks, enable the specific properties you want to bind to.
+		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> Detail([FromForm] CreateOpinionDTO createOpinionDTO)
+		{
+			try
+			{
+				await _jobService.AddOpinion(createOpinionDTO);
+				ViewData["Id"] = _currentUser.UserId;
+				ViewData["Job"] = await _jobService.GetJob(createOpinionDTO.JobId);
+				return RedirectToAction(nameof(Detail));
+			}
+			catch (Exception ex)
+			{
+				ViewData["Id"] = _currentUser.UserId;
+				ViewData["Job"] = await _jobService.GetJob(createOpinionDTO.JobId);
+				ModelState.AddModelError("", ex.Message);
+				return View(createOpinionDTO);
+			}
+		}
+
+		public async Task<IActionResult> Active(long id)
         {
             int? page = HttpContext.Session.GetInt32("page");
             int? size = HttpContext.Session.GetInt32("pageSize");
             await _jobService.Active(id);
             return RedirectToAction(nameof(Index), new { page, size });
         }
+
+		public async Task<IActionResult> Finish(long id)
+		{
+			await _jobService.Finish(id);
+			ViewData["Id"] = _currentUser.UserId;
+			ViewData["Job"] = await _jobService.GetJob(id);
+			return RedirectToAction(nameof(Detail), new {id});
+		}
+
+		public async Task<IActionResult> Open(long id)
+		{
+			await _jobService.Open(id);
+			ViewData["Id"] = _currentUser.UserId;
+			ViewData["Job"] = await _jobService.GetJob(id);
+			return RedirectToAction(nameof(Detail), new { id });
+		}
+
+		public async Task<IActionResult> CancleAssign(long id)
+		{
+			int? page = HttpContext.Session.GetInt32("page");
+			int? size = HttpContext.Session.GetInt32("pageSize");
+			await _jobService.CancleAssign(id);
+			return RedirectToAction(nameof(Index), new { page, size });
+		}
 
 		public async Task<IActionResult> Delete(long id)
 		{

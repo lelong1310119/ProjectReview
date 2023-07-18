@@ -25,7 +25,9 @@ namespace ProjectReview.Models
         public virtual DbSet<JobDocument> JobDocuments { get; set; }
         public virtual DbSet<Density> Densities { get; set; }
         public virtual DbSet<Urgency> Urgencies { get; set; }
-
+        public virtual DbSet<Process> Processes { get; set; }
+        public virtual DbSet<ProcessUser> ProcessUsers { get; set; }
+        public virtual DbSet<History> History { get; set; }
 
         public DataContext()
         {
@@ -78,7 +80,7 @@ namespace ProjectReview.Models
 
             modelBuilder.Entity<Document>(entity =>
             {
-                entity.ToTable("Documnet");
+                entity.ToTable("Document");
                 entity.HasKey(x => x.Id);
                 entity.Property(x => x.Id).ValueGeneratedNever();
 
@@ -116,25 +118,25 @@ namespace ProjectReview.Models
                     .WithMany(y => y.Documents)
                     .HasForeignKey(x => x.CreateUserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Documnent_User");
+                    .HasConstraintName("FK_Document_User");
 
                 entity.HasOne(x => x.Density)
                     .WithMany(y => y.Documents)
                     .HasForeignKey(x => x.DensityId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Documnent_Density");
+                    .HasConstraintName("FK_Document_Density");
 
                 entity.HasOne(x => x.Urgency)
                     .WithMany(y => y.Documents)
                     .HasForeignKey(x => x.UrgencyId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Documnent_Urgency");
+                    .HasConstraintName("FK_Document_Urgency");
 
                 entity.HasOne(x => x.DocumentType)
                     .WithMany(y => y.Documents)
                     .HasForeignKey(x => x.DocumentTypeId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Documnent_DocumentType");
+                    .HasConstraintName("FK_Document_DocumentType");
             });
 
             modelBuilder.Entity<DocumentType>(entity =>

@@ -22,6 +22,8 @@
                     <div class="card-content">
                         <form asp-action="Assign" enctype="multipart/form-data">
                             <input type="hidden" asp-for="DocumentId" />
+                            <input type="hidden" asp-for="FileName" />
+                            <input type="hidden" asp-for="FilePath" />
                             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                             <div class="row">
                                 <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">

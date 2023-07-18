@@ -28,6 +28,10 @@ namespace ProjectReview.Repositories
         Task<UpdateJobDTO> GetById(long id);
         Task<List<JobDTO>> GetList();
         Task CreateJobDocument(long jobId, long documentId);
+        Task<JobDTO> GetJob(long id);
+        Task Finish(long id);
+        Task Open(long id);
+        Task CancleAssign(long id);
 	}
 
     public class JobRepository : IJobRepository
@@ -50,7 +54,44 @@ namespace ProjectReview.Repositories
             return _mapper.Map<Job, UpdateJobDTO>(result);
         }
 
-        public async Task Delete(long id)
+        public async Task Finish(long id)
+        {
+			var result = await _dataContext.Jobs
+									.Where(x => x.Id == id)
+									.FirstOrDefaultAsync();
+            if (result != null)
+            {
+				result.Status = 2;
+				_dataContext.Jobs.Update(result);
+				await _dataContext.SaveChangesAsync();
+			}  
+		}
+
+		public async Task Open(long id)
+		{
+			var result = await _dataContext.Jobs
+									.Where(x => x.Id == id)
+									.FirstOrDefaultAsync();
+			if (result != null)
+            {
+				result.Status = 1;
+				_dataContext.Jobs.Update(result);
+				await _dataContext.SaveChangesAsync();
+			}
+		}
+
+        public async Task CancleAssign(long id)
+        {
+			var job = await _dataContext.Jobs.Where(x => x.Id == id).FirstOrDefaultAsync();
+			if (job != null)
+            {
+                job.Status = 0;
+				_dataContext.Jobs.Update(job);
+				await _dataContext.SaveChangesAsync();
+			}
+		}
+
+		public async Task Delete(long id)
         {
 			var result = await _dataContext.Jobs
 							.Where(x => x.Id == id)
@@ -83,52 +124,52 @@ namespace ProjectReview.Repositories
 
         public async Task<CustomPaging<JobDTO>> GetCustomPaging(string filter, int page, int pageSize)
         {
-            var role = await _dataContext.UserRoles
-                                .Include(x => x.Role)
-								.Where(x => (x.UserId == _currentUser.UserId && x.Role.Name == "ManageJob"))
-								.FirstOrDefaultAsync();
-            if (role != null)
-            {
-				int count = await _dataContext.Jobs
-										.Where(x => x.Content.Contains(filter))
-										.CountAsync();
-				var result = await _dataContext.Jobs
-											.Where(x => x.Content.Contains(filter))
-											.Include(x => x.CreateUser)
-											.Include(x => x.Host)
-				                            .Include(x => x.Instructor)
-											.Skip((page - 1) * pageSize)
-				                            .Take(pageSize)
-											.ToListAsync();
-				int totalPage = (count % pageSize == 0) ? (count / pageSize) : (count / pageSize + 1);
-				var jobs = _mapper.Map<List<Job>, List<JobDTO>>(result);
-                if (jobs.Count > 0)
-                {
-                    foreach(var item  in jobs)
-                    {
-                        item.Users = new List<User>();
-						List<Handler> handlers = await _dataContext.Handlers
-												.Where(x => x.JobId == item.Id)
-												.Include(x => x.User)
-												.ToListAsync();
-						if (handlers.Count > 0)
-						{
-							foreach (var handler in handlers)
-							{
-								item.Users.Add(handler.User);
-							}
-						}
-					}
-                }
-                CustomPaging<JobDTO> paging = new CustomPaging<JobDTO>
-                {
-                    TotalPage = totalPage,
-                    PageSize = pageSize,
-                    Data = jobs,
-				};
-                return paging;
-			} else
-            {
+   //         var role = await _dataContext.UserRoles
+   //                             .Include(x => x.Role)
+			//					.Where(x => (x.UserId == _currentUser.UserId && x.Role.Name == "ManageJob"))
+			//					.FirstOrDefaultAsync();
+   //         if (role != null)
+   //         {
+			//	int count = await _dataContext.Jobs
+			//							.Where(x => x.Content.Contains(filter))
+			//							.CountAsync();
+			//	var result = await _dataContext.Jobs
+			//								.Where(x => x.Content.Contains(filter))
+			//								.Include(x => x.CreateUser)
+			//								.Include(x => x.Host)
+			//	                            .Include(x => x.Instructor)
+			//								.Skip((page - 1) * pageSize)
+			//	                            .Take(pageSize)
+			//								.ToListAsync();
+			//	int totalPage = (count % pageSize == 0) ? (count / pageSize) : (count / pageSize + 1);
+			//	var jobs = _mapper.Map<List<Job>, List<JobDTO>>(result);
+   //             if (jobs.Count > 0)
+   //             {
+   //                 foreach(var item  in jobs)
+   //                 {
+   //                     item.Users = new List<User>();
+			//			List<Handler> handlers = await _dataContext.Handlers
+			//									.Where(x => x.JobId == item.Id)
+			//									.Include(x => x.User)
+			//									.ToListAsync();
+			//			if (handlers.Count > 0)
+			//			{
+			//				foreach (var handler in handlers)
+			//				{
+			//					item.Users.Add(handler.User);
+			//				}
+			//			}
+			//		}
+   //             }
+   //             CustomPaging<JobDTO> paging = new CustomPaging<JobDTO>
+   //             {
+   //                 TotalPage = totalPage,
+   //                 PageSize = pageSize,
+   //                 Data = jobs,
+			//	};
+   //             return paging;
+			//} else
+   //         {
                 List<long> jobIds = new List<long>();
                 var handler = await _dataContext.Handlers
                                 .Where(x => x.UserId == _currentUser.UserId)
@@ -178,7 +219,7 @@ namespace ProjectReview.Repositories
 					Data = jobs,
 				};
 				return paging;
-			}
+			//}
         }
 
         public async Task<JobDTO> UpdateFile(JobDTO update)
@@ -190,6 +231,48 @@ namespace ProjectReview.Repositories
             await _dataContext.SaveChangesAsync();
             return _mapper.Map<Job, JobDTO>(job);
         }
+
+        public async Task<JobDTO> GetJob(long id)
+        {
+            var result = await _dataContext.Jobs
+                                .Where(x => x.Id == id)
+								.Include(x => x.CreateUser)
+								.Include(x => x.Host)
+								.Include(x => x.Instructor)
+								.FirstOrDefaultAsync();
+			var job = _mapper.Map<Job, JobDTO>(result);
+			job.Users = new List<User>();
+			List<Handler> handlers = await _dataContext.Handlers
+									.Where(x => x.JobId == job.Id)
+									.Include(x => x.User)
+									.ToListAsync();
+			if (handlers.Count > 0)
+			{
+				foreach (var j in handlers)
+				{
+					job.Users.Add(j.User);
+				}
+			}
+            job.Opinions = new List<Opinion>();
+            List<Opinion> opinions = await _dataContext.Opinions
+                                                    .Where(x => x.JobId == job.Id)
+                                                    .Include(x => x.CreateUser)
+                                                    .ToListAsync();
+			if (opinions.Count > 0)
+			{
+				foreach (var item in opinions)
+				{
+					job.Opinions.Add(item);
+				}
+			}
+			var jobdocument = await _dataContext.JobDocuments.Where(x => x.JobId == job.Id).FirstOrDefaultAsync();
+            if (jobdocument  != null)
+            {
+                job.Document = await _dataContext.Documents.Where(x => x.Id == jobdocument.DocumentId).FirstOrDefaultAsync();
+            }
+            return job;
+
+		}
 
         public async Task<List<JobDTO>> GetList()
         {

@@ -149,7 +149,8 @@ namespace ProjectReview.Controllers
             {
                 ViewData["DocumentTypeId"] = new SelectList(await _documentService.GetListDocument(), "Id", "Name");
                 ViewData["DensityId"] = new SelectList(await _documentService.GetListDensity(), "Id", "Detail");
-                ViewData["UrgencyId"] = new SelectList(await _documentService.GetListUrgency(), "Id", "Detail");
+				ViewData["JobProfileId"] = new SelectList(await _documentService.Get)
+				ViewData["UrgencyId"] = new SelectList(await _documentService.GetListUrgency(), "Id", "Detail");
                 ModelState.AddModelError("", ex.Message);
                 return View(createDocumentDTO);
             }
@@ -158,6 +159,9 @@ namespace ProjectReview.Controllers
         // GET: Departments/Edit/5
         public async Task<IActionResult> Edit(long id)
         {
+			ViewData["DocumentTypeId"] = new SelectList(await _documentService.GetListDocument(), "Id", "Name");
+			ViewData["DensityId"] = new SelectList(await _documentService.GetListDensity(), "Id", "Detail");
+			ViewData["UrgencyId"] = new SelectList(await _documentService.GetListUrgency(), "Id", "Detail");
 			var result = await _documentService.GetUpdate(id);
             if (result == null)
             {

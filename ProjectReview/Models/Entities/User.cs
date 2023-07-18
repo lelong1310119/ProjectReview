@@ -30,5 +30,7 @@ namespace ProjectReview.Models.Entities
         public virtual ICollection<Document> Documents { get; set; }
         public virtual ICollection<Handler> Handlers { get; set; }
         public virtual ICollection<UserRole> UserRoles { get; set; }
+        public virtual ICollection<ProcessUser> ProcessUsers { get; set; }
+        public virtual ICollection<History> Histories { get; set; }
     }
 }

@@ -110,7 +110,7 @@
 												<th class="text-center sorting_disabled" style="width: 80px;">Ngày giao</th>
 												<th class="text-center sorting_disabled" style="width: 150px;">Hạn xử lý</th>
 												<th class="text-center sorting_disabled" style="width: 100px;">Trạng thái</th>
-												<th class="text-center sorting_disabled" style="width: 100px;">Tác vụ</th>
+												<th class="text-center sorting_disabled" style="width: 140px;">Tác vụ</th>
 											</tr>
 										</thead>
 										<tbody>
@@ -144,7 +144,10 @@
 														</td>
 														<td class="text-center">@item.CreateDate.ToString("dd/MM/yyyy")</td>
 														<td class="text-center">@item.Deadline.ToString("dd/MM/yyyy")</td>
-														@if (item.Deadline.Date < DateTime.Now.Date)
+														@if (item.Status == 2)
+														{
+															<td class="text-center">Đã hoàn thành</td>
+														}else if (item.Deadline.Date < DateTime.Now.Date)
 														{
 															<td class="text-center">Quá hạn</td>
 														}
@@ -154,10 +157,7 @@
 														} else if (item.Status == 1)
 														{
 															<td class="text-center">Đang xử lý</td>
-														} else
-														{
-															<td class="text-center">Đã hoàn thành</td>
-														}
+														} 
 														<td class=" text-center">
 															@if (item.Deadline.Date >= DateTime.Now.Date)
 															{
@@ -169,13 +169,19 @@
 																}
 																@if (item.Status == 1)
 																{
-																	<a type="button" class="btn btn-success m-2" asp-area="" asp-controller="Jobs" asp-action="Edit" asp-route-id="@item.Id">
+																	<a type="button" class="btn btn-info m-2" asp-area="" asp-controller="Jobs" asp-action="Detail" asp-route-id="@item.Id">
 																		Xử lý
 																	</a>
+																	@if (item.HostId == id)
+																	{
+																		<a type="button" class="btn btn-danger m-2" asp-area="" asp-controller="Jobs" asp-action="CancleAssign" asp-route-id="@item.Id">
+																			Hủy duyệt
+																		</a>
+																	}
 																}
 																@if (item.Status == 2)
 																{
-																	<a type="button" class="btn btn-success m-2" asp-area="" asp-controller="Jobs" asp-action="Edit" asp-route-id="@item.Id">
+																	<a type="button" class="btn btn-secondary m-2" asp-area="" asp-controller="Jobs" asp-action="Detail" asp-route-id="@item.Id">
 																		Chi tiết
 																	</a>
 																}
@@ -191,6 +197,12 @@
 																		Xóa
 																	</a>
 																}
+															}
+															else if (item.Status == 2)
+															{
+																<a type="button" class="btn btn-secondary m-2" asp-area="" asp-controller="Jobs" asp-action="Detail" asp-route-id="@item.Id">
+																	Chi tiết
+																</a>
 															}
 														</td>
 													</tr>
