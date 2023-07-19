@@ -144,65 +144,70 @@
 														</td>
 														<td class="text-center">@item.CreateDate.ToString("dd/MM/yyyy")</td>
 														<td class="text-center">@item.Deadline.ToString("dd/MM/yyyy")</td>
-														@if (item.Status == 2)
+														@if (item.Status == 3)
 														{
 															<td class="text-center">Đã hoàn thành</td>
-														}else if (item.Deadline.Date < DateTime.Now.Date)
+														}else if (item.Status == 4)
 														{
 															<td class="text-center">Quá hạn</td>
 														}
-														else if (item.Status == 0)
+														else if (item.Status == 1)
 														{
 															<td class="text-center">Đang chờ duyệt</td>
-														} else if (item.Status == 1)
+														} else if (item.Status == 2)
 														{
 															<td class="text-center">Đang xử lý</td>
 														} 
 														<td class=" text-center">
-															@if (item.Deadline.Date >= DateTime.Now.Date)
-															{
-																@if(item.Status == 0 && item.HostId == id)
-																{
-																	<a type="button" class="btn btn-success m-2" asp-area="" asp-controller="Jobs" asp-action="Active" asp-route-id="@item.Id">
-																		Duyệt
-																	</a>
-																}
-																@if (item.Status == 1)
-																{
-																	<a type="button" class="btn btn-info m-2" asp-area="" asp-controller="Jobs" asp-action="Detail" asp-route-id="@item.Id">
-																		Xử lý
-																	</a>
-																	@if (item.HostId == id)
-																	{
-																		<a type="button" class="btn btn-danger m-2" asp-area="" asp-controller="Jobs" asp-action="CancleAssign" asp-route-id="@item.Id">
-																			Hủy duyệt
-																		</a>
-																	}
-																}
-																@if (item.Status == 2)
-																{
-																	<a type="button" class="btn btn-secondary m-2" asp-area="" asp-controller="Jobs" asp-action="Detail" asp-route-id="@item.Id">
-																		Chi tiết
-																	</a>
-																}
-																@if(item.CreateUserId == id)
-																{
-																	<a type="button" class="btn btn-warning m-2" asp-area="" asp-controller="Jobs" asp-action="Edit" asp-route-id="@item.Id">
-																		Sửa
-																	</a>
-																}
-																@if (item.CreateUserId == id)
-																{
-																	<a type="button" class="btn btn-danger m-2" onclick="return confirm('Bạn chắc chắn muốn xóa thông tin này?');" asp-area="" asp-controller="Jobs" asp-action="Delete" asp-route-id="@item.Id">
-																		Xóa
-																	</a>
-																}
-															}
-															else if (item.Status == 2)
+															@if (item.Status == 3)
 															{
 																<a type="button" class="btn btn-secondary m-2" asp-area="" asp-controller="Jobs" asp-action="Detail" asp-route-id="@item.Id">
 																	Chi tiết
 																</a>
+																@if (item.Deadline.Date >= DateTime.Now.Date && (item.CreateUserId == id || item.HostId == id))
+																{
+																	<a type="button" class="btn btn-primary mt-2 mb-2" asp-area="" asp-controller="Jobs" asp-action="Forward" asp-route-id="@item.Id">
+																		Chuyển tiếp
+																	</a>
+																	@*<a type="button" class="btn btn-secondary m-2" asp-area="" asp-controller="Jobs" asp-action="Open" asp-route-id="@item.Id">
+																		Mở lại
+																	</a>*@
+																}
+															}
+															@if (item.Status == 1 && item.HostId == id)
+															{
+																<a type="button" class="btn btn-success m-2" asp-area="" asp-controller="Jobs" asp-action="Active" asp-route-id="@item.Id">
+																	Duyệt
+																</a>
+															}
+															@if (item.Status == 2)
+															{
+																<a type="button" class="btn btn-info m-2" asp-area="" asp-controller="Jobs" asp-action="Detail" asp-route-id="@item.Id">
+																	Xử lý
+																</a>
+																@if (item.HostId == id)
+																{
+																	<a type="button" class="btn btn-danger m-2" asp-area="" asp-controller="Jobs" asp-action="CancleAssign" asp-route-id="@item.Id">
+																		Hủy duyệt
+																	</a>
+																}
+															}
+															@if (item.Status == 4 && item.HostId == id)
+															{
+																<a type="button" class="btn btn-secondary m-2" asp-area="" asp-controller="Jobs" asp-action="Edit" asp-route-id="@item.Id">
+																	Gia hạn
+																</a>
+															} else
+															{
+																@if (item.CreateUserId == id)
+																{
+																	<a type="button" class="btn btn-warning m-2" asp-area="" asp-controller="Jobs" asp-action="Edit" asp-route-id="@item.Id">
+																		Sửa
+																	</a>
+																	<a type="button" class="btn btn-danger m-2" onclick="return confirm('Bạn chắc chắn muốn xóa thông tin này?');" asp-area="" asp-controller="Jobs" asp-action="Delete" asp-route-id="@item.Id">
+																		Xóa
+																	</a>
+																}
 															}
 														</td>
 													</tr>

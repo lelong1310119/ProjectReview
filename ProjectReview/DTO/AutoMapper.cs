@@ -3,6 +3,7 @@ using ProjectReview.DTO.CategoryProfiles;
 using ProjectReview.DTO.Departments;
 using ProjectReview.DTO.Documents;
 using ProjectReview.DTO.DocumentTypes;
+using ProjectReview.DTO.Histories;
 using ProjectReview.DTO.JobProfiles;
 using ProjectReview.DTO.Jobs;
 using ProjectReview.DTO.Opinions;
@@ -60,6 +61,7 @@ namespace ProjectReview.DTO
 			CreateMap<Document, UpdateDocumentDTO>();
 			CreateMap<Opinion, OpinionDTO>();
 			CreateMap<CreateOpinionDTO, Opinion>();
+			CreateMap<History, HistoryDTO>();
 		}
 	}
 }

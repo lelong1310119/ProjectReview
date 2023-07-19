@@ -1,5 +1,7 @@
-﻿using ProjectReview.DTO.Jobs;
+﻿using ProjectReview.DTO.Histories;
+using ProjectReview.DTO.Jobs;
 using ProjectReview.DTO.Opinions;
+using ProjectReview.DTO.Processes;
 using ProjectReview.DTO.Users;
 using ProjectReview.Paging;
 using ProjectReview.Repositories;
@@ -21,7 +23,9 @@ namespace ProjectReview.Services.Jobs
 		Task Finish(long id);
 		Task CancleAssign(long id);
 		Task Open(long id);
-	}
+		Task AddHistory(CreateHistoryDTO create);
+
+    }
 
 	public class JobService : IJobService
 	{
@@ -47,33 +51,33 @@ namespace ProjectReview.Services.Jobs
    //             stream.CopyTo(memoryStream);
    //             job.FormFile = new FormFile(memoryStream, 0, memoryStream.Length, null, Path.GetFileName(filePath));
    //         }
-			job.ListUserId = await _UOW.JobUserRepository.GetAll(job.Id);
             return job;
 		}
 
 		public async Task Finish(long id)
 		{
-			await _UOW.JobRepository.Finish(id);
-			CreateOpinionDTO createOpinionDTO = new CreateOpinionDTO { JobId = id , Content = "Kết thúc công việc"};
-			await _UOW.OpinionRepository.Create(createOpinionDTO);
+			long result = await _UOW.ProcessRepository.Finish(id);
+			CreateHistoryDTO create = new CreateHistoryDTO { ProcessId = result, JobId = id, Content = "Duyệt công việc" };
+			await _UOW.HistoryRepository.Create(create);
 		}
 
 		public async Task Open(long id)
 		{
-			await _UOW.JobRepository.Open(id);
-			CreateOpinionDTO createOpinionDTO = new CreateOpinionDTO { JobId = id, Content = "Mở lại công việc" };
-			await _UOW.OpinionRepository.Create(createOpinionDTO);
+			long result = await _UOW.ProcessRepository.Active(id);
+			CreateHistoryDTO create = new CreateHistoryDTO { ProcessId = result, JobId = id, Content = "Mở lại công việc" };
+			await _UOW.HistoryRepository.Create(create);
 		}
 
 		public async Task CancleAssign(long id)
 		{
-			await _UOW.JobRepository.CancleAssign(id);
-			CreateOpinionDTO createOpinionDTO = new CreateOpinionDTO { JobId = id, Content = "Hủy duyệt" };
-			await _UOW.OpinionRepository.Create(createOpinionDTO);
+			long result = await _UOW.ProcessRepository.CancleAssign(id);
+			CreateHistoryDTO create = new CreateHistoryDTO { ProcessId = result, JobId = id, Content = "Hủy duyệt công việc" };
+			await _UOW.HistoryRepository.Create(create);
 		}
 
 		public async Task<JobDTO> Update(UpdateJobDTO updateJobDTO)
 		{
+			if (updateJobDTO.Deadline.Date < DateTime.Now.Date) throw new Exception("Hạn xử lý không hợp lệ");
 			if (updateJobDTO.FormFile != null)
 			{
 				if (updateJobDTO.FilePath != null && updateJobDTO.FilePath != "")
@@ -102,10 +106,28 @@ namespace ProjectReview.Services.Jobs
 
 		public async Task<JobDTO> GetJob(long id)
 		{
-			return await _UOW.JobRepository.GetJob(id);
+			var result = await _UOW.JobRepository.GetJob(id);
+			result.Histories = await _UOW.HistoryRepository.GetList(id);
+			return result;
 		}
 
-		public async Task AddOpinion(CreateOpinionDTO createOpinionDTO)
+        public async Task AddHistory(CreateHistoryDTO create)
+        {
+            var result = await _UOW.HistoryRepository.Create(create);
+            if (create.FormFile != null)
+            {
+                string fileName = create.FormFile.FileName;
+                string filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "file", "History_" + result.ToString() + "_" + fileName);
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    await create.FormFile.CopyToAsync(fileStream);
+                }
+                filePath = "History_" + result.ToString() + "_" + fileName;
+                await _UOW.HistoryRepository.UpdateFile(fileName, filePath, result);
+            }
+        }
+
+        public async Task AddOpinion(CreateOpinionDTO createOpinionDTO)
 		{
 			var result = await _UOW.OpinionRepository.Create(createOpinionDTO);
             if (result != null)
@@ -126,13 +148,17 @@ namespace ProjectReview.Services.Jobs
 
 		public async Task<JobDTO> Create(CreateJobDTO createJobDTO)
 		{
-			if (createJobDTO.ListUserId == null || createJobDTO.ListUserId .Count == 0) throw new Exception("Bạn chưa chọn người xử lý");
-			List<long> longs = createJobDTO.ListUserId;
+			if (createJobDTO.Deadline.Date < DateTime.Now.Date) throw new Exception("Hạn xử lý không hợp lệ");
+            if (createJobDTO.ListUserId == null || createJobDTO.ListUserId .Count == 0) throw new Exception("Bạn chưa chọn người xử lý");
+			List<long> ListUserId = createJobDTO.ListUserId;
 			var job = await _UOW.JobRepository.Create(createJobDTO);
 			if (job == null) return null;
-			CreateOpinionDTO createOpinionDTO = new CreateOpinionDTO { Content = "Thêm mới công việc và phân công xử lý", JobId = job.Id };
-			await _UOW.OpinionRepository.Create(createOpinionDTO);
-			await _UOW.JobUserRepository.Create(longs, job.Id);
+			CreateProcessDTO process = new CreateProcessDTO {
+				JobId = job.Id,
+				InstructorId = job.InstructorId,
+				UserId = ListUserId
+			};
+			await _UOW.ProcessRepository.CreateProcess(process);
 			if (createJobDTO.FormFile != null)
 			{
 				job.FileName = createJobDTO.FormFile.FileName;
@@ -149,15 +175,15 @@ namespace ProjectReview.Services.Jobs
 
 		public async Task Active(long id)
 		{
-			await _UOW.JobRepository.Active(id);
-			CreateOpinionDTO createOpinionDTO = new CreateOpinionDTO { JobId = id, Content = "Duyệt công việc" };
-			await _UOW.OpinionRepository.Create(createOpinionDTO);
+			long result = await _UOW.ProcessRepository.Active(id);
+			CreateHistoryDTO create = new CreateHistoryDTO { ProcessId = result, JobId = id, Content = "Duyệt công việc" };
+			await _UOW.HistoryRepository.Create(create);
 		}
 
 		public async Task Delete(long id)
 		{
-			await _UOW.JobUserRepository.Delete(id);
-			await _UOW.OpinionRepository.Delete(id);
+			await _UOW.HistoryRepository.DeleteByJob(id);
+			await _UOW.ProcessRepository.Delete(id);
 			await _UOW.JobRepository.Delete(id);
 		}
 

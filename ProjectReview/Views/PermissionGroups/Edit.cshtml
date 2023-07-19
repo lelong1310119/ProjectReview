@@ -14,39 +14,17 @@
                 </div>
                 <div class="card-body container-card">
                     <div class="card-content">
-                        <form asp-action="Edit">
+                        <form asp-action="Edit" class="col-md-6">
                             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                             <input asp-for="Id" type="hidden">
-                            <div class="row">
-                                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
-                                    <div class="form-group m-3">
-                                        <label asp-for="Name" class="control-label">Tên nhóm quyền</label>
-                                        <input asp-for="Name" class="form-control" />
-                                        <span asp-validation-for="Name" class="text-danger"></span>
-                                    </div>
-                                </div>
-                                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
-                                    <div class="form-group m-3">
-                                        <label class="control-label">Phân quyền</label>
-                                        <div class="form-check d-flex">
-                                            @foreach(var item in listRole)
-                                            {
-                                                bool isChecked = Model.ListRole != null && Model.ListRole.Contains(item.Id);
-                                                @if(isChecked)
-                                                {
-                                                    <input class="form-check" type="checkbox" asp-for="ListRole" value="@item.Id" checked>
-                                                } else
-                                                {
-                                                    <input class="form-check" type="checkbox" asp-for="ListRole" value="@item.Id">
-                                                }
-                                                <label class="form-check-label me-4">
-                                                    @item.Detail
-                                                </label>
-                                            }
-                                        </div>
-                                        <span asp-validation-for="ListRole" class="text-danger"></span>
-                                    </div>
-                                </div>
+                            <div class="form-group m-3">
+                                <label asp-for="Name" class="control-label">Tên nhóm quyền</label>
+                                <input asp-for="Name" class="form-control" />
+                                <span asp-validation-for="Name" class="text-danger"></span>
+                            </div>
+                            <div class="form-group m-3">
+                                <label asp-for="ListRole" class="control-label">Quyền</label>
+                                <select asp-for="ListRole" class="form-control chosen-select" multiple tabindex="6" placeholder="Người thực hiện" asp-items="ViewBag.RoleId"></select>
                             </div>
                             <div class="form-group m-3 d-flex justify-content-center align-items-center">
                                 <a type="button" class="btn btn-lg btn-secondary d-flex flex-column align-items-center justify-content-center" asp-area="" asp-controller="PermissionGroups" asp-action="Index" asp-route-page="@ViewContext.HttpContext.Session.GetInt32("page")" style="width: 100px">

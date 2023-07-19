@@ -32,5 +32,6 @@ namespace ProjectReview.Models.Entities
         public virtual ICollection<UserRole> UserRoles { get; set; }
         public virtual ICollection<ProcessUser> ProcessUsers { get; set; }
         public virtual ICollection<History> Histories { get; set; }
+        public virtual ICollection<Process> Processes { get; set; }
     }
 }

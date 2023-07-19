@@ -21,6 +21,10 @@
                             <div class="row">
                                 <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                     <div class="form-group m-3">
+                                        <label asp-for="HostId" class="control-label">Người chủ trì (Người có thẩm quyền)</label>
+                                        <select asp-for="HostId" class="form-control" asp-items="ViewBag.HostId" disabled></select>
+                                    </div>
+                                    <div class="form-group m-3">
                                         <label asp-for="Content" class="control-label">Nội dung công việc</label>
                                         <textarea asp-for="Content" class="form-control"></textarea>
                                         <span asp-validation-for="Content" class="text-danger"></span>
@@ -55,21 +59,18 @@
                                     }
                                 </div>
                                 <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
-                                    <div class="form-group m-3">
-                                        <label asp-for="HostId" class="control-label">Người chủ trì (Người có thẩm quyền)</label>
-                                        <select asp-for="HostId" class="form-control" asp-items="ViewBag.HostId"></select>
-                                    </div>
-                                    <div class="form-group m-3">
+                                   
+                                    @*<div class="form-group m-3">
                                         <label asp-for="InstructorId" class="control-label">Người chỉ đạo - theo dõi(Người có thẩm quyền)</label>
-                                        <select asp-for="InstructorId" class="form-control" asp-items="ViewBag.InstructorId"></select>
-                                    </div>
-                                    <div class="form-group m-3">
+                                        <select asp-for="InstructorId" class="form-control" asp-items="ViewBag.InstructorId" disabled></select>
+                                    </div>*@
+                                    @*<div class="form-group m-3">
                                         <label asp-for="ListUserId" class="control-label">Người thực hiện</label>
-                                        <select asp-for="ListUserId" class="form-control chosen-select" multiple tabindex="6" placeholder="Người thực hiện" asp-items="ViewBag.UserId"></select>
-                                    </div>
+                                        <select asp-for="ListUserId" class="form-control chosen-select" multiple tabindex="6" placeholder="Người thực hiện" asp-items="ViewBag.UserId" disabled></select>
+                                    </div>*@
                                 </div>
                             </div>
-                            <div class="form-group m-3 d-flex justify-content-center align-items-center">
+                            <div class="form-group m-3 d-flex">
                                 <a type="button" class="btn btn-lg btn-secondary d-flex flex-column align-items-center justify-content-center" asp-area="" asp-controller="Jobs" asp-action="Index" asp-route-page="@ViewContext.HttpContext.Session.GetInt32("page")" style="width: 100px">
                                     <i class="fa-solid fa-arrow-left"></i> Trở về
                                 </a>

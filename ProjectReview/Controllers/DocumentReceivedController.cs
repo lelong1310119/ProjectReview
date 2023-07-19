@@ -149,7 +149,7 @@ namespace ProjectReview.Controllers
             {
                 ViewData["DocumentTypeId"] = new SelectList(await _documentService.GetListDocument(), "Id", "Name");
                 ViewData["DensityId"] = new SelectList(await _documentService.GetListDensity(), "Id", "Detail");
-				ViewData["JobProfileId"] = new SelectList(await _documentService.Get)
+				ViewData["JobProfileId"] = new SelectList(await _documentService.GetListProfile(), "Id", "Name");
 				ViewData["UrgencyId"] = new SelectList(await _documentService.GetListUrgency(), "Id", "Detail");
                 ModelState.AddModelError("", ex.Message);
                 return View(createDocumentDTO);

@@ -139,6 +139,60 @@ namespace ProjectReview.Models
                     .HasConstraintName("FK_Document_DocumentType");
             });
 
+            modelBuilder.Entity<Process>(entity =>
+            {
+                entity.ToTable("Process");
+                entity.HasKey(x => x.Id);
+                entity.Property(x => x.Id).ValueGeneratedOnAdd();
+
+                entity.HasOne(x => x.Instructor)
+                    .WithMany(y => y.Processes)
+                    .HasForeignKey(x => x.InstructorId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Process_User");
+                entity.HasOne(x => x.Job)
+                    .WithMany(y => y.Processes)
+                    .HasForeignKey(x => x.JobId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Process_Job");
+            });
+
+            modelBuilder.Entity<History>(entity =>
+            {
+                entity.ToTable("History");
+                entity.HasKey(x => x.Id);
+                entity.Property(x => x.Id).ValueGeneratedOnAdd();
+
+                entity.HasOne(x => x.Process)
+                    .WithMany(y => y.Histories)
+                    .HasForeignKey(x => x.ProcessId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_History_Process");
+                entity.HasOne(x => x.CreateUser)
+                    .WithMany(y => y.Histories)
+                    .HasForeignKey(x => x.CreateUserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_History_User");
+            });
+
+            modelBuilder.Entity<ProcessUser>(entity =>
+            {
+                entity.ToTable("ProcessUser");
+                entity.HasKey(x => new { x.ProcessId, x.UserId });
+
+                entity.HasOne(x => x.User)
+                    .WithMany(y => y.ProcessUsers)
+                    .HasForeignKey(x => x.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_ProcessUser_User");
+
+                entity.HasOne(x => x.Process)
+                    .WithMany(y => y.ProcessUsers)
+                    .HasForeignKey(x => x.ProcessId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_ProcessUser_Process");
+            });
+
             modelBuilder.Entity<DocumentType>(entity =>
             {
                 entity.ToTable("DocumentType");

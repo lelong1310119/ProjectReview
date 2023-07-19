@@ -14,39 +14,16 @@
                 </div>
                 <div class="card-body container-card">
                     <div class="card-content">
-                        <form asp-action="Create">
+                        <form asp-action="Create" class="col-md-6">
                             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                            <div class="row">
-                                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
-                                    <div class="form-group m-3">
-                                        <label asp-for="Name" class="control-label">Họ và tên</label>
-                                        <input asp-for="Name" class="form-control" />
-                                        <span asp-validation-for="Name" class="text-danger"></span>
-                                    </div>
-                                </div>
-                                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
-                                    <div class="form-group m-3">
-                                        <div class="form-group row">
-                                            @Html.LabelFor(model => model.RoleIds, new { @class = "col-sm-2 col-form-label" })
-                                            <div class="col-sm-6">
-                                                @Html.ListBoxFor(model => model.RoleIds,new MultiSelectList(RoleEnum.RoleEnumList, "Id", "Detail"), new { @class = "form-control", multiple = "multiple", id = "Subjects_dropdown" })
-                                            </div>
-                                        </div>
-
-                                        <div class="form-check">
-                                            @foreach(var item in data)
-                                            {
-                                                <div class="d-flex">
-                                                    <input class="form-check" type="checkbox" asp-for-items="RoleIds" value=@item.Id>
-                                                    <label class="form-check-label me-4">
-                                                        @item.Detail
-                                                    </label>
-                                                </div>
-                                            }
-                                        </div>
-                                        @*<span asp-validation-for="RoleIds" class="text-danger"></span>*@
-                                    </div>
-                                </div>
+                            <div class="form-group m-3">
+                                <label asp-for="Name" class="control-label">Tên nhóm quyền</label>
+                                <input asp-for="Name" class="form-control" />
+                                <span asp-validation-for="Name" class="text-danger"></span>
+                            </div>
+                                <div class="form-group m-3">
+                                <label asp-for="RoleIds" class="control-label">Quyền</label>
+                                <select asp-for="RoleIds" class="form-control chosen-select" multiple tabindex="6" placeholder="Người thực hiện" asp-items="ViewBag.RoleId"></select>
                             </div>
                             <div class="form-group m-3 d-flex justify-content-center align-items-center">
                                 <a type="button" class="btn btn-lg btn-secondary d-flex flex-column align-items-center justify-content-center" asp-area="" asp-controller="PermissionGroups" asp-action="Index" style="width: 100px">

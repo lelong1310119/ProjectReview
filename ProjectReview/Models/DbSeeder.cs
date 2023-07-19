@@ -35,11 +35,11 @@ namespace ProjectReview.Models
 
                 List<Department> departments = new List<Department>();
                 departments.Add(new Department { Id = 1, Name = "Ban lãnh đạo", Address = "144 Xuân Thủy, Cầu Giấy, Hà Nội", Phone = "", Status = 1, CreateDate = DateTime.Now});
-                departments.Add(new Department { Id = 2, Name = "Hành chính - Tổ chức", Address = "144 Xuân Thủy, Cầu Giấy, Hà Nội", Phone = "", Status = 0, CreateDate = DateTime.Now });
-                departments.Add(new Department { Id = 3, Name = "Kế toán - Tài vụ", Address = "144 Xuân Thủy, Cầu Giấy, Hà Nội", Phone = "", Status = 0, CreateDate = DateTime.Now });
+                departments.Add(new Department { Id = 2, Name = "Hành chính - Tổ chức", Address = "144 Xuân Thủy, Cầu Giấy, Hà Nội", Phone = "", Status = 1, CreateDate = DateTime.Now });
+                departments.Add(new Department { Id = 3, Name = "Kế toán - Tài vụ", Address = "144 Xuân Thủy, Cầu Giấy, Hà Nội", Phone = "", Status = 1, CreateDate = DateTime.Now });
                 departments.Add(new Department { Id = 4, Name = "Tổ chuyên môn", Address = "144 Xuân Thủy, Cầu Giấy, Hà Nội", Phone = "", Status = 0, CreateDate = DateTime.Now });
                 departments.Add(new Department { Id = 5, Name = "Tổ kỹ thuật", Address = "144 Xuân Thủy, Cầu Giấy, Hà Nội", Phone = "", Status = 0, CreateDate = DateTime.Now });
-                departments.Add(new Department { Id = 6, Name = "Quản trị hệ thống", Address = "144 Xuân Thủy, Cầu Giấy, Hà Nội", Phone = "", Status = 0, CreateDate = DateTime.Now });
+                departments.Add(new Department { Id = 6, Name = "Quản trị hệ thống", Address = "144 Xuân Thủy, Cầu Giấy, Hà Nội", Phone = "", Status = 1, CreateDate = DateTime.Now });
 
 
                 foreach (var item in departments)
@@ -61,8 +61,8 @@ namespace ProjectReview.Models
 
                 List<Position> positions = new List<Position>();
                 positions.Add(new Position { Id = 1, Name = "Quản trị hệ thống", Note = "", Status = 1, CreateDate = DateTime.Now });
-                positions.Add(new Position { Id = 2, Name = "Trưởng phòng", Note = "", Status = 0, CreateDate = DateTime.Now });
-                positions.Add(new Position { Id = 3, Name = "Phó trưởng phòng", Note = "", Status = 0, CreateDate = DateTime.Now });
+                positions.Add(new Position { Id = 2, Name = "Trưởng phòng", Note = "", Status = 1, CreateDate = DateTime.Now });
+                positions.Add(new Position { Id = 3, Name = "Phó trưởng phòng", Note = "", Status = 1, CreateDate = DateTime.Now });
                 positions.Add(new Position { Id = 4, Name = "Cán bộ", Note = "", Status = 0, CreateDate = DateTime.Now });
                 positions.Add(new Position { Id = 5, Name = "Nhân viên văn thư", Note = "", Status = 0, CreateDate = DateTime.Now });
                 positions.Add(new Position { Id = 6, Name = "Kế toán", Note = "", Status = 0, CreateDate = DateTime.Now });
@@ -86,9 +86,9 @@ namespace ProjectReview.Models
                 if (await rankSet.AnyAsync()) return;
 
                 List<Rank> ranks = new List<Rank>();
-                ranks.Add(new Rank { Id = 1, Name = "Thiếu úy", Note = "", Status = 0, CreateDate = DateTime.Now });
-                ranks.Add(new Rank { Id = 2, Name = "Trung úy", Note = "", Status = 0, CreateDate = DateTime.Now });
-                ranks.Add(new Rank { Id = 3, Name = "Thượng úy", Note = "", Status = 0, CreateDate = DateTime.Now });
+                ranks.Add(new Rank { Id = 1, Name = "Thiếu úy", Note = "", Status = 1, CreateDate = DateTime.Now });
+                ranks.Add(new Rank { Id = 2, Name = "Trung úy", Note = "", Status = 1, CreateDate = DateTime.Now });
+                ranks.Add(new Rank { Id = 3, Name = "Thượng úy", Note = "", Status = 1, CreateDate = DateTime.Now });
                 ranks.Add(new Rank { Id = 4, Name = "Đại úy", Note = "", Status = 0, CreateDate = DateTime.Now });
                 ranks.Add(new Rank { Id = 5, Name = "Thiếu tá", Note = "", Status = 0, CreateDate = DateTime.Now });
                 ranks.Add(new Rank { Id = 6, Name = "Trung tá", Note = "", Status = 0, CreateDate = DateTime.Now });
@@ -181,10 +181,10 @@ namespace ProjectReview.Models
 
                 List<PermissionGroup> permissions = new List<PermissionGroup>();
                 permissions.Add(new PermissionGroup { Id = 1, Name = "Quản trị hệ thống", Status = 1, CreateDate = DateTime.Now });
-                permissions.Add(new PermissionGroup { Id = 2, Name = "Trưởng phòng", Status = 0, CreateDate = DateTime.Now });
-                permissions.Add(new PermissionGroup { Id = 3, Name = "Phó trưởng phòng", Status = 0, CreateDate = DateTime.Now });
-                permissions.Add(new PermissionGroup { Id = 4, Name = "Cán bộ", Status = 0, CreateDate = DateTime.Now });
-                permissions.Add(new PermissionGroup { Id = 5, Name = "Văn thư", Status = 0, CreateDate = DateTime.Now });
+                permissions.Add(new PermissionGroup { Id = 2, Name = "Trưởng phòng", Status = 1, CreateDate = DateTime.Now });
+                permissions.Add(new PermissionGroup { Id = 3, Name = "Phó trưởng phòng", Status = 1, CreateDate = DateTime.Now });
+                permissions.Add(new PermissionGroup { Id = 4, Name = "Cán bộ", Status = 1, CreateDate = DateTime.Now });
+                permissions.Add(new PermissionGroup { Id = 5, Name = "Văn thư", Status = 1, CreateDate = DateTime.Now });
 
                 foreach (var item in permissions)
                 {

@@ -11,6 +11,7 @@
         public string? FilePath { get; set; }
         public string Content { get; set; }
         public IFormFile? FormFile { get; set; }
-        public List<long>? ListUserId { get; set; }
+
+        public List<long>? UserIds { get; set; }
     }
 }

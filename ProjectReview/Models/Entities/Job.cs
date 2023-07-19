@@ -21,5 +21,6 @@
         public virtual JobDocument JobDocument { get; set; }    
         public virtual ICollection<Handler> Handlers { get; set; }
         public virtual ICollection<Opinion> Opinions { get; set;}
+        public virtual ICollection<Process> Processes { get; set; }
     }
 }

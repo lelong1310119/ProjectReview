@@ -69,6 +69,7 @@ namespace ProjectReview.Controllers
 
         public IActionResult Create()
         {
+			ViewData["RoleId"] = new SelectList(RoleEnum.RoleEnumList, "Id", "Detail");
             return View();
         }
 
@@ -79,14 +80,13 @@ namespace ProjectReview.Controllers
 		{
 			try
 			{
-				if (createPermissionGroupDTO.RoleIds == null) throw new Exception("null");
-				if (createPermissionGroupDTO.RoleIds.Count > 0) throw new Exception("test");
 				await _permissionGroupService.Create(createPermissionGroupDTO);
 				return RedirectToAction(nameof(Index));
 			}
 			catch (Exception ex)
 			{
-				ModelState.AddModelError("", ex.Message);
+                ViewData["RoleId"] = new SelectList(RoleEnum.RoleEnumList, "Id", "Detail");
+                ModelState.AddModelError("", ex.Message);
 				return View(createPermissionGroupDTO);
 			}
 		}
@@ -119,7 +119,8 @@ namespace ProjectReview.Controllers
 			}
 			catch (Exception ex)
 			{
-				ModelState.AddModelError("", ex.Message);
+                ViewData["RoleId"] = new SelectList(RoleEnum.RoleEnumList, "Id", "Detail");
+                ModelState.AddModelError("", ex.Message);
 				return View(permissionGroup);
 			}
 		}

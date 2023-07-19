@@ -1,7 +1,6 @@
 ﻿using ProjectReview.DTO.PermissionGroups;
 using ProjectReview.Paging;
 using ProjectReview.Repositories;
-using Microsoft.AspNetCore.Mvc;
 
 namespace ProjectReview.Services.PermissionGroups
 {
@@ -35,10 +34,21 @@ namespace ProjectReview.Services.PermissionGroups
 
 		public async Task<PermissionGroupDTO> Create(CreatePermissionGroupDTO createPermissionGroup)
 		{
+			List<long> RoleIds = new List<long>();
 			createPermissionGroup.Name = createPermissionGroup.Name.Trim();
 			var check = await _UOW.PermissionGroupRepository.GetByName(createPermissionGroup.Name);
 			if (check) throw new Exception("Tên nhóm đã tồn tại. Vui lòng nhập tên khác");
-			return await _UOW.PermissionGroupRepository.Create(createPermissionGroup);
+			if (createPermissionGroup.RoleIds == null || createPermissionGroup.RoleIds.Count == 0)
+			{
+				return await _UOW.PermissionGroupRepository.Create(createPermissionGroup);
+			}
+			var permission = await _UOW.PermissionGroupRepository.Create(createPermissionGroup);
+			if (permission != null)
+			{
+                RoleIds = createPermissionGroup.RoleIds;
+				await _UOW.PermissionGroupRepository.CreateRolePermission(RoleIds, permission.Id);
+            }
+			return permission;
 		}
 
 		public async Task<PermissionGroupDTO> Update(UpdatePermissionGroupDTO updatePermissionGroup)
@@ -50,6 +60,9 @@ namespace ProjectReview.Services.PermissionGroups
 				var check = await _UOW.PermissionGroupRepository.GetByName(updatePermissionGroup.Name);
 				if (check) throw new Exception("Tên nhóm đã tồn tại. Vui lòng nhập tên khác");
 			}
+			if (updatePermissionGroup.ListRole == null) updatePermissionGroup.ListRole = new List<long>();
+			await _UOW.PermissionGroupRepository.UpdateUseRole(updatePermissionGroup.Id, updatePermissionGroup.ListRole);
+			await _UOW.PermissionGroupRepository.CreateRolePermission(updatePermissionGroup.ListRole, updatePermissionGroup.Id);
 			return await _UOW.PermissionGroupRepository.Update(updatePermissionGroup);
 		}
 

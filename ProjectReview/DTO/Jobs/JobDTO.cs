@@ -1,6 +1,4 @@
-﻿using ProjectReview.DTO.Documents;
-using ProjectReview.DTO.Opinions;
-using ProjectReview.DTO.Users;
+﻿using ProjectReview.DTO.Histories;
 using ProjectReview.Models.Entities;
 
 namespace ProjectReview.DTO.Jobs
@@ -19,11 +17,13 @@ namespace ProjectReview.DTO.Jobs
 		public string? FilePath { get; set; }
 		public string Content { get; set; }
 
+		public Process Process { get; set; }
 		public User Host { get; set; }
 		public User Instructor { get; set; }
 		public User CreateUser { get; set; }
 		public Document Document { get; set; }
 		public List<User> Users { get; set; }
 		public List<Opinion> Opinions { get; set; }
+		public List<HistoryDTO> Histories { get; set; }
 	}
 }

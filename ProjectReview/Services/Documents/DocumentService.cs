@@ -24,6 +24,7 @@ namespace ProjectReview.Services.Documents
 		Task Assign(AssignDocumentDTO assignDocumentDTO);
 		Task Recall(long id);
 		Task<UpdateDocumentDTO> GetUpdate(long id);
+		Task<List<JobProfileDTO>> GetListProfile();
     }
 	public class DocumentService : IDocumentService
 	{

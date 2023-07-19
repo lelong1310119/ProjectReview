@@ -18,6 +18,9 @@ namespace ProjectReview.Repositories
 		Task<List<PermissionGroupDTO>> GetAll();
 		Task<CustomPaging<PermissionGroupDTO>> GetCustomPaging(int page, int pageSize);
 		Task<List<PermissionGroupDTO>> GetAllActive();
+		Task CreateRolePermission(List<long> RoleId, long permissionId);
+		Task UpdateUseRole(long id, List<long> RoleId);
+		Task DeletePermissionRole(long id);
     }
 
     public class PermissionGroupRepository : IPermissionGroupRepository
@@ -28,6 +31,17 @@ namespace ProjectReview.Repositories
             _dataContext = dataContext;
             _mapper = mapper;
         }
+
+		public async Task CreateRolePermission(List<long> RoleId, long permissionId)
+		{
+			var result = await _dataContext.RolePermissions.Where(x => x.PermissionGroupId == permissionId).ToListAsync();
+			_dataContext.RolePermissions.RemoveRange(result);
+			foreach(var role in RoleId)
+			{
+				await _dataContext.RolePermissions.AddAsync(new RolePermission { RoleId = role, PermissionGroupId = permissionId });
+			}
+			await _dataContext.SaveChangesAsync();
+		}
 
         public async Task<List<PermissionGroupDTO>> GetAllActive()
         {
@@ -89,6 +103,43 @@ namespace ProjectReview.Repositories
 			_dataContext.PermissionGroups.Update(permissionGroup);
 			await _dataContext.SaveChangesAsync();
 			return _mapper.Map<PermissionGroup, PermissionGroupDTO>(permissionGroup);
+		}
+
+		public async Task DeletePermissionRole(long id)
+		{
+			await _dataContext.RolePermissions
+						.Where(x => x.PermissionGroupId == id)
+						.ExecuteDeleteAsync();
+			await _dataContext.SaveChangesAsync();
+		}
+
+		public async Task UpdateUseRole(long id, List<long> RoleId)
+		{
+			List<long> UserId = new List<long>();
+			var result = await _dataContext.Users
+									.Where(x => x.PermissionGroupId == id)
+									.ToListAsync();
+			if (result.Count > 0) { 
+				foreach(var user in result)
+				{
+					UserId.Add(user.Id);
+				}
+			}
+			if (UserId.Count > 0) {
+				foreach(var user in UserId)
+				{
+					var userRole = await _dataContext.UserRoles.Where(x => x.UserId == user).ToListAsync();
+					_dataContext.UserRoles.RemoveRange(userRole);
+					if (RoleId.Count > 0)
+					{
+                        foreach (var role in RoleId)
+                        {
+                            await _dataContext.UserRoles.AddAsync(new UserRole { RoleId = role, UserId = user });
+                        }
+                    }
+				}
+			}
+			await _dataContext.SaveChangesAsync();
 		}
 
 		public async Task<UpdatePermissionGroupDTO> GetById(long id)

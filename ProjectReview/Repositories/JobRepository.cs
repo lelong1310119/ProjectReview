@@ -79,8 +79,7 @@ namespace ProjectReview.Repositories
 				await _dataContext.SaveChangesAsync();
 			}
 		}
-
-        public async Task CancleAssign(long id)
+		public async Task CancleAssign(long id)
         {
 			var job = await _dataContext.Jobs.Where(x => x.Id == id).FirstOrDefaultAsync();
 			if (job != null)
@@ -108,8 +107,8 @@ namespace ProjectReview.Repositories
                     document.IsAssign = false;
                     _dataContext.Documents.Update(document);
                 }
-            }
-            await _dataContext.JobDocuments.Where(x => x.JobId == id).ExecuteDeleteAsync();
+				_dataContext.JobDocuments.Remove(jobDocument);
+			}
             if (result.FilePath != null && result.FilePath != "")
             {
 				var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "file", result.FilePath);
@@ -124,102 +123,102 @@ namespace ProjectReview.Repositories
 
         public async Task<CustomPaging<JobDTO>> GetCustomPaging(string filter, int page, int pageSize)
         {
-   //         var role = await _dataContext.UserRoles
-   //                             .Include(x => x.Role)
-			//					.Where(x => (x.UserId == _currentUser.UserId && x.Role.Name == "ManageJob"))
-			//					.FirstOrDefaultAsync();
-   //         if (role != null)
-   //         {
-			//	int count = await _dataContext.Jobs
-			//							.Where(x => x.Content.Contains(filter))
-			//							.CountAsync();
-			//	var result = await _dataContext.Jobs
-			//								.Where(x => x.Content.Contains(filter))
-			//								.Include(x => x.CreateUser)
-			//								.Include(x => x.Host)
-			//	                            .Include(x => x.Instructor)
-			//								.Skip((page - 1) * pageSize)
-			//	                            .Take(pageSize)
-			//								.ToListAsync();
-			//	int totalPage = (count % pageSize == 0) ? (count / pageSize) : (count / pageSize + 1);
-			//	var jobs = _mapper.Map<List<Job>, List<JobDTO>>(result);
-   //             if (jobs.Count > 0)
-   //             {
-   //                 foreach(var item  in jobs)
-   //                 {
-   //                     item.Users = new List<User>();
-			//			List<Handler> handlers = await _dataContext.Handlers
-			//									.Where(x => x.JobId == item.Id)
-			//									.Include(x => x.User)
-			//									.ToListAsync();
-			//			if (handlers.Count > 0)
-			//			{
-			//				foreach (var handler in handlers)
-			//				{
-			//					item.Users.Add(handler.User);
-			//				}
-			//			}
-			//		}
-   //             }
-   //             CustomPaging<JobDTO> paging = new CustomPaging<JobDTO>
-   //             {
-   //                 TotalPage = totalPage,
-   //                 PageSize = pageSize,
-   //                 Data = jobs,
-			//	};
-   //             return paging;
-			//} else
-   //         {
-                List<long> jobIds = new List<long>();
-                var handler = await _dataContext.Handlers
-                                .Where(x => x.UserId == _currentUser.UserId)
-                                .ToListAsync();
-                if (handler.Count > 0)
+            List<long> jobIds = new List<long>();
+            var processUsers = await _dataContext.ProcessUsers
+                            .Include(x => x.Process)
+                            .Where(x => x.UserId == _currentUser.UserId)
+                            .ToListAsync();
+            var process = await _dataContext.Processes
+                                    .Where(x => x.InstructorId == _currentUser.UserId)
+                                    .ToListAsync();
+            if (process.Count > 0)
+            {
+                foreach (var i in process)
                 {
-                    foreach(var i in  handler)
+                    if (!jobIds.Contains(i.Id))
                     {
-                        jobIds.Add(i.JobId);
+                        jobIds.Add(i.Id);
                     }
                 }
-				int count = await _dataContext.Jobs
-										.Where(x => ((x.Content.Contains(filter)) && (x.HostId == _currentUser.UserId || x.InstructorId == _currentUser.UserId || jobIds.Contains(x.Id))))
-										.CountAsync();
-				var result = await _dataContext.Jobs
-											.Where(x => ((x.Content.Contains(filter)) && (x.HostId == _currentUser.UserId || x.InstructorId == _currentUser.UserId || jobIds.Contains(x.Id))))
-											.Include(x => x.CreateUser)
-											.Include(x => x.Host)
-											.Include(x => x.Instructor)
-											.Skip((page - 1) * pageSize)
-											.Take(pageSize)
-											.ToListAsync();
-				int totalPage = (count % pageSize == 0) ? (count / pageSize) : (count / pageSize + 1);
-				var jobs = _mapper.Map<List<Job>, List<JobDTO>>(result);
-				if (jobs.Count > 0)
-				{
-					foreach (var item in jobs)
-					{
-						item.Users = new List<User>();
-						List<Handler> handlers = await _dataContext.Handlers
-												.Where(x => x.JobId == item.Id)
-												.Include(x => x.User)
-												.ToListAsync();
-						if (handlers.Count > 0)
-						{
-							foreach (var j in handlers)
-							{
-								item.Users.Add(j.User);
-							}
-						}
-					}
-				}
-				CustomPaging<JobDTO> paging = new CustomPaging<JobDTO>
-				{
-					TotalPage = totalPage,
-					PageSize = pageSize,
-					Data = jobs,
-				};
-				return paging;
-			//}
+            }
+            if (processUsers.Count > 0)
+            {
+                foreach (var i in processUsers)
+                {
+                    if (!jobIds.Contains(i.Process.JobId))
+                    {
+                        jobIds.Add(i.Process.JobId);
+                    }
+                }
+            }
+            int count = await _dataContext.Jobs
+                                    .Where(x => ((x.Content.Contains(filter)) && (x.HostId == _currentUser.UserId || jobIds.Contains(x.Id))))
+                                    .CountAsync();
+            var result = await _dataContext.Jobs
+                                        .Where(x => ((x.Content.Contains(filter)) && (x.HostId == _currentUser.UserId || x.InstructorId == _currentUser.UserId || jobIds.Contains(x.Id))))
+                                        .Include(x => x.CreateUser)
+                                        .Include(x => x.Host)
+                                        .Skip((page - 1) * pageSize)
+                                        .Take(pageSize)
+                                        .ToListAsync();
+            int totalPage = (count % pageSize == 0) ? (count / pageSize) : (count / pageSize + 1);
+            var jobs = _mapper.Map<List<Job>, List<JobDTO>>(result);
+            if (jobs.Count > 0)
+            {
+                foreach (var item in jobs)
+                {
+                    if (_currentUser.UserId == item.HostId || _currentUser.UserId == item.CreateUserId)
+                    {
+                        var processitem = await _dataContext.Processes
+                                                .Where(x => (x.ProcessEnd == true && x.JobId == item.Id))
+                                                .Include(x => x.Instructor)
+                                                .FirstOrDefaultAsync();
+                        if (processitem != null) item.Process = processitem;
+                    }
+                    else
+                    {
+                        var processUser = await _dataContext.ProcessUsers
+                                                    .Include(x => x.Process)
+                                                    .ThenInclude(i => i.Instructor)
+                                                    .Where(x => x.Process.JobId == item.Id)
+                                                    .FirstOrDefaultAsync();
+                        if (processUser != null) item.Process = processUser.Process;
+                    }
+                    item.Instructor = item.Process.Instructor;
+                    item.InstructorId = item.Instructor.Id;
+                    if (item.Process.Status == 3)
+                    {
+                        item.Status = 3;
+                    }
+                    else if (item.Deadline.Date < DateTime.Now.Date)
+                    {
+                        item.Status = 4;
+                    }
+                    else
+                    {
+                        item.Status = item.Process.Status;
+                    }
+                    item.Users = new List<User>();
+                    List<ProcessUser> handlers = await _dataContext.ProcessUsers
+                                            .Where(x => x.ProcessId == item.Process.Id)
+                                            .Include(x => x.User)
+                                            .ToListAsync();
+                    if (handlers.Count > 0)
+                    {
+                        foreach (var j in handlers)
+                        {
+                            item.Users.Add(j.User);
+                        }
+                    }
+                }
+            }
+            CustomPaging<JobDTO> paging = new CustomPaging<JobDTO>
+            {
+                TotalPage = totalPage,
+                PageSize = pageSize,
+                Data = jobs,
+            };
+            return paging;
         }
 
         public async Task<JobDTO> UpdateFile(JobDTO update)
@@ -238,40 +237,53 @@ namespace ProjectReview.Repositories
                                 .Where(x => x.Id == id)
 								.Include(x => x.CreateUser)
 								.Include(x => x.Host)
-								.Include(x => x.Instructor)
 								.FirstOrDefaultAsync();
-			var job = _mapper.Map<Job, JobDTO>(result);
-			job.Users = new List<User>();
-			List<Handler> handlers = await _dataContext.Handlers
-									.Where(x => x.JobId == job.Id)
-									.Include(x => x.User)
-									.ToListAsync();
-			if (handlers.Count > 0)
-			{
-				foreach (var j in handlers)
-				{
-					job.Users.Add(j.User);
-				}
-			}
-            job.Opinions = new List<Opinion>();
-            List<Opinion> opinions = await _dataContext.Opinions
-                                                    .Where(x => x.JobId == job.Id)
-                                                    .Include(x => x.CreateUser)
-                                                    .ToListAsync();
-			if (opinions.Count > 0)
-			{
-				foreach (var item in opinions)
-				{
-					job.Opinions.Add(item);
-				}
-			}
-			var jobdocument = await _dataContext.JobDocuments.Where(x => x.JobId == job.Id).FirstOrDefaultAsync();
-            if (jobdocument  != null)
+			var item = _mapper.Map<Job, JobDTO>(result);
+			item.Users = new List<User>();
+            if (_currentUser.UserId == item.HostId || _currentUser.UserId == item.CreateUserId)
             {
-                job.Document = await _dataContext.Documents.Where(x => x.Id == jobdocument.DocumentId).FirstOrDefaultAsync();
+                var processitem = await _dataContext.Processes
+                                        .Where(x => (x.ProcessEnd == true && x.JobId == item.Id))
+                                        .Include(x => x.Instructor)
+                                        .FirstOrDefaultAsync();
+                if (processitem != null) item.Process = processitem;
             }
-            return job;
-
+            else
+            {
+                var processUser = await _dataContext.ProcessUsers
+                                            .Include(x => x.Process)
+                                            .ThenInclude(i => i.Instructor)
+                                            .Where(x => x.Process.JobId == item.Id)
+                                            .FirstOrDefaultAsync();
+                if (processUser != null) item.Process = processUser.Process;
+            }
+            item.Instructor = item.Process.Instructor;
+            item.InstructorId = item.Instructor.Id;
+            if (item.Process.Status == 3)
+            {
+                item.Status = 3;
+            }
+            else if (item.Deadline.Date < DateTime.Now.Date)
+            {
+                item.Status = 4;
+            }
+            else
+            {
+                item.Status = item.Process.Status;
+            }
+            item.Users = new List<User>();
+            List<ProcessUser> handlers = await _dataContext.ProcessUsers
+                                    .Where(x => x.ProcessId == item.Process.Id)
+                                    .Include(x => x.User)
+                                    .ToListAsync();
+            if (handlers.Count > 0)
+            {
+                foreach (var j in handlers)
+                {
+                    item.Users.Add(j.User);
+                }
+            }
+            return item;
 		}
 
         public async Task<List<JobDTO>> GetList()
@@ -324,8 +336,6 @@ namespace ProjectReview.Repositories
                                     .Where(x => x.Id == updateJob.Id)
                                     .FirstOrDefaultAsync();
             if (job == null) return null;
-            job.HostId = updateJob.HostId;
-            job.InstructorId = updateJob.InstructorId;
             job.Deadline = updateJob.Deadline;
             job.Request = updateJob.Request;
             job.FileName = updateJob.FileName;

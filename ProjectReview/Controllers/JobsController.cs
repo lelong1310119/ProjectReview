@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ProjectReview.Common;
+using ProjectReview.DTO.Histories;
 using ProjectReview.DTO.Jobs;
 using ProjectReview.DTO.Opinions;
 using ProjectReview.DTO.Users;
@@ -152,9 +153,10 @@ namespace ProjectReview.Controllers
 		public async Task<IActionResult> Detail(long id)
 		{
 			ViewData["Id"] = _currentUser.UserId;
-			ViewData["Job"] = await _jobService.GetJob(id);
-			CreateOpinionDTO createOpinionDTO = new CreateOpinionDTO { JobId = id }; 
-			return View(createOpinionDTO);
+			var result = await _jobService.GetJob(id);
+			ViewData["Job"] = result;
+			CreateHistoryDTO create = new CreateHistoryDTO { ProcessId = result.Process.Id, JobId = id}; 
+			return View(create);
 		}
 
 		// POST: Users/Edit/5
@@ -162,21 +164,21 @@ namespace ProjectReview.Controllers
 		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Detail([FromForm] CreateOpinionDTO createOpinionDTO)
+		public async Task<IActionResult> Detail([FromForm] CreateHistoryDTO create)
 		{
 			try
 			{
-				await _jobService.AddOpinion(createOpinionDTO);
+				await _jobService.AddHistory(create);
 				ViewData["Id"] = _currentUser.UserId;
-				ViewData["Job"] = await _jobService.GetJob(createOpinionDTO.JobId);
+				ViewData["Job"] = await _jobService.GetJob(create.JobId);
 				return RedirectToAction(nameof(Detail));
 			}
 			catch (Exception ex)
 			{
 				ViewData["Id"] = _currentUser.UserId;
-				ViewData["Job"] = await _jobService.GetJob(createOpinionDTO.JobId);
+				ViewData["Job"] = await _jobService.GetJob(create.JobId);
 				ModelState.AddModelError("", ex.Message);
-				return View(createOpinionDTO);
+				return View(create);
 			}
 		}
 

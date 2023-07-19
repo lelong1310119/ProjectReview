@@ -20,6 +20,8 @@ namespace ProjectReview.Repositories
 		IJobRepository JobRepository { get; }
 		IJobUserRepository JobUserRepository { get; }
 		IOpinionRepository	OpinionRepository { get; }
+		IProcessRepository ProcessRepository { get; }
+		IHistoryRepository HistoryRepository { get; }
 	}
 
 	public class UnitOfWork : IUnitOfWork
@@ -41,6 +43,8 @@ namespace ProjectReview.Repositories
 		public IJobRepository JobRepository { get; private set; }
 		public IJobUserRepository JobUserRepository { get; private set; }
 		public IOpinionRepository OpinionRepository { get; private set; }
+		public IProcessRepository ProcessRepository { get; private set; }
+		public IHistoryRepository HistoryRepository { get; private set; }
 
 		public UnitOfWork(DataContext context, IMapper mapper, ICurrentUser currentUser)
 		{
@@ -60,6 +64,8 @@ namespace ProjectReview.Repositories
 			JobRepository = new JobRepository(context, mapper, currentUser);
 			JobUserRepository = new JobUserRepository(context);
 			OpinionRepository = new OpinionRepository(context, mapper, currentUser);
+			ProcessRepository = new ProcessRepository(context, mapper, currentUser);
+			HistoryRepository = new HistoryRepository(context, mapper, currentUser);
 		}
 
 		public void Save()
