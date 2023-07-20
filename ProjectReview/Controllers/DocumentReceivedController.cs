@@ -92,6 +92,7 @@ namespace ProjectReview.Controllers
             ViewData["DocumentTypeId"] = new SelectList(await _documentService.GetListDocument(), "Id", "Name");
             ViewData["DensityId"] = new SelectList(await _documentService.GetListDensity(), "Id", "Detail");
             ViewData["UrgencyId"] = new SelectList(await _documentService.GetListUrgency(), "Id", "Detail");
+			ViewData["JobProfileId"] = new SelectList(await _documentService.GetListProfile(), "Id", "Name");
             return View();
         }
 
@@ -128,7 +129,9 @@ namespace ProjectReview.Controllers
 				ViewData["HostId"] = new SelectList(await _jobService.GetHostUser(), "Id", "FullName");
 				ViewData["InstructorId"] = new SelectList(await _jobService.GetHostUser(), "Id", "FullName");
 				ViewData["UserId"] = new SelectList(await _jobService.GetListUser(), "Id", "FullName");
-				ModelState.AddModelError("", ex.Message);
+                ViewData["JobProfileId"] = new SelectList(await _documentService.GetListProfile(), "Id", "Name");
+
+                ModelState.AddModelError("", ex.Message);
 				return View(assignDocumentDTO);
 			}
 		}
@@ -161,7 +164,8 @@ namespace ProjectReview.Controllers
         {
 			ViewData["DocumentTypeId"] = new SelectList(await _documentService.GetListDocument(), "Id", "Name");
 			ViewData["DensityId"] = new SelectList(await _documentService.GetListDensity(), "Id", "Detail");
-			ViewData["UrgencyId"] = new SelectList(await _documentService.GetListUrgency(), "Id", "Detail");
+            ViewData["JobProfileId"] = new SelectList(await _documentService.GetListProfile(), "Id", "Name");
+            ViewData["UrgencyId"] = new SelectList(await _documentService.GetListUrgency(), "Id", "Detail");
 			var result = await _documentService.GetUpdate(id);
             if (result == null)
             {

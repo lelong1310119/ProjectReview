@@ -86,12 +86,47 @@ namespace ProjectReview.Services.Documents
 
 		public async Task<DocumentDTO> CreateDocumentReceived(CreateDocumentDTO createDocumentDTO)
 		{
-			return await _UOW.DocumentRepository.CreateDocumentReceived(createDocumentDTO);
+			List<long> profile = createDocumentDTO.ProfileIds;
+			if (createDocumentDTO.FormFile != null) ;
+			var document = await _UOW.DocumentRepository.CreateDocumentReceived(createDocumentDTO);
+			if (profile != null && profile.Count > 0) {
+				await _UOW.ProfileDocumentRepository.Create(document.Id, profile);
+			}
+			if (createDocumentDTO.FormFile != null)
+			{
+				document.FileName = createDocumentDTO.FormFile.FileName;
+				var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "file", "Document_" + document.Id.ToString() + "_" + document.FileName);
+				using (var fileStream = new FileStream(filePath, FileMode.Create))
+				{
+					await createDocumentDTO.FormFile.CopyToAsync(fileStream);
+				}
+				document.FilePath = "Document_" + document.Id.ToString() + "_" + document.FileName;
+				return await _UOW.DocumentRepository.UpdateFile(document);
+			}
+			return document;
 		}
 
 		public async Task<DocumentDTO> CreateDocumentSent(CreateDocumentDTO createDocumentDTO)
 		{
-			return await _UOW.DocumentRepository.CreateDocumentSent(createDocumentDTO);
+			List<long> profile = createDocumentDTO.ProfileIds;
+			if (createDocumentDTO.FormFile != null) ;
+			var document = await _UOW.DocumentRepository.CreateDocumentSent(createDocumentDTO);
+			if (profile != null && profile.Count > 0)
+			{
+				await _UOW.ProfileDocumentRepository.Create(document.Id, profile);
+			}
+			if (createDocumentDTO.FormFile != null)
+			{
+				document.FileName = createDocumentDTO.FormFile.FileName;
+				var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "file", "Document_" + document.Id.ToString() + "_" + document.FileName);
+				using (var fileStream = new FileStream(filePath, FileMode.Create))
+				{
+					await createDocumentDTO.FormFile.CopyToAsync(fileStream);
+				}
+				document.FilePath = "Document_" + document.Id.ToString() + "_" + document.FileName;
+				return await _UOW.DocumentRepository.UpdateFile(document);
+			}
+			return document;
 		}
 
 		public async Task Assign(AssignDocumentDTO assignDocumentDTO)
@@ -100,7 +135,7 @@ namespace ProjectReview.Services.Documents
 			{
 				throw new Exception("Bạn chưa chọn người xử lý công việc.");
 			}
-			CreateJobDTO createJobDTO = new CreateJobDTO
+			createDocumentDTO createDocumentDTO = new createDocumentDTO
 			{
 				Content = assignDocumentDTO.Content,
 				FilePath = assignDocumentDTO.FilePath,
@@ -110,7 +145,7 @@ namespace ProjectReview.Services.Documents
 				HostId = assignDocumentDTO.HostId,
 				InstructorId = assignDocumentDTO.InstructorId
 			};
-			var result = await _UOW.JobRepository.Create(createJobDTO);
+			var result = await _UOW.JobRepository.Create(createDocumentDTO);
 			if (result != null)
 			{
 				await _UOW.JobRepository.CreateJobDocument(result.Id, assignDocumentDTO.DocumentId);

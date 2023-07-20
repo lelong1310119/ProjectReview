@@ -232,8 +232,8 @@ namespace ProjectReview.Models
                 if (await userSet.AnyAsync()) return;
                 List<User> users = new List<User>();
                 users.Add(new User { Id = 1, FullName = "SuperAdmin", Birthday = DateTime.Now, CreateDate = DateTime.Now, Gender = "Nam", PermissionGroupId = 1, RankId = 8, PositionId = 1, DepartmentId = 1, UserName = "superadmin", Note = "", Status = 1, PasswordHash = HashPassword("123456"), Email = "superadmin@gmail.com" });
-                users.Add(new User { Id = 2, FullName = "Admin", Birthday = DateTime.Now, CreateDate = DateTime.Now, Gender = "Nam", PermissionGroupId = 1, RankId = 8, PositionId = 1, DepartmentId = 1, UserName = "admin", Note = "", Status = 1, PasswordHash = HashPassword("123456"), Email = "superadmin@gmail.com" });
-				users.Add(new User { Id = 3, FullName = "Long Lê", Birthday = DateTime.Now, CreateDate = DateTime.Now, Gender = "Nam", PermissionGroupId = 1, RankId = 8, PositionId = 1, DepartmentId = 1, UserName = "lelong", Note = "", Status = 1, PasswordHash = HashPassword("123456"), Email = "superadmin@gmail.com" });
+                users.Add(new User { Id = 2, FullName = "Admin", Birthday = DateTime.Now, CreateDate = DateTime.Now, Gender = "Nam", PermissionGroupId = 1, RankId = 8, PositionId = 2, DepartmentId = 2, UserName = "admin", Note = "", Status = 1, PasswordHash = HashPassword("123456"), Email = "superadmin@gmail.com" });
+				users.Add(new User { Id = 3, FullName = "Long Lê", Birthday = DateTime.Now, CreateDate = DateTime.Now, Gender = "Nam", PermissionGroupId = 1, RankId = 8, PositionId = 3, DepartmentId = 2, UserName = "lelong", Note = "", Status = 1, PasswordHash = HashPassword("123456"), Email = "superadmin@gmail.com" });
 
                 foreach (var user in users)
                 {

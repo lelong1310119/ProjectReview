@@ -51,7 +51,16 @@ namespace ProjectReview.Repositories
             var result = await _dataContext.Jobs
                                     .Where(x => x.Id == id)  
                                     .FirstOrDefaultAsync();
-            return _mapper.Map<Job, UpdateJobDTO>(result);
+            var job = _mapper.Map<Job, UpdateJobDTO>(result);
+            var jobDocument = await _dataContext.JobDocuments.Where(x => x.JobId == id).FirstOrDefaultAsync();
+            if(jobDocument != null)
+            {
+                job.CheckDocument = true;
+            } else
+            {
+                job.CheckDocument = false;
+            }
+            return job;
         }
 
         public async Task Finish(long id)

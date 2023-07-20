@@ -21,5 +21,6 @@
         public IFormFile? FormFile { get; set; }
         public Boolean IsAssign { get; set; }
 
+        public List<long>? ProfileIds { get; set; }
     }
 }

@@ -186,14 +186,17 @@
 															<td class="text-center">Hoạt động</td>
 														}
 														<td class=" text-center">
-															<a type="button" class="btn btn-warning btn-xs" asp-area="" asp-controller="Departments" asp-action="Edit" asp-route-id="@item.Id">
-																<i class="fas fa-pencil-alt"></i>
-															</a>
-															@if (item.Status == 0)
+															@if(item.Id > 1)
 															{
-																<a type="button" class="btn btn-danger btn-xs" onclick="return confirm('Bạn chắc chắn muốn xóa thông tin này?');" asp-area="" asp-controller="Departments" asp-action="Delete" asp-route-id="@item.Id">
-																	<i class="fas fa-trash-alt"></i>
+																<a type="button" class="btn btn-warning btn-xs" asp-area="" asp-controller="Departments" asp-action="Edit" asp-route-id="@item.Id">
+																	<i class="fas fa-pencil-alt"></i>
 																</a>
+																@if (item.Status == 0)
+																{
+																	<a type="button" class="btn btn-danger btn-xs" onclick="return confirm('Bạn chắc chắn muốn xóa thông tin này?');" asp-area="" asp-controller="Departments" asp-action="Delete" asp-route-id="@item.Id">
+																		<i class="fas fa-trash-alt"></i>
+																	</a>
+																}
 															}
 														</td>
 													</tr>

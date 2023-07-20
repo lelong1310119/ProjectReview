@@ -171,10 +171,10 @@ namespace ProjectReview.Repositories
 		public async Task<CustomPaging<PermissionGroupDTO>> GetCustomPaging(int page, int pageSize)
 		{
 			int count = await _dataContext.PermissionGroups
-										.Where(x => x.Id != 1)
+										//.Where(x => x.Id != 1)
 										.CountAsync();
 			var result = await _dataContext.PermissionGroups
-										.Where(x => x.Id != 1)
+										//.Where(x => x.Id != 1)
 										.Skip((page - 1) * pageSize)
 										.Take(pageSize)
 										.ToListAsync();
