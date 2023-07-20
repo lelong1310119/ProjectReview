@@ -25,6 +25,8 @@ namespace ProjectReview.Repositories
 
 		public async Task Create(long documentId, List<long> profiles)
 		{
+			var result = await _dataContext.ProfileDocuments.Where(x => x.DocumentId == documentId).ToListAsync();
+			_dataContext.ProfileDocuments.RemoveRange(result);
 			if (profiles.Count > 0)
 			{
 				foreach(var profile in profiles)

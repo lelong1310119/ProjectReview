@@ -1,7 +1,9 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using ProjectReview.Common;
 using ProjectReview.Models;
+using ProjectReview.Models.Entities;
 using ProjectReview.Repositories;
 using ProjectReview.Services;
 using ProjectReview.Services.CategoryProfiles;
@@ -27,10 +29,13 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
-//builder.Services.AddDbContext<DataContext>(options =>
-//        options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddDbContext<DataContext>(options =>
-        options.UseSqlServer("Data Source=LAPTOP-TC1PJ34D\\LONG;Initial Catalog=Review;Integrated Security=True;TrustServerCertificate=True;"));
+        options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
+   .AddRoles<Role>()
+   .AddEntityFrameworkStores<DataContext>();
+//builder.Services.AddDbContext<DataContext>(options =>
+//options.UseSqlServer("Data Source=LAPTOP-TC1PJ34D\\LONG;Initial Catalog=Review;Integrated Security=True;TrustServerCertificate=True;"));
 builder.Services.AddScoped<DbSeeder>();
 builder.Services.AddSingleton<ICurrentUser, CurrentUser>();
 builder.Services.AddScoped<IDepartmentService, DepartmentService>();
@@ -68,6 +73,7 @@ using (var scope = app.Services.CreateScope())
     var seeder = services.GetService<DbSeeder>();
     await DbSeeder.Migrate(services);
 }
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(

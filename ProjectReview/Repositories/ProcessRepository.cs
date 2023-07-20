@@ -11,13 +11,16 @@ namespace ProjectReview.Repositories
     public interface IProcessRepository
     {
         Task CreateProcess(CreateProcessDTO create);
+        Task Create(CreateProcessDTO create, string opinion);
         Task Done(long id);
         Task<long> Active(long id);
         Task CancleActive(long id);
         Task<long> CancleAssign(long id);
         Task<long> Finish(long id);
         Task Delete(long id);
-	}
+        Task CreateFromDocument(CreateProcessDTO create);
+
+    }
     public class ProcessRepository : IProcessRepository
     {
         private readonly DataContext _dataContext;
@@ -123,7 +126,7 @@ namespace ProjectReview.Repositories
             await _dataContext.SaveChangesAsync();
         }
 
-        public async Task Create(CreateProcessDTO create)
+        public async Task CreateFromDocument(CreateProcessDTO create)
         {
             Process process = new Process
             {
@@ -134,7 +137,39 @@ namespace ProjectReview.Repositories
             };
             await _dataContext.Processes.AddAsync(process);
             await _dataContext.SaveChangesAsync();
-             var result = await _dataContext.Processes.Where(x => x.ProcessEnd == true).FirstOrDefaultAsync();
+
+            if (create.UserId.Count > 0)
+            {
+                foreach (var item in create.UserId)
+                {
+                    await _dataContext.ProcessUsers.AddAsync(new ProcessUser { UserId = item, ProcessId = process.Id });
+                }
+            }
+            History history = new History
+            {
+                ProcessId = process.Id,
+                Content = "Chuyển xử lý văn bản",
+                CreateDate = DateTime.Now,
+                CreateUserId = _currentUser.UserId,
+            };
+            await _dataContext.History.AddAsync(history);
+            await _dataContext.SaveChangesAsync();
+        }
+
+        public async Task Create(CreateProcessDTO create, string opinion)
+        {
+            Process process = new Process
+            {
+                JobId = create.JobId,
+                InstructorId = create.InstructorId,
+                Status = 2,
+                ProcessEnd = true,
+            };
+            await _dataContext.Processes.AddAsync(process);
+            await _dataContext.SaveChangesAsync();
+            var result = await _dataContext.Processes
+                                    .Where(x => (x.ProcessEnd == true && x.JobId == create.JobId))
+                                    .FirstOrDefaultAsync();
             if (result != null)
             {
                 result.ProcessEnd = false;
@@ -150,7 +185,7 @@ namespace ProjectReview.Repositories
             History history = new History
             {
                 ProcessId = process.Id,
-                Content = "Chuyển công việc",
+                Content = opinion + "(Chuyển công việc)",
                 CreateDate = DateTime.Now,
                 CreateUserId = _currentUser.UserId,
             };

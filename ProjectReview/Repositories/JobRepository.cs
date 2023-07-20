@@ -32,7 +32,9 @@ namespace ProjectReview.Repositories
         Task Finish(long id);
         Task Open(long id);
         Task CancleAssign(long id);
-	}
+        Task UpdateFromDocument(long id, string fileName, string filePath);
+        Task<ForwardDTO> GetForward(long id);
+    }
 
     public class JobRepository : IJobRepository
     {
@@ -44,6 +46,25 @@ namespace ProjectReview.Repositories
             _dataContext = dataContext;
             _mapper = mapper;
             _currentUser = currentUser;
+        }
+
+        public async Task<ForwardDTO> GetForward(long id)
+        {
+           var job = await _dataContext.Jobs
+                            .Include(x => x.CreateUser)
+                            .Include(x => x.Host)
+                            .Where(x => x.Id == id)
+                            .FirstOrDefaultAsync();
+            return new ForwardDTO
+            {
+                Id = id,
+                CreateUserId = job.CreateUserId,
+                HostId = job.HostId,
+                Content = job.Content,
+                ListUserId = new List<long>(),
+                Host = job.Host,
+                CreateUser = job.CreateUser,
+            };
         }
 
         public async Task<UpdateJobDTO> GetById(long id)
@@ -167,6 +188,7 @@ namespace ProjectReview.Repositories
                                         .Where(x => ((x.Content.Contains(filter)) && (x.HostId == _currentUser.UserId || x.InstructorId == _currentUser.UserId || jobIds.Contains(x.Id))))
                                         .Include(x => x.CreateUser)
                                         .Include(x => x.Host)
+                                        .Include(x => x.Instructor)
                                         .Skip((page - 1) * pageSize)
                                         .Take(pageSize)
                                         .ToListAsync();
@@ -298,18 +320,35 @@ namespace ProjectReview.Repositories
         public async Task<List<JobDTO>> GetList()
         {
             List<long> jobIds = new List<long>();
-            var handler = await _dataContext.Handlers
+            var processUsers = await _dataContext.ProcessUsers
+                            .Include(x => x.Process)
                             .Where(x => x.UserId == _currentUser.UserId)
                             .ToListAsync();
-            if (handler.Count > 0)
+            var process = await _dataContext.Processes
+                                    .Where(x => x.InstructorId == _currentUser.UserId)
+                                    .ToListAsync();
+            if (process.Count > 0)
             {
-                foreach (var i in handler)
+                foreach (var i in process)
                 {
-                    jobIds.Add(i.JobId);
+                    if (!jobIds.Contains(i.Id))
+                    {
+                        jobIds.Add(i.Id);
+                    }
+                }
+            }
+            if (processUsers.Count > 0)
+            {
+                foreach (var i in processUsers)
+                {
+                    if (!jobIds.Contains(i.Process.JobId))
+                    {
+                        jobIds.Add(i.Process.JobId);
+                    }
                 }
             }
             int count = await _dataContext.Jobs
-                                    .Where(x => (x.HostId == _currentUser.UserId || x.InstructorId == _currentUser.UserId || jobIds.Contains(x.Id)))
+                                    .Where(x => (x.HostId == _currentUser.UserId || jobIds.Contains(x.Id)))
                                     .CountAsync();
             var result = await _dataContext.Jobs
                                         .Where(x => (x.HostId == _currentUser.UserId || x.InstructorId == _currentUser.UserId || jobIds.Contains(x.Id)))
@@ -322,9 +361,40 @@ namespace ProjectReview.Repositories
             {
                 foreach (var item in jobs)
                 {
+                    if (_currentUser.UserId == item.HostId || _currentUser.UserId == item.CreateUserId)
+                    {
+                        var processitem = await _dataContext.Processes
+                                                .Where(x => (x.ProcessEnd == true && x.JobId == item.Id))
+                                                .Include(x => x.Instructor)
+                                                .FirstOrDefaultAsync();
+                        if (processitem != null) item.Process = processitem;
+                    }
+                    else
+                    {
+                        var processUser = await _dataContext.ProcessUsers
+                                                    .Include(x => x.Process)
+                                                    .ThenInclude(i => i.Instructor)
+                                                    .Where(x => x.Process.JobId == item.Id)
+                                                    .FirstOrDefaultAsync();
+                        if (processUser != null) item.Process = processUser.Process;
+                    }
+                    item.Instructor = item.Process.Instructor;
+                    item.InstructorId = item.Instructor.Id;
+                    if (item.Process.Status == 3)
+                    {
+                        item.Status = 3;
+                    }
+                    else if (item.Deadline.Date < DateTime.Now.Date)
+                    {
+                        item.Status = 4;
+                    }
+                    else
+                    {
+                        item.Status = item.Process.Status;
+                    }
                     item.Users = new List<User>();
-                    List<Handler> handlers = await _dataContext.Handlers
-                                            .Where(x => x.JobId == item.Id)
+                    List<ProcessUser> handlers = await _dataContext.ProcessUsers
+                                            .Where(x => x.ProcessId == item.Process.Id)
                                             .Include(x => x.User)
                                             .ToListAsync();
                     if (handlers.Count > 0)
@@ -337,6 +407,21 @@ namespace ProjectReview.Repositories
                 }
             }
             return jobs;
+        }
+
+        public async Task UpdateFromDocument(long id, string fileName, string filePath)
+        {
+            var job = await _dataContext.Jobs
+                                .Include(x => x.JobDocument)
+                                .Where(x => x.JobDocument.DocumentId == id)
+                                .FirstOrDefaultAsync();
+            if (job != null)
+            {
+                job.FileName = fileName;
+                job.FilePath = filePath;
+                _dataContext.Jobs.Update(job);
+            }
+            await _dataContext.SaveChangesAsync();
         }
 
         public async Task<JobDTO> Update(UpdateJobDTO updateJob)
@@ -397,20 +482,39 @@ namespace ProjectReview.Repositories
                                 .Include(x => x.Host)
                                 .Include(x => x.Instructor)
                                 .FirstOrDefaultAsync();
-            var jobDocument = _mapper.Map<Job, JobDTO>(job);
-            jobDocument.Users = new List<User>();
-            List<Handler> handlers = await _dataContext.Handlers
-                                                .Where(x => x.JobId == job.Id)
-                                                .Include(x => x.User)
-                                                .ToListAsync();
-            if(handlers.Count > 0)
+            var item = _mapper.Map<Job, JobDTO>(job);
+            item.Users = new List<User>();
+            if (_currentUser.UserId == item.HostId || _currentUser.UserId == item.CreateUserId)
             {
-                foreach (var item in handlers)
+                var processitem = await _dataContext.Processes
+                                        .Where(x => (x.ProcessEnd == true && x.JobId == item.Id))
+                                        .Include(x => x.Instructor)
+                                        .FirstOrDefaultAsync();
+                if (processitem != null) item.Process = processitem;
+            }
+            else
+            {
+                var processUser = await _dataContext.ProcessUsers
+                                            .Include(x => x.Process)
+                                            .ThenInclude(i => i.Instructor)
+                                            .Where(x => x.Process.JobId == item.Id)
+                                            .FirstOrDefaultAsync();
+                if (processUser != null) item.Process = processUser.Process;
+            }
+            item.Instructor = item.Process.Instructor;
+            item.InstructorId = item.Instructor.Id;
+            List<ProcessUser> handlers = await _dataContext.ProcessUsers
+                                    .Where(x => x.ProcessId == item.Process.Id)
+                                    .Include(x => x.User)
+                                    .ToListAsync();
+            if (handlers.Count > 0)
+            {
+                foreach (var j in handlers)
                 {
-                    jobDocument.Users.Add(item.User);
+                    item.Users.Add(j.User);
                 }
             }
-            return jobDocument;
+            return item;
         }
     }
 }

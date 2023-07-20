@@ -1,4 +1,5 @@
-﻿using ProjectReview.DTO.Histories;
+﻿using Humanizer;
+using ProjectReview.DTO.Histories;
 using ProjectReview.DTO.Jobs;
 using ProjectReview.DTO.Opinions;
 using ProjectReview.DTO.Processes;
@@ -24,7 +25,11 @@ namespace ProjectReview.Services.Jobs
 		Task CancleAssign(long id);
 		Task Open(long id);
 		Task AddHistory(CreateHistoryDTO create);
-
+		Task<List<UserDTO>> GetManager();
+		Task<ForwardDTO> GetForward(long id);
+		Task<List<UserDTO>> GetListForward(long id);
+		Task<List<UserDTO>> GetMangerForward(long id);
+		Task Forward(ForwardDTO forward);
     }
 
 	public class JobService : IJobService
@@ -37,10 +42,38 @@ namespace ProjectReview.Services.Jobs
 
 		public async Task<List<UserDTO>> GetListUser()
 		{
-			return await _UOW.UserRepository.GetAllUser();
+			return await _UOW.UserRepository.GetList();
 		}
 
-		public async Task<UpdateJobDTO> GetById(long id)
+		public async Task<ForwardDTO> GetForward(long id)
+		{
+			return await _UOW.JobRepository.GetForward(id);
+		}
+
+        public async Task<List<UserDTO>> GetListForward(long id)
+        {
+            return await _UOW.UserRepository.GetListForward(id);
+        }
+
+        public async Task<List<UserDTO>> GetMangerForward(long id)
+        {
+			return await _UOW.UserRepository.GetManagerForward(id);
+        }
+
+		public async Task Forward(ForwardDTO forward)
+		{
+            if (forward.ListUserId == null || forward.ListUserId.Count == 0) throw new Exception("Bạn chưa chọn người xử lý");
+            if (!await _UOW.UserRepository.CheckUser(forward.ListUserId, forward.InstructorId)) throw new Exception("Người xử lý phải cùng phòng với người chỉ đạo - theo dõi");
+			CreateProcessDTO create = new CreateProcessDTO
+			{
+				JobId = forward.Id,
+				InstructorId = forward.InstructorId,
+				UserId = forward.ListUserId
+			};
+			await _UOW.ProcessRepository.Create(create, forward.Opinion);
+        }
+
+        public async Task<UpdateJobDTO> GetById(long id)
 		{
 			var job = await _UOW.JobRepository.GetById(id);
 			//if (job.FilePath != null && job.FilePath != "")
@@ -57,7 +90,7 @@ namespace ProjectReview.Services.Jobs
 		public async Task Finish(long id)
 		{
 			long result = await _UOW.ProcessRepository.Finish(id);
-			CreateHistoryDTO create = new CreateHistoryDTO { ProcessId = result, JobId = id, Content = "Duyệt công việc" };
+			CreateHistoryDTO create = new CreateHistoryDTO { ProcessId = result, JobId = id, Content = "Kết thúc công việc" };
 			await _UOW.HistoryRepository.Create(create);
 		}
 
@@ -101,10 +134,15 @@ namespace ProjectReview.Services.Jobs
 
 		public async Task<List<UserDTO>> GetHostUser()
 		{
-			return await _UOW.UserRepository.GetHostUser();
+			return await _UOW.UserRepository.GetLeader();
 		}
 
-		public async Task<JobDTO> GetJob(long id)
+        public async Task<List<UserDTO>> GetManager()
+        {
+            return await _UOW.UserRepository.GetManager();
+        }
+
+        public async Task<JobDTO> GetJob(long id)
 		{
 			var result = await _UOW.JobRepository.GetJob(id);
 			result.Histories = await _UOW.HistoryRepository.GetList(id);
@@ -150,6 +188,7 @@ namespace ProjectReview.Services.Jobs
 		{
 			if (createJobDTO.Deadline.Date < DateTime.Now.Date) throw new Exception("Hạn xử lý không hợp lệ");
             if (createJobDTO.ListUserId == null || createJobDTO.ListUserId .Count == 0) throw new Exception("Bạn chưa chọn người xử lý");
+			if (!await _UOW.UserRepository.CheckUser(createJobDTO.ListUserId, createJobDTO.InstructorId)) throw new Exception("Người xử lý phải cùng phòng với người chỉ đạo - theo dõi");
 			List<long> ListUserId = createJobDTO.ListUserId;
 			var job = await _UOW.JobRepository.Create(createJobDTO);
 			if (job == null) return null;

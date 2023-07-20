@@ -1,0 +1,60 @@
+﻿@model ProjectReview.DTO.Jobs.ForwardDTO
+@{
+    ViewData["Title"] = "Job-Forward";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4><i class="far fa-folder-open"></i> Chuyển tiếp công việc</h4>
+                </div>
+                <div class="card-body container-card">
+                    <div class="card-content">
+                        <form asp-action="Forward" enctype="multipart/form-data">
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <input asp-for="Id" type="hidden">
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                                    <div class="form-group m-3">
+                                        <label asp-for="InstructorId" class="control-label">Người chỉ đạo - theo dõi(Người có thẩm quyền)</label>
+                                        <select asp-for="InstructorId" class="form-control" asp-items="ViewBag.InstructorId"></select>
+                                    </div>
+                                    <div class="form-group m-3">
+                                        <label asp-for="ListUserId" class="control-label">Người thực hiện</label>
+                                        <select asp-for="ListUserId" class="form-control chosen-select" multiple tabindex="6" placeholder="Người thực hiện" asp-items="ViewBag.UserId"></select>
+                                    </div>
+                                    <div class="form-group m-3">
+                                        <label asp-for="Opinion" class="control-label">Yêu cầu</label>
+                                        <textarea asp-for="Opinion" class="form-control"></textarea>
+                                        <span asp-validation-for="Opinion" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group m-3 d-flex">
+                                <a type="button" class="btn btn-lg btn-secondary d-flex flex-column align-items-center justify-content-center" asp-area="" asp-controller="Jobs" asp-action="Index" asp-route-page="@ViewContext.HttpContext.Session.GetInt32("page")" style="width: 100px">
+                                    <i class="fa-solid fa-arrow-left"></i> Trở về
+                                </a>
+                                <button type="submit" class="btn btn-lg btn-primary mx-3 d-flex flex-column align-items-center justify-content-center" style="width: 100px">
+                                    <i class="fa-solid fa-save"></i>Chuyển
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script type="text/javascript">
+        var file = document.querySelector("#file");
+        if (file.nodeValue == null || file.nodeValue == "") file.innerHTML = "";
+    </script>
+}
+

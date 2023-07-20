@@ -59,7 +59,8 @@ namespace ProjectReview.DTO
 			CreateMap<UpdateDocumentTypeDTO, Document>();
 			CreateMap<Document, DocumentDTO>();
 			CreateMap<Document, UpdateDocumentDTO>();
-			CreateMap<Opinion, OpinionDTO>();
+            CreateMap<Document, AddProfileDTO>();
+            CreateMap<Opinion, OpinionDTO>();
 			CreateMap<CreateOpinionDTO, Opinion>();
 			CreateMap<History, HistoryDTO>();
 		}

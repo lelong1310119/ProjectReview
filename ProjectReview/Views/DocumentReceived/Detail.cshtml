@@ -1,0 +1,54 @@
+﻿@model ProjectReview.DTO.Documents.DocumentDTO;
+@{
+    ViewData["Title"] = "DocumentReceived-Detail";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4><i class="far fa-folder-open"></i> Chỉnh sửa văn bản đến</h4>
+                </div>
+                <div class="card-body container-card">
+                    <div class="card-content">
+                        <div class="row">
+                            <div class="d-flex">
+                                <div class="col-md-3">Ngày đến: <p class="text-primary">@Model.CreateDate.ToString("dd/MM/yyyy")</p></div>
+                                <div class="col-md-2">Số đến: <p class="text-primary">@Model.Number</p></div>
+                                <div class="col-md-3">Số ký hiệu: <p class="text-primary">@Model.Symbol</p></div>
+                                <div class="col-md-4">Ngày tháng văn bản: <p class="text-primary">@Model.DateIssued.ToString("dd/MM/yyyy")</p></div>
+                            </div>
+                            <div class="d-flex">
+                                <div class="col-md-8">Cơ quan ban hành: <p class="text-primary">@Model.Author</p></div>
+                                <div class="col-md-4">Tên loại văn bản: <p class="text-primary">@Model.DocumentType.Name</p></div>
+                            </div>
+                            <div class="d-flex">
+                                <div class="col-md-12">Trích yếu nội dung: <p class="text-primary">@Model.Content</p></div>
+                            </div>
+                            <div class="d-flex">
+                                <div class="col-md-3">Độ mật: <p class="text-primary">@Model.Density.Name</p></div>
+                                <div class="col-md-2">Độ khẩn: <p class="text-primary">@Model.Urgency.Name</p></div>
+                                <div class="col-md-3">Số tờ: <p class="text-primary">@Model.NumberPaper</p></div>
+                                <div class="col-md-4">Ngày chuyển xử lý: <p class="text-primary">@Model.Job.CreateDate.ToString("dd/MM/yyyy")</p></div>
+                            </div>
+                            <div class="d-flex">
+                                <div class="col-md-3">Độ mật: <p class="text-primary">@Model.Density.Name</p></div>
+                                <div class="col-md-2">Độ khẩn: <p class="text-primary">@Model.Urgency.Name</p></div>
+                                <div class="col-md-3">Số tờ: <p class="text-primary">@Model.NumberPaper</p></div>
+                                <div class="col-md-4">Ngày chuyển xử lý: <p class="text-primary">@Model.Job.CreateDate.ToString("dd/MM/yyyy")</p></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+

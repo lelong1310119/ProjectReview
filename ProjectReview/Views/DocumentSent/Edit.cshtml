@@ -1,6 +1,6 @@
 ﻿@model ProjectReview.DTO.Documents.UpdateDocumentDTO;
 @{
-    ViewData["Title"] = "DocumentReceived-Edit";
+    ViewData["Title"] = "DocumentSent-Edit";
 }
 
 <div class="container-fluid">
@@ -8,7 +8,7 @@
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
             <div class="card">
                 <div class="card-header">
-                    <h4><i class="far fa-folder-open"></i> Chỉnh sửa văn bản đến</h4>
+                    <h4><i class="far fa-folder-open"></i> Chỉnh sửa văn bản đi</h4>
                 </div>
                 <div class="card-body container-card">
                     <div class="card-content">
@@ -21,7 +21,7 @@
                                 <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                     <div class="d-flex">
                                         <div class="form-group m-3">
-                                            <label asp-for="Number" class="control-label">Số đến</label>
+                                            <label asp-for="Number" class="control-label">Số đi</label>
                                             <input asp-for="Number" class="form-control" type="number" min=1 />
                                             <span asp-validation-for="Number" class="text-danger"></span>
                                         </div>
@@ -113,7 +113,7 @@
                                 </div>
                             </div>
                             <div class="form-group m-3 justify-content-center align-items-center" style="display: flex">
-                                <a type="button" class="btn btn-lg btn-secondary d-flex flex-column align-items-center justify-content-center" asp-area="" asp-controller="DocumentReceived" asp-action="Index" asp-route-page="@ViewContext.HttpContext.Session.GetInt32("page")" style="width: 100px">
+                                <a type="button" class="btn btn-lg btn-secondary d-flex flex-column align-items-center justify-content-center" asp-area="" asp-controller="DocumentSent" asp-action="Index" asp-route-page="@ViewContext.HttpContext.Session.GetInt32("page")" style="width: 100px">
                                     <i class="fa-solid fa-arrow-left"></i> Trở về
                                 </a>
                                 <button type="submit" class="btn btn-lg btn-primary mx-3 d-flex flex-column align-items-center justify-content-center" style="width: 100px">

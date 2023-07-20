@@ -104,7 +104,7 @@ namespace ProjectReview.Controllers
 				return NotFound();
 			}
 			ViewData["HostId"] = new SelectList(await _jobService.GetHostUser(), "Id", "FullName");
-			ViewData["InstructorId"] = new SelectList(await _jobService.GetHostUser(), "Id", "FullName");
+			ViewData["InstructorId"] = new SelectList(await _jobService.GetManager(), "Id", "FullName");
 			ViewData["UserId"] = new SelectList(await _jobService.GetListUser(), "Id", "FullName");
 			AssignDocumentDTO assignDocumentDTO = new AssignDocumentDTO { DocumentId = result.Id, Content = result.Content, FileName = result.FileName, FilePath = result.FilePath , Deadline = DateTime.Now};
 			return View(assignDocumentDTO);
@@ -127,7 +127,7 @@ namespace ProjectReview.Controllers
 			catch (Exception ex)
 			{
 				ViewData["HostId"] = new SelectList(await _jobService.GetHostUser(), "Id", "FullName");
-				ViewData["InstructorId"] = new SelectList(await _jobService.GetHostUser(), "Id", "FullName");
+				ViewData["InstructorId"] = new SelectList(await _jobService.GetManager(), "Id", "FullName");
 				ViewData["UserId"] = new SelectList(await _jobService.GetListUser(), "Id", "FullName");
                 ViewData["JobProfileId"] = new SelectList(await _documentService.GetListProfile(), "Id", "Name");
 
@@ -174,25 +174,72 @@ namespace ProjectReview.Controllers
             return View(result);
         }
 
+		// POST: Departments/Edit/5
+		// To protect from overposting attacks, enable the specific properties you want to bind to.
+		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> Edit([FromForm] UpdateDocumentDTO documentDTO)
+		{
+			try
+			{
+				int? page = HttpContext.Session.GetInt32("page");
+				int? size = HttpContext.Session.GetInt32("pageSize");
+				await _documentService.Update(documentDTO);
+				return RedirectToAction(nameof(Index), new { page, size });
+			}
+			catch (Exception ex)
+			{
+                ViewData["DocumentTypeId"] = new SelectList(await _documentService.GetListDocument(), "Id", "Name");
+                ViewData["DensityId"] = new SelectList(await _documentService.GetListDensity(), "Id", "Detail");
+                ViewData["JobProfileId"] = new SelectList(await _documentService.GetListProfile(), "Id", "Name");
+                ViewData["UrgencyId"] = new SelectList(await _documentService.GetListUrgency(), "Id", "Detail");
+                ModelState.AddModelError("", ex.Message);
+				return View(documentDTO);
+			}
+		}
+
+        public async Task<IActionResult> AddProfile(long id)
+        {
+            ViewData["JobProfileId"] = new SelectList(await _documentService.GetListProfile(), "Id", "Name");
+            var result = await _documentService.GetToMove(id);
+            if (result == null)
+            {
+                return NotFound();
+            }
+            return View(result);
+        }
+
         // POST: Departments/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Edit([FromForm] UpdateDocumentDTO documentDTO)
-        //{
-        //    try
-        //    {
-        //        int? page = HttpContext.Session.GetInt32("page");
-        //        int? size = HttpContext.Session.GetInt32("pageSize");
-        //        await _documentService;
-        //        return RedirectToAction(nameof(Index), new { page, size });
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        ModelState.AddModelError("", ex.Message);
-        //        return View(department);
-        //    }
-        //}
-    }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddProfile([FromForm] AddProfileDTO documentDTO)
+        {
+            try
+            {
+                int? page = HttpContext.Session.GetInt32("page");
+                int? size = HttpContext.Session.GetInt32("pageSize");
+                await _documentService.UpdateProfile(documentDTO);
+                return RedirectToAction(nameof(Index), new { page, size });
+            }
+            catch (Exception ex)
+            {
+                ViewData["JobProfileId"] = new SelectList(await _documentService.GetListProfile(), "Id", "Name");
+                ModelState.AddModelError("", ex.Message);
+                return View(documentDTO);
+            }
+        }
+
+		public async Task<IActionResult> Detail(long id)
+		{
+			var result = await _documentService.GetById(id);
+			if (result == null)
+			{
+				return NotFound();
+			}
+			return View(result);
+		}
+	}
 }

@@ -1,5 +1,6 @@
 ﻿@model IList<ProjectReview.DTO.Jobs.JobDTO>
 @using ProjectReview.DTO.Users;
+@using ProjectReview.DTO.Jobs;
 
 @{
 	ViewData["Title"] = "Home Page";
@@ -13,6 +14,7 @@
 	else if (filter == 2) { check2 = true; }
 	else if (filter == 3) { check3 = true; }
 	else { check4 = true; }
+	var ListJob = ViewData["ListJob"] as List<JobDTO>;
 }
 
 @section Scripts{
@@ -45,6 +47,12 @@
 			});
 			$('.workflow').click(function () {
 				window.location.href = '/Jobs/Index';
+			});
+		});
+		$(document).ready(function () {
+			//$('#remindWork').modal('show');
+			$('#hideModal').click(function () {
+				$('#remindWork').modal('hide');
 			});
 		});
 	</script>
@@ -189,6 +197,7 @@
 						</div>
 
 					</div>
+					<button type="button" id="btn-remindWork" class="btn btn-primary" data-toggle="modal" data-target="#remindWork">Hệ thống nhắc việc</button>
 				</div>
 			</div>
 		</div>
@@ -217,15 +226,74 @@
 						</ul>
 					}
 				</div>
-			@*</div><div class="card mb-3 card-border-alert-congviec">
+			</div><div class="card mb-3 card-border-alert-congviec">
 				<div class="card-header card-title-alert-congviec">
-					<h3><i class="fab fa-app-store"></i> Nhiệm vụ mới <span class="totalCongviec">( công việc)</span></h3>
+					<h3><i class="fab fa-app-store me-2"></i> Nhiệm vụ mới <span class="totalCongviec">( công việc)</span></h3>
 				</div>
 
 				<div class="card-body">
 					<div class="widget-messages nicescroll" tabindex="5005" style="overflow: hidden; outline: none;">
+						<ul>
+							@if (ListJob != null && ListJob.Count > 0)
+							{
+								@foreach (var item in ListJob)
+								{
+									@if ((item.Status == 2 || item.Status == 1) && (DateTime.Now.Date - item.CreateDate.Date).Days <= 3)
+									{
+										<li class="m-2 text-primary"><i class="fas fa-star text-warning me-2"></i><a asp-action="Detail" asp-area="" asp-controller="Jobs" asp-route-id="@item.Id" >@item.Content (@item.Deadline.ToString("dd/MM/yyyy"))</a></li>
+									}
+								}
+							}
+						</ul>
 					</div>
-				</div>*@
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="modal fade" id="remindWork" tabindex="-1" role="dialog" aria-labelledby="remindWork" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="addDepartmentModalLabel">Hệ thống nhắc việc</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div class="col-xs-12 col-md-12 col-lg-12 col-xl-12">
+					<ul>
+						<h5><i class="fas fa-table"></i> Công việc cần xử lý</h5>
+						@if (ListJob != null && ListJob.Count > 0)
+						{
+							@foreach (var item in ListJob)
+							{
+								@if (item.Status == 2 || item.Status == 1)
+								{
+									<li class="m-2 text-primary"><i class="fas fa-star text-warning me-2"></i><a asp-action="Detail" asp-area="" asp-controller="Jobs" asp-route-id="@item.Id">@item.Content (@item.Deadline.ToString("dd/MM/yyyy"))</a></li>
+								}
+							}
+						}
+					</ul>
+				</div>
+				<div class="col-xs-12 col-md-12 col-lg-12 col-xl-12">
+					<ul>
+						<h5><i class="fas fa-table"></i> Công việc đến hạn</h5>
+						@if (ListJob != null && ListJob.Count > 0)
+						{
+							@foreach (var item in ListJob)
+							{
+								@if (item.Deadline.Date == DateTime.Now.Date)
+								{
+									<li class="m-2 text-primary"><i class="fas fa-star text-warning me-2"></i><a asp-action="Detail" asp-area="" asp-controller="Jobs" asp-route-id="@item.Id">@item.Content (@item.Deadline.ToString("dd/MM/yyyy"))</a></li>
+								}
+							}
+						}
+					</ul>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" id="hideModal" data-dismiss="modal">Đóng</button>
 			</div>
 		</div>
 	</div>

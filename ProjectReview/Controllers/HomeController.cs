@@ -41,6 +41,7 @@ namespace ProjectReview.Controllers
 				ViewData["Year"] = date.Year;
 				ViewData["Notification"] = listJobDTO.Pending.Count + listJobDTO.Processing.Count;
 				ViewData["filter"] = filter;
+				ViewData["ListJob"] = await _genericService.GetList(date);
 				if(check == 3)
 				{
 					return View(listJobDTO.Processed);

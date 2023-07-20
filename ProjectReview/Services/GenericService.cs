@@ -11,6 +11,7 @@ namespace ProjectReview.Services
         Task<int> QuantityProfile();
         Task<ListJobDTO> ListJob(DateTime date);
         Task<List<UserDTO>> GetListByBirthday(DateTime date);
+        Task<List<JobDTO>> GetList(DateTime date);
     }
 
 
@@ -45,14 +46,14 @@ namespace ProjectReview.Services
             {
                 foreach(var job in jobs)
                 {
-                    if (job.Status == 2)
+                    if (job.Status == 3)
                     {
                         listJobDTO.Processed.Add(job);
-                    } else if (job.Deadline.Date < date.Date)
+                    } else if (job.Status == 4)
                     {
                         listJobDTO.OutOfDate.Add(job);
                     }
-                    else if (job.Status == 0)
+                    else if (job.Status == 1)
                     {
                          listJobDTO.Pending.Add(job);
                     } else
@@ -62,6 +63,11 @@ namespace ProjectReview.Services
                 }
             }
             return listJobDTO;
+        }
+
+        public async Task<List<JobDTO>> GetList(DateTime date)
+        {
+            return await _UOW.JobRepository.GetList();
         }
 
         public async Task<List<UserDTO>> GetListByBirthday(DateTime date)

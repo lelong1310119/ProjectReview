@@ -7,6 +7,7 @@ using ProjectReview.Repositories;
 using ProjectReview.DTO.DocumentTypes;
 using ProjectReview.DTO.Jobs;
 using ProjectReview.DTO.JobProfiles;
+using ProjectReview.DTO.Processes;
 
 namespace ProjectReview.Services.Documents
 {
@@ -25,6 +26,9 @@ namespace ProjectReview.Services.Documents
 		Task Recall(long id);
 		Task<UpdateDocumentDTO> GetUpdate(long id);
 		Task<List<JobProfileDTO>> GetListProfile();
+        Task<DocumentDTO> Update(UpdateDocumentDTO updateDocumentDTO);
+		Task<AddProfileDTO> GetToMove(long id);
+		Task UpdateProfile(AddProfileDTO addProfile);
     }
 	public class DocumentService : IDocumentService
 	{
@@ -39,28 +43,61 @@ namespace ProjectReview.Services.Documents
 			return await _UOW.DocumentRepository.GetUpdate(id);
 		}
 
-		public async Task<DocumentDTO> Update(UpdateDocumentDTO updateDocumentDTO)
+        public async Task<AddProfileDTO> GetToMove(long id)
+        {
+            return await _UOW.DocumentRepository.GetToMove(id);
+        }
+
+        public async Task<DocumentDTO> Update(UpdateDocumentDTO updateDocumentDTO)
 		{
-			return await _UOW.DocumentRepository.Update(updateDocumentDTO);
+            if (updateDocumentDTO.FormFile != null)
+            {
+                if (updateDocumentDTO.FilePath != null && updateDocumentDTO.FilePath != "")
+                {
+                    var file = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "file", updateDocumentDTO.FilePath);
+                    if (System.IO.File.Exists(file))
+                    {
+                        System.IO.File.Delete(file);
+                    }
+                }
+                updateDocumentDTO.FileName = updateDocumentDTO.FormFile.FileName;
+                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "file", "Document_" + updateDocumentDTO.Id.ToString() + "_" + updateDocumentDTO.FileName);
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    await updateDocumentDTO.FormFile.CopyToAsync(fileStream);
+                }
+                updateDocumentDTO.FilePath = "Document_" + updateDocumentDTO.Id.ToString() + "_" + updateDocumentDTO.FileName;
+                if (updateDocumentDTO.IsAssign == true)
+                {
+                    await _UOW.JobRepository.UpdateFromDocument(updateDocumentDTO.Id, updateDocumentDTO.FileName, updateDocumentDTO.FilePath);
+                }
+            }
+			if (updateDocumentDTO.ProfileIds == null)
+			{
+				updateDocumentDTO.ProfileIds = new List<long>();
+			}
+			await _UOW.ProfileDocumentRepository.Create(updateDocumentDTO.Id, updateDocumentDTO.ProfileIds);
+            return await _UOW.DocumentRepository.Update(updateDocumentDTO);
+		}
+
+		public async Task UpdateProfile(AddProfileDTO addProfile) 
+		{
+			if (addProfile.ProfileIds == null)
+			{
+				addProfile.ProfileIds = new List<long>();
+			}
+			await _UOW.ProfileDocumentRepository.Create(addProfile.Id, addProfile.ProfileIds);
 		}
 
 		public async Task Recall(long id)
 		{
-			long jobId = await _UOW.DocumentRepository.GetJobId(id);
-			if (jobId !=0 )
-			{
-				await _UOW.OpinionRepository.Delete(jobId);
-			}
+			await _UOW.HistoryRepository.DeleteByDocument(id);
 			await _UOW.DocumentRepository.Recall(id);
-		}
-
-		public async Task<DocumentDTO> GetById(long id)
-		{
-			return await _UOW.DocumentRepository.GetById(id);
 		}
 			 
 		public async Task Delete(long id)
 		{
+			await _UOW.HistoryRepository.DeleteByDocument(id);
 			await _UOW.DocumentRepository.Delete(id);
 		}
 
@@ -135,21 +172,28 @@ namespace ProjectReview.Services.Documents
 			{
 				throw new Exception("Bạn chưa chọn người xử lý công việc.");
 			}
-			createDocumentDTO createDocumentDTO = new createDocumentDTO
-			{
-				Content = assignDocumentDTO.Content,
-				FilePath = assignDocumentDTO.FilePath,
-				FileName = assignDocumentDTO.FileName,
-				Request = assignDocumentDTO.Request,
-				Deadline = assignDocumentDTO.Deadline,
-				HostId = assignDocumentDTO.HostId,
-				InstructorId = assignDocumentDTO.InstructorId
-			};
-			var result = await _UOW.JobRepository.Create(createDocumentDTO);
+            if (!await _UOW.UserRepository.CheckUser(assignDocumentDTO.ListUserId, assignDocumentDTO.InstructorId)) throw new Exception("Người xử lý phải cùng phòng với người chỉ đạo - theo dõi");
+            CreateJobDTO createJobDTO = new CreateJobDTO
+            {
+                Content = assignDocumentDTO.Content,
+                FilePath = assignDocumentDTO.FilePath,
+                FileName = assignDocumentDTO.FileName,
+                Request = assignDocumentDTO.Request,
+                Deadline = assignDocumentDTO.Deadline,
+                HostId = assignDocumentDTO.HostId,
+                InstructorId = assignDocumentDTO.InstructorId
+            };
+			var result = await _UOW.JobRepository.Create(createJobDTO);
 			if (result != null)
 			{
+				CreateProcessDTO process = new CreateProcessDTO
+				{
+					JobId = result.Id,
+					InstructorId = result.InstructorId,
+					UserId = assignDocumentDTO.ListUserId
+				};
+				await _UOW.ProcessRepository.CreateFromDocument(process);
 				await _UOW.JobRepository.CreateJobDocument(result.Id, assignDocumentDTO.DocumentId);
-				await _UOW.JobUserRepository.Create(assignDocumentDTO.ListUserId, result.Id);
 				await _UOW.DocumentRepository.Assign(assignDocumentDTO.DocumentId);
 			}
 		} 
@@ -180,6 +224,13 @@ namespace ProjectReview.Services.Documents
 				}
 			}
 			return result;
+		}
+
+		public async Task<DocumentDTO> GetById(long id)
+		{
+			var document = await _UOW.DocumentRepository.GetById(id);
+			document.Job = await _UOW.JobRepository.GetByDocument(document.Id);
+			return document;
 		}
 	}
 }

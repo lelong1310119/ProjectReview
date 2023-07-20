@@ -23,7 +23,13 @@ namespace ProjectReview.Repositories
         Task<List<UserDTO>> GetAllUser();
         Task<List<UserDTO>> GetUserByBirthday(DateTime date);
         Task<List<UserDTO>> GetHostUser();
-	}
+        Task<List<UserDTO>> GetLeader();
+        Task<List<UserDTO>> GetList();
+        Task<List<UserDTO>> GetManager();
+        Task<bool> CheckUser(List<long> ListUser, long id);
+        Task<List<UserDTO>> GetListForward(long id);
+        Task<List<UserDTO>> GetManagerForward(long id);
+    }
 
 	public class UserRepository : IUserRepository
 	{
@@ -35,6 +41,103 @@ namespace ProjectReview.Repositories
 			_dataContext = dataContext;
 			_mapper = mapper;
 		}
+
+        public async Task<bool> CheckUser(List<long> ListUser, long id)
+        {
+            var user = await _dataContext.Users.Where(x => x.Id == id).FirstOrDefaultAsync();
+            var users = await _dataContext.Users.Where(x => ListUser.Contains(x.Id)).ToListAsync();
+            foreach(var item in users)
+            {
+                if (item.DepartmentId != user.DepartmentId) return false;
+            }
+            return true;
+        }
+
+        public async Task<List<UserDTO>> GetManagerForward(long id)
+        {
+            List<long> List = new List<long>();
+            var process = await _dataContext.Processes
+                                    .Include(x => x.Instructor)
+                                    .Where(x => x.JobId == id)
+                                    .ToListAsync();
+            foreach(var item in process)
+            {
+                List.Add(item.Instructor.DepartmentId);
+            }
+            var result = await _dataContext.Users
+                                    .Include(x => x.Position)
+                                    .Include(x => x.Department)
+                                    .Where(x => ((x.Status == 1) && (x.PositionId == 2 || x.PositionId == 3) && (x.DepartmentId != 1 && x.DepartmentId != 6 && !List.Contains(x.DepartmentId))))
+                                    .ToListAsync();
+            var users = _mapper.Map<List<User>, List<UserDTO>>(result);
+            foreach (var user in users)
+            {
+                user.FullName = user.FullName + " - " + user.Position.Name + " " + user.Department.Name;
+            }
+            return users;
+        }
+
+        public async Task<List<UserDTO>> GetListForward(long id)
+        {
+            List<long> List = new List<long>();
+            var process = await _dataContext.Processes
+                                    .Include(x => x.Instructor)
+                                    .Where(x => x.JobId == id)
+                                    .ToListAsync();
+            foreach (var item in process)
+            {
+                List.Add(item.Instructor.DepartmentId);
+            }
+            var result = await _dataContext.Users
+                                    .Include(x => x.Position)
+                                    .Include(x => x.Department)
+                                    .Where(x => ((x.Status == 1) && (x.DepartmentId != 1 && x.DepartmentId != 6 && !List.Contains(x.DepartmentId))))
+                                    .ToListAsync();
+            var users = _mapper.Map<List<User>, List<UserDTO>>(result);
+            foreach (var user in users)
+            {
+                user.FullName = user.FullName + " - " + user.Position.Name + " " + user.Department.Name;
+            }
+            return users;
+        }
+
+        public async Task<List<UserDTO>> GetManager()
+        {
+            var result = await _dataContext.Users
+                                    .Include(x => x.Position)
+                                    .Include(x => x.Department)
+                                    .Where(x => ((x.Status == 1) && (x.PositionId == 2 || x.PositionId == 3) && (x.DepartmentId != 1 && x.DepartmentId != 6)))
+                                    .ToListAsync();
+            var users = _mapper.Map<List<User>, List<UserDTO>>(result);
+            foreach(var user in users)
+            {
+                user.FullName = user.FullName + " - " + user.Position.Name + " " + user.Department.Name;
+            }
+            return users;
+        }
+
+        public async Task<List<UserDTO>> GetLeader()
+        {
+            var result = await _dataContext.Users
+                                    .Include(x => x.Department)
+                                    .Where(x => ((x.Status == 1) && (x.DepartmentId == 1)))
+                                    .ToListAsync();
+            return _mapper.Map<List<User>, List<UserDTO>>(result);
+        }
+
+        public async Task<List<UserDTO>> GetList()
+        {
+            var result = await _dataContext.Users
+                                    .Include(x => x.Department)
+                                    .Where(x => ((x.Status == 1) && (x.DepartmentId != 1 && x.DepartmentId != 6)))
+                                    .ToListAsync();
+            var users = _mapper.Map<List<User>, List<UserDTO>>(result);
+            foreach (var user in users)
+            {
+                user.FullName = user.FullName + "( " + user.Department.Name + ")";
+            }
+            return users;
+        }
 
 		public async Task<UserDTO> Create(CreateUserDTO userDTO)
 		{

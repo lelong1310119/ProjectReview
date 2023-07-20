@@ -86,7 +86,7 @@ namespace ProjectReview.Controllers
         public async Task<IActionResult> Create()
         {
             ViewData["HostId"] = new SelectList( await _jobService.GetHostUser(), "Id", "FullName");
-            ViewData["InstructorId"] = new SelectList(await _jobService.GetHostUser(), "Id", "FullName");
+            ViewData["InstructorId"] = new SelectList(await _jobService.GetManager(), "Id", "FullName");
             ViewData["UserId"] =  new SelectList(await _jobService.GetListUser(), "Id", "FullName");
             return View();
         }
@@ -106,7 +106,7 @@ namespace ProjectReview.Controllers
             catch (Exception ex)
             {
                 ViewData["HostId"] = new SelectList(await _jobService.GetHostUser(), "Id", "FullName");
-                ViewData["InstructorId"] = new SelectList(await _jobService.GetHostUser(), "Id", "FullName");
+                ViewData["InstructorId"] = new SelectList(await _jobService.GetManager(), "Id", "FullName");
                 ViewData["UserId"] = new SelectList(await _jobService.GetListUser(), "Id", "FullName");
                 ModelState.AddModelError("", ex.Message);
                 return View(createJobDTO);
@@ -221,5 +221,40 @@ namespace ProjectReview.Controllers
 			await _jobService.Delete(id);
 			return RedirectToAction(nameof(Index), new { page, size });
 		}
-	}
+
+        public async Task<IActionResult> Forward(long id)
+        {
+            ViewData["InstructorId"] = new SelectList(await _jobService.GetMangerForward(id), "Id", "FullName");
+            ViewData["UserId"] = new SelectList(await _jobService.GetListForward(id), "Id", "FullName");
+            var result = await _jobService.GetForward(id);
+            if (result == null)
+            {
+                return NotFound();
+            }
+            return View(result);
+        }
+
+        // POST: Users/Edit/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Forward([FromForm] ForwardDTO forward)
+        {
+            try
+            {
+                int? page = HttpContext.Session.GetInt32("page");
+                int? size = HttpContext.Session.GetInt32("pageSize");
+                await _jobService.Forward(forward);
+                return RedirectToAction(nameof(Index), new { page, size });
+            }
+            catch (Exception ex)
+            {
+                ViewData["InstructorId"] = new SelectList(await _jobService.GetMangerForward(forward.Id), "Id", "FullName");
+                ViewData["UserId"] = new SelectList(await _jobService.GetListForward(forward.Id), "Id", "FullName");
+                ModelState.AddModelError("", ex.Message);
+                return View(forward);
+            }
+        }
+    }
 }

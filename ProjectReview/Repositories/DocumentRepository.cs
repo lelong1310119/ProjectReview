@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Humanizer;
 using Microsoft.EntityFrameworkCore;
 using ProjectReview.Common;
 using ProjectReview.DTO.Documents;
@@ -27,6 +28,7 @@ namespace ProjectReview.Repositories
         Task<UpdateDocumentDTO> GetUpdate(long id);
         Task<long> GetJobId(long id);
         Task<DocumentDTO> UpdateFile(DocumentDTO update);
+        Task<AddProfileDTO> GetToMove(long id);
     }
 
     public class DocumentRepository : IDocumentRepository
@@ -39,6 +41,27 @@ namespace ProjectReview.Repositories
             _dataContext = dataContext; 
             _mapper = mapper;
             _currentUser = currentUser;
+        }
+
+        public async Task<AddProfileDTO> GetToMove(long id)
+        {
+            var result = await _dataContext.Documents
+                                    .Where(x => x.Id == id)
+                                    .FirstOrDefaultAsync();
+            if (result == null) return null;
+            var document = _mapper.Map<Document, AddProfileDTO>(result);
+            document.ProfileIds = new List<long>();
+            var jobdocument = await _dataContext.ProfileDocuments
+                                        .Include(x => x.JobProfile)
+                                        .Where(x => (x.DocumentId == id && x.JobProfile.Status == 1)).ToListAsync();
+            if (jobdocument.Count > 0)
+            {
+                foreach (var job in jobdocument)
+                {
+                    document.ProfileIds.Add(job.JobProfileId);
+                }
+            }
+            return document;
         }
 
         public async Task<DocumentDTO> UpdateFile(DocumentDTO update)
@@ -56,16 +79,20 @@ namespace ProjectReview.Repositories
                                     .Where(x => x.Id == id)
                                     .FirstOrDefaultAsync();
             if (result == null) return null;
-            return _mapper.Map<Document, UpdateDocumentDTO>(result);
-        }
-
-        public async Task<DocumentDTO> GetById(long id)
-        {
-            var result = await _dataContext.Documents
-                                    .Where(x => x.Id == id)
-                                    .FirstOrDefaultAsync();
-            if (result == null) return null;
-            return _mapper.Map<Document, DocumentDTO>(result);
+            var document = _mapper.Map<Document, UpdateDocumentDTO>(result);
+            document.ProfileIds = new List<long>();
+            var jobdocument = await _dataContext.ProfileDocuments
+                                        .Include(x => x.JobProfile)
+                                        .Where(x => (x.DocumentId == id && x.JobProfile.Status == 1))
+                                        .ToListAsync();
+            if(jobdocument.Count >  0)
+            {
+                foreach (var job in jobdocument)
+                {
+                    document.ProfileIds.Add(job.JobProfileId);
+                }
+            }
+            return document;
         }
 
         public async Task<List<Density>> GetListDensity()
@@ -80,12 +107,34 @@ namespace ProjectReview.Repositories
 
         public async Task Delete(long id)
         {
-            await _dataContext.ProfileDocuments
+            var profileDocument = await _dataContext.ProfileDocuments
                             .Where(x => x.DocumentId == id)
-                            .ExecuteDeleteAsync();
-            await _dataContext.Documents
+                            .ToListAsync();
+            _dataContext.ProfileDocuments.RemoveRange(profileDocument);
+            var document = await _dataContext.Documents
                             .Where(x => x.Id == id)
-                            .ExecuteDeleteAsync();
+                            .FirstOrDefaultAsync();
+            if (document != null)
+            {
+                if (document.FilePath != null && document.FilePath != "")
+                {
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "file", document.FilePath);
+                    if (System.IO.File.Exists(filePath))
+                    {
+                        System.IO.File.Delete(filePath);
+                    }
+                }
+            }
+            var jobDocument = await _dataContext.JobDocuments.Where(x => x.DocumentId == id).FirstOrDefaultAsync();
+            if (jobDocument != null)
+            {
+                var job = await _dataContext.Jobs.Where(x => x.Id == jobDocument.JobId).FirstOrDefaultAsync();
+                var process = await _dataContext.Processes.Where(x => x.JobId == job.Id).ToListAsync();
+                _dataContext.Processes.RemoveRange(process);
+                _dataContext.JobDocuments.Remove(jobDocument);
+                _dataContext.Jobs.Remove(job);
+            }
+            _dataContext.Documents.Remove(document);
             await _dataContext.SaveChangesAsync();
         }
 
@@ -130,20 +179,25 @@ namespace ProjectReview.Repositories
 
         public async Task Recall(long id)
         {
-            var result = await _dataContext.Documents
+            var document = await _dataContext.Documents
                             .Where(x => x.Id == id)
                             .FirstOrDefaultAsync();
-            if (result == null) return;
-            var jobDocument = await _dataContext.JobDocuments.Where(x => x.DocumentId == result.Id).FirstOrDefaultAsync();
+            var jobDocument = await _dataContext.JobDocuments.Where(x => x.DocumentId == id).FirstOrDefaultAsync();
             if (jobDocument != null)
             {
-                await _dataContext.JobDocuments.Where(x => x.DocumentId == result.Id).ExecuteDeleteAsync();
-                await _dataContext.Handlers.Where(x => x.JobId == jobDocument.JobId).ExecuteDeleteAsync();
-                await _dataContext.Jobs.Where(x => x.Id == jobDocument.JobId).ExecuteDeleteAsync();
+                var job = await _dataContext.Jobs.Where(x => x.Id == jobDocument.JobId).FirstOrDefaultAsync();
+                var process = await _dataContext.Processes.Where(x => x.JobId == job.Id).ToListAsync();
+                var processUser = await _dataContext.ProcessUsers
+                                            .Include(x => x.Process)
+                                            .Where(x => x.Process.JobId == job.Id)
+                                            .ToListAsync();
+                _dataContext.ProcessUsers.RemoveRange(processUser);
+                _dataContext.Processes.RemoveRange(process);
+                _dataContext.JobDocuments.Remove(jobDocument);
+                _dataContext.Jobs.Remove(job);
             }
-            if (result == null) return;
-            result.IsAssign = false;
-            _dataContext.Documents.Update(result);
+            document.IsAssign = false;
+            _dataContext.Documents.Update(document);
             await _dataContext.SaveChangesAsync();
         }
 
@@ -196,6 +250,7 @@ namespace ProjectReview.Repositories
             document.Content = updateDocument.Content;
             document.DocumentTypeId = updateDocument.DocumentTypeId;
             document.FileName = updateDocument.FileName;
+            document.FilePath = updateDocument.FilePath;
             document.DensityId = updateDocument.DensityId;
             document.UrgencyId = updateDocument.UrgencyId;
             document.NumberPaper = updateDocument.NumberPaper;
@@ -205,11 +260,37 @@ namespace ProjectReview.Repositories
             document.Note = updateDocument.Note;
             document.Symbol = updateDocument.Symbol;
             _dataContext.Documents.Update(document);
+            if (document.IsAssign == true)
+            {
+                var job = await _dataContext.Jobs
+                                    .Include(x => x.JobDocument)
+                                    .Where(x => x.JobDocument.DocumentId == document.Id)
+                                    .FirstOrDefaultAsync();
+                if (job != null)
+                {
+                    job.FileName = updateDocument.FileName;
+                    job.FilePath = updateDocument.FilePath;
+                    _dataContext.Jobs.Update(job);
+                }
+            }
             await _dataContext.SaveChangesAsync();
             return _mapper.Map<Document, DocumentDTO>(document);
         }
 
-        public async Task<CustomPaging<DocumentDTO>> GetListDocumentSent(string filter, int page, int pageSize)
+		public async Task<DocumentDTO> GetById(long id)
+		{
+			var result = await _dataContext.Documents
+                                    .Include(x => x.CreateUser)
+									.Include(x => x.DocumentType)
+									.Include(x => x.Density)
+									.Include(x => x.Urgency)
+									.Where(x => x.Id == id)
+									.FirstOrDefaultAsync();
+			if (result == null) return null;
+			return _mapper.Map<Document, DocumentDTO>(result);
+		}
+
+		public async Task<CustomPaging<DocumentDTO>> GetListDocumentSent(string filter, int page, int pageSize)
         {
             int count = await _dataContext.Documents
                                         .Where(x =>( x.Content.Contains(filter) && x.Type == 1))
