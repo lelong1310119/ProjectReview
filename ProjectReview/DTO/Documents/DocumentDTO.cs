@@ -32,5 +32,6 @@ namespace ProjectReview.DTO.Documents
         public DocumentType DocumentType { get; set; }
         public JobDTO Job { get; set; }
         public List<UserDTO> Users { get; set; }
+        public List<JobProfile> JobProfiles { get; set; }
     }
 }

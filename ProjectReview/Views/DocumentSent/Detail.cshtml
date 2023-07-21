@@ -1,6 +1,6 @@
 ﻿@model ProjectReview.DTO.Documents.DocumentDTO;
 @{
-    ViewData["Title"] = "DocumentReceived-Detail";
+    ViewData["Title"] = "DocumentSent-Detail";
 }
 
 <div class="container-fluid">
@@ -8,14 +8,14 @@
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
             <div class="card">
                 <div class="card-header">
-                    <h4><i class="far fa-folder-open"></i> Chi tiết văn bản đến</h4>
+                    <h4><i class="far fa-folder-open"></i> Chi tiết văn bản đi</h4>
                 </div>
                 <div class="card-body container-card">
                     <div class="card-content">
                         <div class="row">
                             <div class="d-flex m-2">
-                                <div class="col-md-3">Ngày đến: <span class="text-primary">@Model.CreateDate.ToString("dd/MM/yyyy")</span></div>
-                                <div class="col-md-2">Số đến: <span class="text-primary">@Model.Number</span></div>
+                                <div class="col-md-3">Ngày đi: <span class="text-primary">@Model.CreateDate.ToString("dd/MM/yyyy")</span></div>
+                                <div class="col-md-2">Số đi: <span class="text-primary">@Model.Number</span></div>
                                 <div class="col-md-3">Số ký hiệu: <span class="text-primary">@Model.Symbol</span></div>
                                 <div class="col-md-4">Ngày tháng văn bản: <span class="text-primary">@Model.DateIssued.ToString("dd/MM/yyyy")</span></div>
                             </div>
@@ -69,7 +69,7 @@
                                 </div>
                             }
                             <div class="m-2">
-                                <a type="button" class="btn btn-lg btn-secondary d-flex flex-column align-items-center justify-content-center" asp-area="" asp-controller="DocumentReceived" asp-action="Index" asp-route-page="@ViewContext.HttpContext.Session.GetInt32("page")" style="width: 100px">
+                                <a type="button" class="btn btn-lg btn-secondary d-flex flex-column align-items-center justify-content-center" asp-area="" asp-controller="DocumentSent" asp-action="Index" asp-route-page="@ViewContext.HttpContext.Session.GetInt32("page")" style="width: 100px">
                                     <i class="fa-solid fa-arrow-left"></i> Trở về
                                 </a>
                             </div>

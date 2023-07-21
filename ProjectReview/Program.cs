@@ -29,13 +29,13 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
-builder.Services.AddDbContext<DataContext>(options =>
-        options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
-   .AddRoles<Role>()
-   .AddEntityFrameworkStores<DataContext>();
 //builder.Services.AddDbContext<DataContext>(options =>
-//options.UseSqlServer("Data Source=LAPTOP-TC1PJ34D\\LONG;Initial Catalog=Review;Integrated Security=True;TrustServerCertificate=True;"));
+//        options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+//builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
+//   .AddRoles<Role>()
+//   .AddEntityFrameworkStores<DataContext>();
+builder.Services.AddDbContext<DataContext>(options =>
+options.UseSqlServer("Data Source=LAPTOP-TC1PJ34D\\LONG;Initial Catalog=Review;Integrated Security=True;TrustServerCertificate=True;"));
 builder.Services.AddScoped<DbSeeder>();
 builder.Services.AddSingleton<ICurrentUser, CurrentUser>();
 builder.Services.AddScoped<IDepartmentService, DepartmentService>();

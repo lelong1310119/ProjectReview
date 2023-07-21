@@ -136,12 +136,12 @@
 																<a type="button" class="m-2" onclick="return confirm('Bạn chắc chắn muốn xóa thông tin này?');" asp-area="" asp-controller="DocumentSent" asp-action="Delete" asp-route-id="@item.Id">
 																	<img src="https://localhost:7123/icons/delete.gif" title="Xóa văn bản">
 																</a>
-																<a type="button" class="m-2" asp-area="" asp-controller="DocumentSent" asp-action="AddProfile" asp-route-id="@item.Id">
-																	<img src="https://localhost:7123/icons/folders.png" title="Đưa văn bản vào hồ sơ">
+																<a type="button" class="m-2" asp-area="" asp-controller="DocumentSent" asp-action="Assign" asp-route-id="@item.Id">
+																	<img src="https://localhost:7123/icons/phanxl.png" title="Phân xử lý công việc">
 																</a>
 															}
-															<a type="button" class="m-2" asp-area="" asp-controller="DocumentSent" asp-action="Assign" asp-route-id="@item.Id">
-																<img src="https://localhost:7123/icons/phanxl.png" title="Phân xử lý công việc">
+															<a type="button" class="m-2" asp-area="" asp-controller="DocumentSent" asp-action="AddProfile" asp-route-id="@item.Id">
+																<img src="https://localhost:7123/icons/folders.png" title="Đưa văn bản vào hồ sơ">
 															</a>
 															@if (item.IsAssign == true)
 															{
@@ -149,13 +149,16 @@
 																	<img class="h-150" src="https://localhost:7123/icons/redo.png" title="Thu hồi văn bản">
 																</a>
 															}
+															<a type="button" class="m-2" asp-area="" asp-controller="DocumentSent" asp-action="Print" asp-route-id="@item.Id">
+																<img src="https://localhost:7123/icons/print.png" title="In chỉ đạo giải quyết văn bản">
+															</a>
 														</td>
 														<td class="text-center">@item.CreateDate.ToString("dd/MM/yyyy")</td>
 														<td class="text-center">@item.Number</td>
 														<td class="text-center">@item.Author</td>
 														<td class="text-center">@item.Symbol</td>
 														<td class="text-center">@item.DateIssued.ToString("dd/MM/yyyy")</td>
-														<td class="text-center">@item.Content</td>
+														<td class="text-center"><a asp-action="Detail" asp-area="" asp-controller="DocumentReceived" asp-route-id="@item.Id">@item.Content</a></td>
 														@if (item.Job != null)
 														{
 															<td>

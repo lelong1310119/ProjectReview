@@ -7,6 +7,7 @@ using ProjectReview.DTO.Jobs;
 using ProjectReview.Models;
 using ProjectReview.Models.Entities;
 using ProjectReview.Paging;
+using System.Net.WebSockets;
 
 namespace ProjectReview.Repositories
 {
@@ -287,7 +288,20 @@ namespace ProjectReview.Repositories
 									.Where(x => x.Id == id)
 									.FirstOrDefaultAsync();
 			if (result == null) return null;
-			return _mapper.Map<Document, DocumentDTO>(result);
+            var document = _mapper.Map<Document, DocumentDTO>(result);
+            document.JobProfiles = new List<JobProfile>();
+            var profileDocument = await _dataContext.ProfileDocuments
+                                            .Include(x => x.JobProfile)
+                                            .Where(x => x.DocumentId == id)
+                                            .ToListAsync();
+            if(profileDocument.Count > 0)
+            {
+                foreach(var item in profileDocument)
+                {
+                    document.JobProfiles.Add(item.JobProfile);
+                }
+            }
+            return document;
 		}
 
 		public async Task<CustomPaging<DocumentDTO>> GetListDocumentSent(string filter, int page, int pageSize)

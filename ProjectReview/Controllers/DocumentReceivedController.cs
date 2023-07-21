@@ -145,8 +145,10 @@ namespace ProjectReview.Controllers
         {
             try
             {
-				await _documentService.CreateDocumentReceived(createDocumentDTO);
-                return RedirectToAction(nameof(Index));
+                int? page = HttpContext.Session.GetInt32("page");
+                int? size = HttpContext.Session.GetInt32("pageSize");
+                await _documentService.CreateDocumentReceived(createDocumentDTO);
+                return RedirectToAction(nameof(Index), new { page, size });
             }
             catch (Exception ex)
             {
