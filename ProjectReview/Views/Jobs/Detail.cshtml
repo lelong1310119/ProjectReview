@@ -74,7 +74,7 @@
 									<b>Tệp đính kèm: </b>
 									@if (job.FileName != null && job.FileName != "")
 									{
-										<a href="https://localhost:7123/file.@job.FilePath">@job.FileName</a>
+										<a href="https://192.168.96.93:7123/file.@job.FilePath">@job.FileName</a>
 									}
 								</li>
 							</ul>
@@ -148,7 +148,7 @@
 											@if (item.FilePath != "" && item.FilePath != null)
 											{
 												<p class="mt-2">
-													<i class="fas fa-arrow-alt-circle-right me-3"></i>@item.Content (Tệp đính kèm: <a href="https://localhost:7123/file/@item.FilePath">@item.FileName</a>)
+													<i class="fas fa-arrow-alt-circle-right me-3"></i>@item.Content (Tệp đính kèm: <a href="https://192.168.96.93:7123/file/@item.FilePath">@item.FileName</a>)
 												</p>
 											} else
 											{

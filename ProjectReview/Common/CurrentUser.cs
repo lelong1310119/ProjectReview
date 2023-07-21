@@ -9,6 +9,7 @@
 		string Action { get; set; }
 		string Detail { get; set; }
 		string Message { get; set; }
+		List<string> Roles { get; set; }
 	}
 
 	public class CurrentUser : ICurrentUser
@@ -20,5 +21,6 @@
 		public string Action { get; set; }
 		public string Message { get; set; }
 		public string Detail { get; set; }
+		public List<string> Roles { get; set; }
 	}
 }

@@ -1,6 +1,7 @@
 ﻿@model ProjectReview.DTO.Jobs.JobFilter;
 @using ProjectReview.DTO.Jobs
 @using ProjectReview.Models.Entities;
+@using ProjectReview.Common;
 
 @{
 	ViewData["Title"] = "Job";
@@ -65,9 +66,12 @@
 					<div class="card-content">
 						<div class="d-flex">
 							<div class="mt-4">
-								<a class="btn btn-primary mb-3 me-3" asp-action="Create" style="height: 40px">
-									<i class="fa-solid fa-add"></i><span class="m-1 text-white">  Thêm mới</span>
-								</a>
+								@if (RoleCheck.CheckRole("ManageJob"))
+								{
+									<a class="btn btn-primary mb-3 me-3" asp-action="Create" style="height: 40px">
+										<i class="fa-solid fa-add"></i><span class="m-1 text-white">  Thêm mới</span>
+									</a>
+								}
 								<div>
 									<span>Số dòng: </span>
 									<select id="selectPageSize" class="form-select mb-3" aria-label="Default select example" value=@pageSize style="width: 90px">

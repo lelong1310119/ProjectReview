@@ -30,6 +30,8 @@ namespace ProjectReview.Repositories
         Task<long> GetJobId(long id);
         Task<DocumentDTO> UpdateFile(DocumentDTO update);
         Task<AddProfileDTO> GetToMove(long id);
+        Task<List<DocumentDTO>> GetAllDocumentReceived();
+        Task<List<DocumentDTO>> GetAllDocumentSent();
     }
 
     public class DocumentRepository : IDocumentRepository
@@ -353,5 +355,29 @@ namespace ProjectReview.Repositories
 			};
 			return paging;
 		}
-	}
+
+        public async Task<List<DocumentDTO>> GetAllDocumentSent()
+        {
+            var result = await _dataContext.Documents
+                                        .Where(x => x.Type == 1)
+                                        .Include(x => x.CreateUser)
+                                        .Include(x => x.DocumentType)
+                                        .Include(x => x.Density)
+                                        .Include(x => x.Urgency)
+                                        .ToListAsync();
+            return _mapper.Map<List<Document>, List<DocumentDTO>>(result);
+        }
+
+        public async Task<List<DocumentDTO>> GetAllDocumentReceived()
+        {
+            var result = await _dataContext.Documents
+                                        .Where(x => x.Type == 0)
+                                        .Include(x => x.CreateUser)
+                                        .Include(x => x.DocumentType)
+                                        .Include(x => x.Density)
+                                        .Include(x => x.Urgency)
+                                        .ToListAsync();
+            return _mapper.Map<List<Document>, List<DocumentDTO>>(result);
+        }
+    }
 }

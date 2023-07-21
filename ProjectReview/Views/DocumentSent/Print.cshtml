@@ -1,0 +1,113 @@
+﻿@model ProjectReview.DTO.Documents.DocumentDTO;
+@{
+    ViewData["Title"] = "DocumentSent-Print";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4><i class="far fa-folder-open"></i> In văn bản</h4>
+                </div>
+                <div class="card-body container-card">
+					<div class="card-content justify-content-center align-items-center" style="position: relative; margin: auto">
+						<div class="d-flex justify-content-center align-items-center">
+							<div style="width: 1000px; border: 1px solid;" class="justify-content-center align-items-center">
+								<div class="row m-4">
+									<div id="NhanDuLieuPhieuTrinh">
+										<style>
+											.phieutrinh {
+												text-align: justify;
+												text-indent: 30px;
+												font-size: 14px;
+											}
+										</style>
+										<div id="printPhieuTrinh">
+											<table style="width:100%; border-collapse: collapse;">
+												<tbody>
+													<tr>
+														<td style="vertical-align: top; width: 30%;">
+															<p style="text-transform: uppercase; text-align: center; margin: 0;">
+																<span style="font-weight: 500; font-size: 12pt;">Công ty cổ phần tập đoàn giải pháp Sao Mai</span><br><span style="font-weight: bold; font-size: 12pt;"></span>
+															</p>
+														</td>
+
+														<td style="vertical-align: top; width: 70%;">
+															<p style="font-weight: bold; font-size: 12pt; text-align: center; margin-bottom: 0px;"><span>CỘNG HOÀ XÃ HỘI CHỦ NGHĨA VIỆT NAM</span></p>
+															<p style="font-weight: bold; font-size: 12pt; text-align: center; margin: 0;"><span style="border-bottom: solid 1px #000; padding-bottom:2px">Độc lập - Tự do - Hạnh phúc</span></p>
+														</td>
+													</tr>
+													<tr>
+														<td style="vertical-align: top; width: 30%;">
+															<p style="text-align: center; margin-top: -3px !important; width: 35%; border-top: 1px solid #000; margin: auto"></p>
+														</td>
+
+														<td style="vertical-align: top; width: 70%;">
+															<p style="font-size: 12pt; text-align: center; margin-bottom: 5px; font-style: italic; margin-top: 5px;">
+																<span>......., ngày @DateTime.Now.Day tháng @DateTime.Now.Month năm @DateTime.Now.Year</span>
+															</p>
+														</td>
+													</tr>
+													<tr>
+														<td style="vertical-align: top;" colspan="2">
+															<p style="text-align: center; font-weight: bold; font-size: 14pt; margin-top: 10px;">PHIẾU CHỈ ĐẠO GIẢI QUYẾT VĂN BẢN</p>
+														</td>
+													</tr>
+												</tbody>
+											</table><div style="text-align: justify; margin: 30px;">
+												<div class="phieutrinh" style="margin-bottom: 10px"><span id="sokyhieu" style="font-style: italic; font-weight:bold">* Tên, số văn bản: </span>@Model.Content</div>
+												<div class="phieutrinh" style="margin-bottom: 10px"><span id="tomtatnd" style="font-style: italic; font-weight:bold">* Tóm tắt nội dung: </span>@Model.Content</div>
+												<div class="phieutrinh" style="margin-bottom: 10px"><span id="ykienchidao" style="font-style: italic; font-weight:bold">* Ý kiến chỉ đạo:</span>@Model.Note</div>
+											</div>
+											<table style="width:100%; border-collapse: collapse; margin-top: 50px">
+												<tbody>
+													<tr>
+														<td style="vertical-align: top; width: 65%; text-align: center;">
+														</td>
+														<td style="vertical-align: top; width: 35%;text-align: center;">
+															<p style="text-transform: uppercase;font-weight: bold; font-size: 13pt; text-align: center; margin-bottom: 5px;">Thượng Tá</p>
+															<br><br><br><br><br>
+															<p style="font-weight: bold; font-size: 13pt; text-align: center; margin: 0;">Nguyễn Văn Thắng</p>
+														</td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
+									</div><!-- Hiển thị dữ liệu -->
+								</div>
+							</div>
+                        </div>
+						<div class="form-group m-3 justify-content-center align-items-center" style="display: flex">
+							<a type="button" class="btn btn-lg btn-secondary d-flex flex-column align-items-center justify-content-center" asp-area="" asp-controller="DocumentSent" asp-action="Index" asp-route-page="@ViewContext.HttpContext.Session.GetInt32("page")" style="width: 100px">
+								<i class="fa-solid fa-arrow-left"></i> Trở về
+							</a>
+							<button onclick="printFunction()" type="button" class="btn btn-print btn-lg btn-primary mx-3 d-flex flex-column align-items-center justify-content-center" style="width: 100px">
+								<img style="padding: 2px" src="https://192.168.96.93:7123/icons/print.png"/>In
+							</button>
+						</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+	<script>
+		var btnPrint = document.querySelector(".btn-print");
+		btnPrint.addEventListener('click', function (e) {
+			e.preventDefault();
+
+			var divContents = document.querySelector("#NhanDuLieuPhieuTrinh").innerHTML;
+			var prnt = window.open('', '');
+			prnt.document.write(divContents);
+			prnt.document.close();
+			prnt.print();
+		});
+	</script>
+}
+

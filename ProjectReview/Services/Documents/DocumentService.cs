@@ -29,6 +29,8 @@ namespace ProjectReview.Services.Documents
         Task<DocumentDTO> Update(UpdateDocumentDTO updateDocumentDTO);
 		Task<AddProfileDTO> GetToMove(long id);
 		Task UpdateProfile(AddProfileDTO addProfile);
+		Task<List<DocumentDTO>> GetAllDocumentSent();
+		Task<List<DocumentDTO>> GetAllDocumentReceived();
     }
 	public class DocumentService : IDocumentService
 	{
@@ -212,19 +214,45 @@ namespace ProjectReview.Services.Documents
 			return result;
 		}
 
-		public async Task<CustomPaging<DocumentDTO>> GetListDocumentReceived(string? filter, int page, int pageSize)
+        public async Task<List<DocumentDTO>> GetAllDocumentSent()
+        {
+            var result = await _UOW.DocumentRepository.GetAllDocumentSent();
+            if (result.Count > 0)
+            {
+                foreach (var document in result)
+                {
+                    document.Job = await _UOW.JobRepository.GetByDocument(document.Id);
+                }
+            }
+            return result;
+        }
+
+        public async Task<CustomPaging<DocumentDTO>> GetListDocumentReceived(string? filter, int page, int pageSize)
+        {
+            filter = (filter ?? "");
+            var result = await _UOW.DocumentRepository.GetListDocumentReceived(filter, page, pageSize);
+            if (result.Data.Count > 0)
+            {
+                foreach (var document in result.Data)
+                {
+                    document.Job = await _UOW.JobRepository.GetByDocument(document.Id);
+                }
+            }
+            return result;
+        }
+
+        public async Task<List<DocumentDTO>> GetAllDocumentReceived()
 		{
-			filter = (filter ?? "");
-			var result = await _UOW.DocumentRepository.GetListDocumentReceived(filter, page, pageSize);
-			if (result.Data.Count > 0)
-			{
-				foreach (var document in result.Data)
-				{
-					document.Job = await _UOW.JobRepository.GetByDocument(document.Id);
-				}
-			}
-			return result;
-		}
+            var result = await _UOW.DocumentRepository.GetAllDocumentReceived();
+            if (result.Count > 0)
+            {
+                foreach (var document in result)
+                {
+                    document.Job = await _UOW.JobRepository.GetByDocument(document.Id);
+                }
+            }
+            return result;
+        }
 
 		public async Task<DocumentDTO> GetById(long id)
 		{

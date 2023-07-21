@@ -56,7 +56,7 @@ namespace ProjectReview.Repositories
 			RankRepository = new RankRepository(context, mapper);
 			UserRepository = new UserRepository(context, mapper);
 			DocumentTypeRepository = new DocumentTypeRepository(context, mapper, currentUser);
-			PermissionGroupRepository = new PermissionGroupRepository(context, mapper);
+			PermissionGroupRepository = new PermissionGroupRepository(context, mapper, currentUser);
 			CategoryProfileRepository = new CategoryProfileRepository(context, mapper, currentUser);
 			JobProfileRepository = new JobProfileRepository(context, mapper, currentUser);
 			ProfileDocumentRepository = new ProfileDocumentRepository(context, mapper);

@@ -1,6 +1,7 @@
 ﻿@model ProjectReview.DTO.JobProfiles.JobProfileFilter;
 @using ProjectReview.DTO.JobProfiles
 @using ProjectReview.Models.Entities;
+@using ProjectReview.Common;
 
 @{
 	ViewData["Title"] = "JobProfile";
@@ -64,9 +65,12 @@
 					<div class="card-content">
 						<div class="d-flex">
 							<div class="mt-4">
-								<a class="btn btn-primary mb-3 me-3" asp-action="Create" style="height: 40px">
-									<i class="fa-solid fa-add"></i><span class="m-1 text-white">  Thêm mới</span>
-								</a>
+								@if (RoleCheck.CheckRole("ManageJob"))
+								{
+									<a class="btn btn-primary mb-3 me-3" asp-action="Create" style="height: 40px">
+										<i class="fa-solid fa-add"></i><span class="m-1 text-white">  Thêm mới</span>
+									</a>
+								}
 								<div>
 									<span>Số dòng: </span>
 									<select id="selectPageSize" class="form-select mb-3" aria-label="Default select example" style="width: 90px">
@@ -135,23 +139,29 @@
 														{
 															<td class="text-center">Đang đóng</td>
 															<td class=" text-center">
-																<a type="button" class="btn btn-warning btn-xs" asp-area="" asp-controller="JobProfiles" asp-action="Edit" asp-route-id="@item.Id">
-																	<i class="fas fa-pencil-alt"></i>
-																</a>
-																<a type="button" class="btn btn-danger btn-xs" onclick="return confirm('Bạn chắc chắn muốn xóa thông tin này?');" asp-area="" asp-controller="JobProfiles" asp-action="Delete" asp-route-id="@item.Id">
-																	<i class="fas fa-trash-alt"></i>
-																</a>
-																<a type="button" class="btn btn-success" asp-area="" asp-controller="JobProfiles" asp-action="Active" asp-route-id="@item.Id">Mở</a>
+																@if (RoleCheck.CheckRole("ManageJobProfile"))
+																{
+																	<a type="button" class="btn btn-warning btn-xs" asp-area="" asp-controller="JobProfiles" asp-action="Edit" asp-route-id="@item.Id">
+																		<i class="fas fa-pencil-alt"></i>
+																	</a>
+																	<a type="button" class="btn btn-danger btn-xs" onclick="return confirm('Bạn chắc chắn muốn xóa thông tin này?');" asp-area="" asp-controller="JobProfiles" asp-action="Delete" asp-route-id="@item.Id">
+																		<i class="fas fa-trash-alt"></i>
+																	</a>
+																	<a type="button" class="btn btn-success" asp-area="" asp-controller="JobProfiles" asp-action="Active" asp-route-id="@item.Id">Mở</a>
+																}
 															</td>
 														}
 														else
 														{
 															<td class="text-center">Đang mở</td>
 															<td class=" text-center">
-																<a type="button" class="btn btn-warning btn-xs" asp-area="" asp-controller="JobProfiles" asp-action="Edit" asp-route-id="@item.Id">
-																	<i class="fas fa-pencil-alt"></i>
-																</a>
-																<a type="button" class="btn btn-secondary" asp-area="" asp-controller="JobProfiles" asp-action="Close" asp-route-id="@item.Id">Đóng</a>
+																@if (RoleCheck.CheckRole("ManageJobProfile"))
+																{
+																	<a type="button" class="btn btn-warning btn-xs" asp-area="" asp-controller="JobProfiles" asp-action="Edit" asp-route-id="@item.Id">
+																		<i class="fas fa-pencil-alt"></i>
+																	</a>
+																	<a type="button" class="btn btn-secondary" asp-area="" asp-controller="JobProfiles" asp-action="Close" asp-route-id="@item.Id">Đóng</a>
+																}
 															</td>
 														}
 													</tr>

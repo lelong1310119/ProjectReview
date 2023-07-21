@@ -1,6 +1,7 @@
 ﻿@model ProjectReview.DTO.PermissionGroups.CreatePermissionGroupDTO;
 @using ProjectReview.DTO.PermissionGroups;
 @using ProjectReview.Models.Entities;
+@using ProjectReview.Common;
 
 @{
 	ViewData["Title"] = "PermissionGroup";
@@ -106,9 +107,12 @@
 						</a>*@
 						<div class="d-flex">
 							<div class="mt-4">
-								<a class="btn btn-primary mb-3 me-3" asp-action="Create" style="height: 40px">
-									<i class="fa-solid fa-add"></i><span class="m-1 text-white">  Thêm mới</span>
-								</a>
+								@if (RoleCheck.CheckRole("ManagePermissionGroup"))
+								{
+									<a class="btn btn-primary mb-3 me-3" asp-action="Create" style="height: 40px">
+										<i class="fa-solid fa-add"></i><span class="m-1 text-white">  Thêm mới</span>
+									</a>
+								}
 								<div>
 									<span>Số dòng: </span>
 									<select id="selectPageSize" class="form-select mb-3" aria-label="Default select example" value=@pageSize style="width: 90px">
@@ -160,14 +164,21 @@
 												</td>*@
 														@if (item.Status == 0)
 														{
-															<td class="text-center"><a type="button" class="btn btn-success" asp-area="" asp-controller="PermissionGroups" asp-action="Active" asp-route-id="@item.Id">Kích hoạt</a></td>
+															@if (RoleCheck.CheckRole("ManagePermissionGroup"))
+															{
+																<td class="text-center"><a type="button" class="btn btn-success" asp-area="" asp-controller="PermissionGroups" asp-action="Active" asp-route-id="@item.Id">Kích hoạt</a></td>
+															}
+															else
+															{
+																<td class="text-center">Chưa kích hoạt</td>
+															}
 														}
 														else
 														{
 															<td class="text-center">Hoạt động</td>
 														}
 														<td class=" text-center">
-															@if(item.Id > 2)
+															@if (RoleCheck.CheckRole("ManagePermissionGroup"))
 															{
 																<a type="button" class="btn btn-warning btn-xs" asp-area="" asp-controller="PermissionGroups" asp-action="Edit" asp-route-id="@item.Id">
 																	<i class="fas fa-pencil-alt"></i>

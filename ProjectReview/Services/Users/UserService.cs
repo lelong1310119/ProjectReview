@@ -97,6 +97,7 @@ namespace ProjectReview.Services.Users
                 _currentUser.UserName = user.UserName;
                 _currentUser.FullName = user.FullName;
                 _currentUser.Email = user.Email;
+                _currentUser.Roles = await _UOW.UserRepository.GetRole(user.Id);
 				user.PasswordHash = "";
                 return user;
             } else

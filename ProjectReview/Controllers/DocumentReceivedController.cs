@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using OfficeOpenXml;
 using ProjectReview.DTO.CategoryProfiles;
 using ProjectReview.DTO.Departments;
 using ProjectReview.DTO.Documents;
@@ -7,6 +8,7 @@ using ProjectReview.DTO.Users;
 using ProjectReview.Paging;
 using ProjectReview.Services.Documents;
 using ProjectReview.Services.Jobs;
+using System.IO.Packaging;
 
 namespace ProjectReview.Controllers
 {
@@ -242,6 +244,88 @@ namespace ProjectReview.Controllers
 				return NotFound();
 			}
 			return View(result);
+		}
+
+		public async Task<IActionResult> Print(long id)
+		{
+			var result = await _documentService.GetById(id);
+			if (result == null)
+			{
+				return NotFound();
+			}
+			return View(result);
+		}
+
+		public async Task<IActionResult> Export()
+		{
+			var documents = await _documentService.GetAllDocumentReceived();
+			using (ExcelPackage p = new ExcelPackage())
+			{
+				p.Workbook.Properties.Author = "Long Lê Đăng";
+				p.Workbook.Properties.Title = "Danh sách văn bản";
+				p.Workbook.Worksheets.Add("Văn bản đến");
+				ExcelWorksheet ws = p.Workbook.Worksheets[1];
+				ws.Name = "Văn bản đến";
+
+				string[] arrColumnHeader = {
+												"Số đến",
+												"Số ký hiệu",
+												"Nội dung",
+												"Tác giả",
+												"Ngày phát hành",
+												"Ngày đến",
+												"Người ký",
+												"Chức vụ",
+												"Loại văn bản",
+												"Độ mật",
+												"Độ khẩn",
+												"Số tờ",
+												"Ngôn ngữ",
+												"Ghi chú",
+						};
+
+				var countColHeader = arrColumnHeader.Count();
+
+				ws.Cells[1, 1].Value = "Danh sách văn bản đến";
+				ws.Cells[1, 1, 1, countColHeader].Merge = true;
+				ws.Cells[1, 1, 1, countColHeader].Style.Font.Bold = true;
+
+				int colIndex = 1;
+				int rowIndex = 2;
+
+				foreach (var item in arrColumnHeader)
+				{
+					var cell = ws.Cells[rowIndex, colIndex];
+					cell.Value = item;
+					colIndex++;
+				}
+
+				foreach (var item in documents)
+				{
+					colIndex = 1;
+					rowIndex++;
+					ws.Cells[rowIndex, colIndex++].Value = item.Number;
+					ws.Cells[rowIndex, colIndex++].Value = item.Symbol;
+					ws.Cells[rowIndex, colIndex++].Value = item.Content;
+					ws.Cells[rowIndex, colIndex++].Value = item.Author;
+					ws.Cells[rowIndex, colIndex++].Value = item.DateIssued.ToShortDateString();
+					ws.Cells[rowIndex, colIndex++].Value = item.CreateDate.ToShortDateString();
+					ws.Cells[rowIndex, colIndex++].Value = item.Signer;
+					ws.Cells[rowIndex, colIndex++].Value = item.Position;
+					ws.Cells[rowIndex, colIndex++].Value = item.DocumentType.Name;
+					ws.Cells[rowIndex, colIndex++].Value = item.Density.Detail;
+					ws.Cells[rowIndex, colIndex++].Value = item.Urgency.Detail;
+					ws.Cells[rowIndex, colIndex++].Value = item.NumberPaper;
+					ws.Cells[rowIndex, colIndex++].Value = item.Language;
+					ws.Cells[rowIndex, colIndex++].Value = item.Note;
+				}
+
+                var memoryStream = new MemoryStream();
+                p.SaveAs(memoryStream);
+                memoryStream.Position = 0;
+                var fileDownloadName = "DocumentReceived.xlsx";
+                return File(memoryStream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileDownloadName);
+            }
 		}
 	}
 }

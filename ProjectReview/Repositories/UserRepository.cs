@@ -29,7 +29,9 @@ namespace ProjectReview.Repositories
         Task<bool> CheckUser(List<long> ListUser, long id);
         Task<List<UserDTO>> GetListForward(long id);
         Task<List<UserDTO>> GetManagerForward(long id);
-    }
+        Task<List<string>> GetRole(long id);
+
+	}
 
 	public class UserRepository : IUserRepository
 	{
@@ -41,6 +43,23 @@ namespace ProjectReview.Repositories
 			_dataContext = dataContext;
 			_mapper = mapper;
 		}
+
+        public async Task<List<string>> GetRole(long id)
+        {
+            var result = await _dataContext.UserRoles
+                                    .Include(x => x.Role)
+                                    .Where(x => x.UserId == id)
+                                    .ToListAsync();
+            List<string> role = new List<string>();
+            if (result.Count > 0)
+            {
+                foreach(var item in result)
+                {
+                    role.Add(item.Role.Name);
+                }
+            }
+            return role;
+        }
 
         public async Task<bool> CheckUser(List<long> ListUser, long id)
         {

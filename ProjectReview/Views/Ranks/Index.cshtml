@@ -1,6 +1,7 @@
 ﻿@model ProjectReview.DTO.Ranks.RankFilter;
 @using ProjectReview.DTO.Ranks
 @using ProjectReview.Models.Entities;
+@using ProjectReview.Common;
 
 @{
 	ViewData["Title"] = "Rank";
@@ -64,9 +65,12 @@
 					<div class="card-content">
 						<div class="d-flex">
 							<div class="mt-4">
-								<a class="btn btn-primary mb-3 me-3" asp-action="Create" style="height: 40px">
-									<i class="fa-solid fa-add"></i><span class="m-1 text-white">  Thêm mới</span>
-								</a>
+								@if (RoleCheck.CheckRole("ManageRank"))
+								{
+									<a class="btn btn-primary mb-3 me-3" asp-action="Create" style="height: 40px">
+										<i class="fa-solid fa-add"></i><span class="m-1 text-white">  Thêm mới</span>
+									</a>
+								}
 								<div>
 									<span>Số dòng: </span>
 									<select id="selectPageSize" class="form-select mb-3" aria-label="Default select example" value=@pageSize style="width: 90px">
@@ -101,7 +105,7 @@
 									<table id="tblListDonvi" class="table table-bordered table-hover display dataTable no-footer" style="width: 100%;" role="grid" aria-describedby="tblListDonvi_info">
 										<thead>
 											<tr class="first-row" role="row">
-												<th class="text-center sorting_disabled" style="width: 28px;">TT</th>
+												<th class="text-center sorting_dManageDocumentisabled" style="width: 28px;">TT</th>
 												<th class="text-center sorting_disabled" style="width: 286px;">Cấp bậc</th>
 												<th class="text-center sorting_disabled" style="width: 258px;">Ghi chú</th>
 												<th class="text-center sorting_disabled" style="width: 117px;">Trạng thái</th>
@@ -124,21 +128,31 @@
 														<td class="text-center">@item.Note</td>
 														@if (item.Status == 0)
 														{
-															<td class="text-center"><a type="button" class="btn btn-success" asp-area="" asp-controller="Ranks" asp-action="Active" asp-route-id="@item.Id">Kích hoạt</a></td>
+															@if (RoleCheck.CheckRole("ManageRank"))
+															{
+																<td class="text-center"><a type="button" class="btn btn-success" asp-area="" asp-controller="Ranks" asp-action="Active" asp-route-id="@item.Id">Kích hoạt</a></td>
+															}
+															else
+															{
+																<td class="text-center">Chưa kích hoạt</td>
+															}
 														}
 														else
 														{
 															<td class="text-center">Hoạt động</td>
 														}
 														<td class=" text-center">
-															<a type="button" class="btn btn-warning btn-xs" asp-area="" asp-controller="Ranks" asp-action="Edit" asp-route-id="@item.Id">
-																<i class="fas fa-pencil-alt"></i>
-															</a>
-															@if (item.Status == 0)
+															@if (RoleCheck.CheckRole("ManageRank"))
 															{
-																<a type="button" class="btn btn-danger btn-xs" onclick="return confirm('Bạn chắc chắn muốn xóa thông tin này?');" asp-area="" asp-controller="Ranks" asp-action="Delete" asp-route-id="@item.Id">
-																	<i class="fas fa-trash-alt"></i>
+																<a type="button" class="btn btn-warning btn-xs" asp-area="" asp-controller="Ranks" asp-action="Edit" asp-route-id="@item.Id">
+																	<i class="fas fa-pencil-alt"></i>
 																</a>
+																@if (item.Status == 0)
+																{
+																	<a type="button" class="btn btn-danger btn-xs" onclick="return confirm('Bạn chắc chắn muốn xóa thông tin này?');" asp-area="" asp-controller="Ranks" asp-action="Delete" asp-route-id="@item.Id">
+																		<i class="fas fa-trash-alt"></i>
+																	</a>
+																}
 															}
 														</td>
 													</tr>

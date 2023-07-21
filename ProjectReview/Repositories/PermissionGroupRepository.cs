@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using ProjectReview.Common;
 using ProjectReview.DTO.PermissionGroups;
 using ProjectReview.Models;
 using ProjectReview.Models.Entities;
@@ -27,9 +28,11 @@ namespace ProjectReview.Repositories
     {
         private readonly DataContext _dataContext;
         private readonly IMapper _mapper;
-        public PermissionGroupRepository(DataContext dataContext, IMapper mapper) { 
+		private readonly ICurrentUser _currentUser;
+        public PermissionGroupRepository(DataContext dataContext, IMapper mapper, ICurrentUser currentUser) { 
             _dataContext = dataContext;
             _mapper = mapper;
+			_currentUser = currentUser;
         }
 
 		public async Task CreateRolePermission(List<long> RoleId, long permissionId)
@@ -137,6 +140,15 @@ namespace ProjectReview.Repositories
                             await _dataContext.UserRoles.AddAsync(new UserRole { RoleId = role, UserId = user });
                         }
                     }
+				}
+				if(UserId.Contains(_currentUser.UserId))
+				{
+					_currentUser.Roles = new List<string>();
+					var role = await _dataContext.Roles.Where(x => RoleId.Contains(x.Id)).ToListAsync();
+					foreach(var item in role)
+					{
+						_currentUser.Roles.Add(item.Name);
+					}
 				}
 			}
 			await _dataContext.SaveChangesAsync();

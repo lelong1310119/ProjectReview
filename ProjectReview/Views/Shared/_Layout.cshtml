@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using ProjectReview.Common;
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -38,7 +40,7 @@
 </head>
 <body>
     <header class="d-flex align-items-center justify-content-between">
-        <img src="https://localhost:7123/images/logo.png" class="logo"/>
+        <img src="https://192.168.96.93:7123/images/logo.png" class="logo"/>
         <a type="button" asp-action="Logout" asp-controller="Home" class="btn btn-danger m-2" style="height: 40px">Đăng xuất</a>
     </header>
     <div class="main">
@@ -54,61 +56,64 @@
                         </li>
                         <li class="submenu">
                             <a id="vanbanden" asp-area="" asp-controller="DocumentReceived" asp-action="Index">
-                                <img src="https://localhost:7123/images/vbden.png" />
+                                <img src="https://192.168.96.93:7123/images/vbden.png" />
                                 <span> Quản lý Văn bản đến</span>
                             </a>
                         </li>
                         <li class="submenu">
                             <a id="vanbandi" asp-area="" asp-controller="DocumentSent" asp-action="Index">
-                                <img src="https://localhost:7123/images/vbdi.png" />
+                                <img src="https://192.168.96.93:7123/images/vbdi.png" />
                                 <span> Quản lý Văn bản đi</span>
                             </a>
                         </li>
                         <li class="submenu">
                             <a id="profile" href="#">
-                                <img src="https://localhost:7123/images/system.png">
+                                <img src="https://192.168.96.93:7123/images/system.png">
                                 <span> Lập hồ sơ </span>
                                 <span class="menu-arrow"></span>
                             </a>
                             <ul class="list-unstyled hidden" id="list-profile">
                                 <li>
-                                    <a asp-area="" asp-controller="CategoryProfiles" asp-action="Index"><img src="https://localhost:7123/images/folder.png"> Danh mục hồ sơ</a>
+                                    <a asp-area="" asp-controller="CategoryProfiles" asp-action="Index"><img src="https://192.168.96.93:7123/images/folder.png"> Danh mục hồ sơ</a>
                                 </li>
                                 <li>
-                                    <a class="last-item" asp-area="" asp-controller="JobProfiles" asp-action="Index"><img src="https://localhost:7123/images/hosodm.png"> Hồ sơ công việc</a>
+                                    <a class="last-item" asp-area="" asp-controller="JobProfiles" asp-action="Index"><img src="https://192.168.96.93:7123/images/hosodm.png"> Hồ sơ công việc</a>
                                 </li>
                             </ul>
                         </li>
                         <li class="submenu">
                             <a id="Workflow" asp-area="" asp-controller="Jobs" asp-action="Index">
-                                <img src="https://localhost:7123/images/tkebaocao.png">
+                                <img src="https://192.168.96.93:7123/images/tkebaocao.png">
                                 <span> Theo dõi - Xử lý công việc </span>
                             </a>
                         </li>
                         <li class="submenu">
                             <a id="menu" href="#">
-                                <img src="https://localhost:7123/images/system.png">
+                                <img src="https://192.168.96.93:7123/images/system.png">
                                 <span> Hệ thống - Danh mục </span>
                                 <span class="menu-arrow"></span>
                             </a>
                             <ul class="list-unstyled hidden" id="list-menu">
                                 <li>
-                                    <a asp-area="" asp-controller="DocumentTypes" asp-action="Index"><img src="https://localhost:7123/images/loaivanban.png"> Loại văn bản</a>
+                                    <a asp-area="" asp-controller="DocumentTypes" asp-action="Index"><img src="https://192.168.96.93:7123/images/loaivanban.png"> Loại văn bản</a>
                                 </li>
                                 <li>
-                                    <a asp-area="" asp-controller="Departments" asp-action="Index"><img src="https://localhost:7123/images/loaivanban.png"> Danh mục đơn vị, bộ phận</a>
+                                    <a asp-area="" asp-controller="Departments" asp-action="Index"><img src="https://192.168.96.93:7123/images/loaivanban.png"> Danh mục đơn vị, bộ phận</a>
                                 </li>
                                 <li>
-                                    <a asp-area="" asp-controller="Positions" asp-action="Index"><img src="https://localhost:7123/images/loaivanban.png"> Danh mục chức vụ</a>
+                                    <a asp-area="" asp-controller="Positions" asp-action="Index"><img src="https://192.168.96.93:7123/images/loaivanban.png"> Danh mục chức vụ</a>
                                 </li>
                                 <li>
-                                    <a asp-area="" asp-controller="Ranks" asp-action="Index"><img src="https://localhost:7123/images/loaivanban.png"> Danh mục cấp bậc</a>
+                                    <a asp-area="" asp-controller="Ranks" asp-action="Index"><img src="https://192.168.96.93:7123/images/loaivanban.png"> Danh mục cấp bậc</a>
                                 </li>
+                                @if (RoleCheck.CheckRole("ManageUser"))
+                                {
+                                    <li>
+                                        <a asp-area="" asp-controller="Users" asp-action="Index"><img src="https://192.168.96.93:7123/images/dsnguoidung.png"> Danh sách cán bộ</a>
+                                    </li>
+                                }
                                 <li>
-                                    <a asp-area="" asp-controller="Users" asp-action="Index"><img src="https://localhost:7123/images/dsnguoidung.png"> Danh sách cán bộ</a>
-                                </li>
-                                <li>
-                                    <a class="last-item" asp-area="" asp-controller="PermissionGroups" asp-action="Index"><img src="https://localhost:7123/images/phanquyen.png"> Phân quyền sử dụng</a>
+                                    <a class="last-item" asp-area="" asp-controller="PermissionGroups" asp-action="Index"><img src="https://192.168.96.93:7123/images/phanquyen.png"> Phân quyền sử dụng</a>
                                 </li>
                             </ul>
                         </li>

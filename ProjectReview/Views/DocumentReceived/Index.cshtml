@@ -1,7 +1,7 @@
 ﻿@model ProjectReview.DTO.Documents.DocumentFilter;
 @using ProjectReview.DTO.Documents
 @using ProjectReview.Models.Entities;
-
+@using ProjectReview.Common;
 @{
 	ViewData["Title"] = "DocumentReceived";
 	var items = ViewData["items"] as List<DocumentDTO>;
@@ -64,9 +64,15 @@
 					<div class="card-content">
 						<div class="d-flex">
 							<div class="mt-4">
-								<a class="btn btn-primary mb-3 me-3" asp-action="Create" style="height: 40px">
-									<i class="fa-solid fa-add"></i><span class="m-1 text-white">  Thêm mới</span>
-								</a>
+								@if (RoleCheck.CheckRole("ManageDocument"))
+								{
+									<a class="btn btn-primary mb-3 me-3" asp-action="Create" style="height: 40px">
+										<i class="fa-solid fa-add"></i><span class="m-1 text-white">  Thêm mới</span>
+									</a>
+									<a class="btn btn-success mb-3 me-3" asp-action="Export" style="height: 40px">
+										<i class="fas fa-file-excel"></i><span class="m-1 text-white">  Xuất file</span>
+									</a>
+								}
 								<div>
 									<span>Số dòng: </span>
 									<select id="selectPageSize" class="form-select mb-3" aria-label="Default select example" value=@pageSize style="width: 90px">
@@ -128,30 +134,47 @@
 													<tr>
 														<td class="text-center">@count</td>
 														<td style="display: block; margin: auto">
-															<a type="button" class="m-2" asp-area="" asp-controller="DocumentReceived" asp-action="Edit" asp-route-id="@item.Id">
-																<img src="https://localhost:7123/icons/pencil.png" title="Sửa văn bản">
-															</a>
-															@if (item.IsAssign == false)
+															@if (RoleCheck.CheckRole("ManageDocument") && RoleCheck.CheckRole("AssignDocument"))
 															{
-																<a type="button" class="m-2" onclick="return confirm('Bạn chắc chắn muốn xóa thông tin này?');" asp-area="" asp-controller="DocumentReceived" asp-action="Delete" asp-route-id="@item.Id">
-																	<img src="https://localhost:7123/icons/delete.gif" title="Xóa văn bản">
+																<a type="button" class="m-2" asp-area="" asp-controller="DocumentReceived" asp-action="Edit" asp-route-id="@item.Id">
+																	<img src="https://192.168.96.93:7123/icons/pencil.png" title="Sửa văn bản">
 																</a>
-																<a type="button" class="m-2" asp-area="" asp-controller="DocumentReceived" asp-action="Assign" asp-route-id="@item.Id">
-																	<img src="https://localhost:7123/icons/phanxl.png" title="Phân xử lý công việc">
+																@if (item.IsAssign == false)
+																{
+																	<a type="button" class="m-2" onclick="return confirm('Bạn chắc chắn muốn xóa thông tin này?');" asp-area="" asp-controller="DocumentReceived" asp-action="Delete" asp-route-id="@item.Id">
+																		<img src="https://192.168.96.93:7123/icons/delete.gif" title="Xóa văn bản">
+																	</a>
+																	<a type="button" class="m-2" asp-area="" asp-controller="DocumentReceived" asp-action="Assign" asp-route-id="@item.Id">
+																		<img src="https://192.168.96.93:7123/icons/phanxl.png" title="Phân xử lý công việc">
+																	</a>
+																}
+																<a type="button" class="m-2" asp-area="" asp-controller="DocumentReceived" asp-action="AddProfile" asp-route-id="@item.Id">
+																	<img src="https://192.168.96.93:7123/icons/folders.png" title="Đưa văn bản vào hồ sơ">
 																</a>
-															}
-															<a type="button" class="m-2" asp-area="" asp-controller="DocumentReceived" asp-action="AddProfile" asp-route-id="@item.Id">
-																<img src="https://localhost:7123/icons/folders.png" title="Đưa văn bản vào hồ sơ">
-															</a>
-															@if (item.IsAssign == true)
+																@if (item.IsAssign == true)
+																{
+																	<a type="button" class="m-2" onclick="return confirm('Nếu thu hồi văn bản, các thông tin liên quan sẽ bị xóa. Bạn vẫn muốn thu hồi thông tin này?');" asp-area="" asp-controller="DocumentReceived" asp-action="Recall" asp-route-id="@item.Id">
+																		<img class="h-150" src="https://192.168.96.93:7123/icons/redo.png" title="Thu hồi văn bản">
+																	</a>
+																}
+																<a type="button" class="m-2" asp-area="" asp-controller="DocumentReceived" asp-action="Print" asp-route-id="@item.Id">
+																	<img src="https://192.168.96.93:7123/icons/print.png" title="In chỉ đạo giải quyết văn bản">
+																</a>
+															} else if (RoleCheck.CheckRole("AssignDocument"))
 															{
-																<a type="button" class="m-2" onclick="return confirm('Nếu thu hồi văn bản, các thông tin liên quan sẽ bị xóa. Bạn vẫn muốn thu hồi thông tin này?');" asp-area="" asp-controller="DocumentReceived" asp-action="Recall" asp-route-id="@item.Id">
-																	<img class="h-150" src="https://localhost:7123/icons/redo.png" title="Thu hồi văn bản">
-																</a>
+																@if (item.IsAssign == false)
+																{
+																	<a type="button" class="m-2" asp-area="" asp-controller="DocumentReceived" asp-action="Assign" asp-route-id="@item.Id">
+																		<img src="https://192.168.96.93:7123/icons/phanxl.png" title="Phân xử lý công việc">
+																	</a>
+																}
+																@if (item.IsAssign == true)
+																{
+																	<a type="button" class="m-2" onclick="return confirm('Nếu thu hồi văn bản, các thông tin liên quan sẽ bị xóa. Bạn vẫn muốn thu hồi thông tin này?');" asp-area="" asp-controller="DocumentReceived" asp-action="Recall" asp-route-id="@item.Id">
+																		<img class="h-150" src="https://192.168.96.93:7123/icons/redo.png" title="Thu hồi văn bản">
+																	</a>
+																}
 															}
-															<a type="button" class="m-2" asp-area="" asp-controller="DocumentReceived" asp-action="Print" asp-route-id="@item.Id">
-																<img src="https://localhost:7123/icons/print.png" title="In chỉ đạo giải quyết văn bản">
-															</a>
 														</td>
 														<td class="text-center">@item.CreateDate.ToString("dd/MM/yyyy")</td>
 														<td class="text-center">@item.Number</td>
