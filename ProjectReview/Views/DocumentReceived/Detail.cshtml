@@ -13,20 +13,20 @@
                 <div class="card-body container-card">
                     <div class="card-content">
                         <div class="row">
-                            <div class="d-flex m-2">
+                            <div class="d-flex m-2 row-detail">
                                 <div class="col-md-3">Ngày đến: <span class="text-primary">@Model.CreateDate.ToString("dd/MM/yyyy")</span></div>
                                 <div class="col-md-2">Số đến: <span class="text-primary">@Model.Number</span></div>
                                 <div class="col-md-3">Số ký hiệu: <span class="text-primary">@Model.Symbol</span></div>
                                 <div class="col-md-4">Ngày tháng văn bản: <span class="text-primary">@Model.DateIssued.ToString("dd/MM/yyyy")</span></div>
                             </div>
-                            <div class="d-flex m-2">
+                            <div class="d-flex m-2 row-detail">
                                 <div class="col-md-8">Cơ quan ban hành: <span class="text-primary">@Model.Author</span></div>
                                 <div class="col-md-4">Tên loại văn bản: <span class="text-primary">@Model.DocumentType.Name</span></div>
                             </div>
-                            <div class="d-flex m-2">
+                            <div class="d-flex m-2 row-detail">
                                 <div class="col-md-12">Trích yếu nội dung: <span class="text-primary">@Model.Content</span></div>
                             </div>
-                            <div class="d-flex m-2">
+                            <div class="d-flex m-2 row-detail">
                                 <div class="col-md-3">Độ mật: <span class="text-primary">@Model.Density.Detail</span></div>
                                 <div class="col-md-2">Độ khẩn: <span class="text-primary">@Model.Urgency.Detail</span></div>
                                 <div class="col-md-3">Số tờ: <span class="text-primary">@Model.NumberPaper</span></div>
@@ -37,7 +37,7 @@
                                     }
                                 </div>
                             </div>
-                            <div class="d-flex m-2">
+                            <div class="d-flex m-2 row-detail">
                                 <div class="col-md-6">Đơn vị hoặc người nhận: 
                                     @if(Model.Job != null)
                                     {
@@ -52,7 +52,7 @@
                                     <span class="text-primary"></span>
                                 </div>
                             </div>
-                            <div class="d-flex m-2">
+                            <div class="d-flex m-2 row-detail">
                                 <div class="col-md-12">Hồ sơ công việc: <br />
                                     <ul>
                                         @foreach(var item in Model.JobProfiles)
@@ -64,7 +64,7 @@
                             </div>
                             @if(Model.FilePath != null && Model.FilePath != "")
                             {
-                                <div class="d-flex m-2">
+                                <div class="d-flex m-2 row-detail">
                                     <div >Tệp đính kèm:  <a href="https://192.168.96.93:7123/file/@Model.FilePath">@Model.FileName</a></div>
                                 </div>
                             }
@@ -85,5 +85,9 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+    <script>
+        const menu = document.querySelector(".menu-documentreceived");
+        menu.classList.add("subdrop");
+    </script>
 }
 

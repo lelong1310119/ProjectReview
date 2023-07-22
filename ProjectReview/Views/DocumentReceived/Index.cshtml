@@ -19,7 +19,10 @@
 		const choose = document.querySelector('#selectPageSize')
 		const currentPage = @ViewData["page"];
 		const totalPage = @ViewData["totalPage"];
-		const pageSize = @ViewData["pageSize"]
+		const pageSize = @ViewData["pageSize"];
+		const menu = document.querySelector(".menu-documentreceived");
+		document.getElementById("selectPageSize").value = pageSize;
+		menu.classList.add("subdrop");
 
 			choose.addEventListener('change', function (e) {
 				e.preventDefault();
@@ -50,6 +53,15 @@
 		function goToPage(page) {
 			window.location.href = "/DocumentReceived/Index?page=" + page + '&size=' + pageSize;
 		}
+		//function initMenu() {
+			//var doc = document.querySelector(".menu-documentreceived");
+			//doc.addEventListener("click", function () {
+			//	doc.classList.add("subdrop");
+		//	});
+		//}
+		//document.addEventListener("DOMContentLoaded", function () {
+		//	initMenu();
+		//});
 	</script>
 }
 
@@ -74,8 +86,8 @@
 									</a>
 								}
 								<div>
-									<span>Số dòng: </span>
-									<select id="selectPageSize" class="form-select mb-3" aria-label="Default select example" value=@pageSize style="width: 90px">
+									<span>Số dòng: @pageSize</span>
+									<select id="selectPageSize" class="form-select mb-3" aria-label="Default select example" style="width: 90px">
 										<option value=10>10</option>
 										<option value=20>20</option>
 										<option value=50>50</option>
@@ -104,7 +116,7 @@
 						<div class="dataTables_wrapper dt-bootstrap4 no-footer">
 							<div class="row">
 								<div class="col-sm-12">
-									<table id="tblListDonvi" class="table table-bordered table-hover display dataTable no-footer" style="width: 100%;" role="grid" aria-describedby="tblListDonvi_info">
+									<table class="table table-bordered table-hover display dataTable no-footer" style="width: 100%;" role="grid">
 										<thead>
 											<tr class="first-row" role="row">
 												<th class="text-center sorting_disabled" style="width: 28px;">TT</th>
@@ -133,7 +145,7 @@
 												{
 													<tr>
 														<td class="text-center">@count</td>
-														<td style="display: block; margin: auto">
+														<td class="text-center">
 															@if (RoleCheck.CheckRole("ManageDocument") && RoleCheck.CheckRole("AssignDocument"))
 															{
 																<a type="button" class="m-2" asp-area="" asp-controller="DocumentReceived" asp-action="Edit" asp-route-id="@item.Id">
@@ -156,10 +168,10 @@
 																	<a type="button" class="m-2" onclick="return confirm('Nếu thu hồi văn bản, các thông tin liên quan sẽ bị xóa. Bạn vẫn muốn thu hồi thông tin này?');" asp-area="" asp-controller="DocumentReceived" asp-action="Recall" asp-route-id="@item.Id">
 																		<img class="h-150" src="https://192.168.96.93:7123/icons/redo.png" title="Thu hồi văn bản">
 																	</a>
+																	<a type="button" class="m-2" asp-area="" asp-controller="DocumentReceived" asp-action="Print" asp-route-id="@item.Id">
+																		<img src="https://192.168.96.93:7123/icons/print.png" title="In chỉ đạo giải quyết văn bản">
+																	</a>
 																}
-																<a type="button" class="m-2" asp-area="" asp-controller="DocumentReceived" asp-action="Print" asp-route-id="@item.Id">
-																	<img src="https://192.168.96.93:7123/icons/print.png" title="In chỉ đạo giải quyết văn bản">
-																</a>
 															} else if (RoleCheck.CheckRole("AssignDocument"))
 															{
 																@if (item.IsAssign == false)

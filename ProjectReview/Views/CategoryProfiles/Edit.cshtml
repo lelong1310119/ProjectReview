@@ -60,5 +60,15 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+    <script>
+        const menu = document.querySelector(".menu-profile");
+        const list = document.getElementById("list-profile");
+        const menu2 = document.querySelector(".menu-categoryProfile");
+        const arrow = document.querySelector("#profile");
+        arrow.classList.add("subdrop");
+        list.classList.remove("hidden");
+        menu.classList.add("subdrop");
+        menu2.classList.add("active");
+    </script>
 }
 

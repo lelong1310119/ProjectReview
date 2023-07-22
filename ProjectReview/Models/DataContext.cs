@@ -9,10 +9,8 @@ namespace ProjectReview.Models
         public virtual DbSet<Department> Departments { get; set; }
         public virtual DbSet<Document> Documents { get; set; }
         public virtual DbSet<DocumentType> DocumentTypes { get; set; }
-        public virtual DbSet<Handler> Handlers { get; set; }
         public virtual DbSet<Job> Jobs { get; set; }
         public virtual DbSet<JobProfile> JobProfiles { get; set; }
-        public virtual DbSet<Opinion> Opinions { get; set; }
         public virtual DbSet<PermissionGroup> PermissionGroups { get; set; }
         public virtual DbSet<Position> Positions { get; set; }
         public virtual DbSet<CategoryProfile> Profiles { get; set; }
@@ -215,23 +213,6 @@ namespace ProjectReview.Models
                     .HasConstraintName("FK_DocumentType_User");
             });
 
-            modelBuilder.Entity<Handler>(entity =>
-            {
-                entity.ToTable("Handler");
-                entity.HasKey(x => new {x.UserId, x.JobId});
-
-                entity.HasOne(x => x.User)
-                    .WithMany(y => y.Handlers)
-                    .HasForeignKey(x => x.UserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Handler_User");
-
-                entity.HasOne(x => x.Job)
-                    .WithMany(y => y.Handlers)
-                    .HasForeignKey(x => x.JobId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Handler_Job");
-            });
 
             modelBuilder.Entity<Job>(entity =>
             {
@@ -304,33 +285,6 @@ namespace ProjectReview.Models
                     .HasForeignKey(x => x.ProfileId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_JobProfile_Profile");
-            });
-
-            modelBuilder.Entity<Opinion>(entity =>
-            {
-                entity.ToTable("Opinion");
-                entity.HasKey(x => x.Id);
-                entity.Property(x => x.Id).ValueGeneratedNever();
-
-                entity.Property(x => x.Content).IsRequired();
-                entity.Property(x => x.FileName)
-                    .HasMaxLength(400);
-
-                entity.Property(x => x.CreateDate)
-                    .IsRequired()
-                    .HasColumnType("datetime");
-
-                entity.HasOne(x => x.CreateUser)
-                    .WithMany(y => y.Opinions)
-                    .HasForeignKey(x => x.CreateUserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Opinion_User");
-
-                entity.HasOne(x => x.Job)
-                    .WithMany(y => y.Opinions)
-                    .HasForeignKey(x => x.JobId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Opinion_Job");
             });
 
             modelBuilder.Entity<PermissionGroup>(entity =>

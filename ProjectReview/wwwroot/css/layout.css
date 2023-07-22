@@ -6,15 +6,30 @@ a {
     text-decoration: none
 }
 
+.avatar {
+    border: 1px solid white;
+    border-radius: 50%;
+    margin-right: 5px;
+}
+
+.dropdown-toggle::after {
+    display: none;
+}
+
+/*.row-detail {
+    border-bottom: 1px dashed black;
+    margin-top: 5px;
+}*/
+
 .main-sidebar {
-    top: 70px;
-    width: 250px;
+    top: 50px;
+    width: 215px;
     z-index: 1000;
     background: #2a3542;
-    bottom: 70px;
-    margin-bottom: -70px;
+    bottom: 50px;
+    margin-bottom: -50px;
     margin-top: 0;
-    padding-bottom: 70px;
+    padding-bottom: 50px;
     position: fixed;
     overflow: auto;
     background: #E7E3E7 !important;
@@ -25,19 +40,19 @@ a {
 }
 
 .content {
-    margin-left: 250px;
-    margin-top: 80px;
+    margin-left: 215px;
+    margin-top: 60px;
 }
 
 .container-card {
-    min-height: calc(100vh - 150px);
+    min-height: calc(100vh - 120px);
 }
 
 .card-header {
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    height: 60px;
+    height: 50px;
 }
 
 header {
@@ -45,7 +60,7 @@ header {
     position: fixed;
     width: 100%;
     background-color: #085075 !important;
-    height: 70px;
+    height: 50px;
     justify-content: center;
 }
 
@@ -63,7 +78,7 @@ html {
 }
 
 body {
-    font-size: 16px;
+    font-size: 13px;
     background-color: #e9ecef;
     padding-bottom: 30px;
     margin: 0;
@@ -130,11 +145,27 @@ label {
     padding: 0.2rem 1rem;
 }
 
+.home-card:hover {
+    cursor: pointer;
+}
+
 .card-header h3 {
     font-weight: 500;
     line-height: 1.5;
     font-size: 16px;
     margin-bottom: 0
+}
+
+.card-header h4 {
+    font-weight: 500;
+    line-height: 1.5;
+    font-size: 18px;
+    margin-bottom: 0
+}
+
+.btn-lg {
+    font-size: 16px;
+    padding: 5px;
 }
 
 .card-footer {
@@ -144,7 +175,7 @@ label {
 }
 
 .content {
-    margin-left: 250px;
+    margin-left: 215px;
     overflow: hidden
 }
 
@@ -232,9 +263,9 @@ body.adminbody .main-sidebar.left {
 #sidebar-menu > ul > li > ul > li > a {
     color: #000000;
     display: block;
-    padding: 16px 10px 16px 10px;
+    padding: 12px 10px 12px 10px;
     font-weight: 400;
-    font-size: 16px;
+    font-size: 13px;
 }
 
 #sidebar-menu > ul > li > a
@@ -262,13 +293,14 @@ body.adminbody .main-sidebar.left {
 
 #sidebar-menu ul li a i {
     display: inline-block;
-    font-size: 16px;
-    line-height: 16px;
+    font-size: 13px;
+    line-height: 13px;
     margin-left: 0px;
     margin-right: 5px;
     text-align: center;
     vertical-align: middle;
     width: 16px;
+    font-size: 13px;
 }
 
 #sidebar-menu ul li a .drop-arrow {

@@ -23,7 +23,6 @@ namespace ProjectReview.DTO.Jobs
 		public User CreateUser { get; set; }
 		public Document Document { get; set; }
 		public List<User> Users { get; set; }
-		public List<Opinion> Opinions { get; set; }
 		public List<HistoryDTO> Histories { get; set; }
 	}
 }

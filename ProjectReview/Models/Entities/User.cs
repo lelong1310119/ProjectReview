@@ -25,10 +25,8 @@ namespace ProjectReview.Models.Entities
         public virtual ICollection<Job> InstructorJobs { get; set; }
         public virtual ICollection<CategoryProfile> Profiles { get; set; }
         public virtual ICollection<JobProfile> JobProfiles { get; set; }
-        public virtual ICollection<Opinion> Opinions { get; set; }
         public virtual ICollection<DocumentType> DocumentTypes { get; set; }
         public virtual ICollection<Document> Documents { get; set; }
-        public virtual ICollection<Handler> Handlers { get; set; }
         public virtual ICollection<UserRole> UserRoles { get; set; }
         public virtual ICollection<ProcessUser> ProcessUsers { get; set; }
         public virtual ICollection<History> Histories { get; set; }

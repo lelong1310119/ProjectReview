@@ -1,7 +1,6 @@
 ﻿using Humanizer;
 using ProjectReview.DTO.Histories;
 using ProjectReview.DTO.Jobs;
-using ProjectReview.DTO.Opinions;
 using ProjectReview.DTO.Processes;
 using ProjectReview.DTO.Users;
 using ProjectReview.Paging;
@@ -19,7 +18,6 @@ namespace ProjectReview.Services.Jobs
 		Task<UpdateJobDTO> GetById(long id);
 		Task<JobDTO> Update(UpdateJobDTO updateJobDTO);
 		Task<List<UserDTO>> GetHostUser();
-		Task AddOpinion(CreateOpinionDTO createOpinionDTO);
 		Task<JobDTO> GetJob(long id);
 		Task Finish(long id);
 		Task CancleAssign(long id);
@@ -165,24 +163,6 @@ namespace ProjectReview.Services.Jobs
             }
         }
 
-        public async Task AddOpinion(CreateOpinionDTO createOpinionDTO)
-		{
-			var result = await _UOW.OpinionRepository.Create(createOpinionDTO);
-            if (result != null)
-            {
-                if (createOpinionDTO.FormFile != null)
-				{
-					result.FileName = createOpinionDTO.FormFile.FileName;
-					var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "file", "Opinion_" + result.Id.ToString() + "_" + result.FileName);
-					using (var fileStream = new FileStream(filePath, FileMode.Create))
-					{
-						await createOpinionDTO.FormFile.CopyToAsync(fileStream);
-					}
-					result.FilePath = "Opinion_" + result.Id.ToString() + "_" + result.FileName;
-					await _UOW.OpinionRepository.UpdateFile(result);
-				}
-            }
-        }
 
 		public async Task<JobDTO> Create(CreateJobDTO createJobDTO)
 		{

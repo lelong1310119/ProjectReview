@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using ProjectReview.Common;
 using ProjectReview.DTO.Histories;
-using ProjectReview.DTO.Opinions;
 using ProjectReview.DTO.PermissionGroups;
 using ProjectReview.Models;
 using ProjectReview.Models.Entities;

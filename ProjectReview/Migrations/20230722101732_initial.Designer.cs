@@ -12,7 +12,7 @@ using ProjectReview.Models;
 namespace ProjectReview.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230719084839_initial")]
+    [Migration("20230722101732_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -318,21 +318,6 @@ namespace ProjectReview.Migrations
                     b.ToTable("DocumentType", (string)null);
                 });
 
-            modelBuilder.Entity("ProjectReview.Models.Entities.Handler", b =>
-                {
-                    b.Property<long>("UserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("JobId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("UserId", "JobId");
-
-                    b.HasIndex("JobId");
-
-                    b.ToTable("Handler", (string)null);
-                });
-
             modelBuilder.Entity("ProjectReview.Models.Entities.History", b =>
                 {
                     b.Property<long>("Id")
@@ -479,40 +464,6 @@ namespace ProjectReview.Migrations
                     b.HasIndex("ProfileId");
 
                     b.ToTable("JobProfile", (string)null);
-                });
-
-            modelBuilder.Entity("ProjectReview.Models.Entities.Opinion", b =>
-                {
-                    b.Property<long>("Id")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreateDate")
-                        .HasColumnType("datetime");
-
-                    b.Property<long>("CreateUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("FileName")
-                        .HasMaxLength(400)
-                        .HasColumnType("nvarchar(400)");
-
-                    b.Property<string>("FilePath")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<long>("JobId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CreateUserId");
-
-                    b.HasIndex("JobId");
-
-                    b.ToTable("Opinion", (string)null);
                 });
 
             modelBuilder.Entity("ProjectReview.Models.Entities.PermissionGroup", b =>
@@ -924,25 +875,6 @@ namespace ProjectReview.Migrations
                     b.Navigation("CreateUser");
                 });
 
-            modelBuilder.Entity("ProjectReview.Models.Entities.Handler", b =>
-                {
-                    b.HasOne("ProjectReview.Models.Entities.Job", "Job")
-                        .WithMany("Handlers")
-                        .HasForeignKey("JobId")
-                        .IsRequired()
-                        .HasConstraintName("FK_Handler_Job");
-
-                    b.HasOne("ProjectReview.Models.Entities.User", "User")
-                        .WithMany("Handlers")
-                        .HasForeignKey("UserId")
-                        .IsRequired()
-                        .HasConstraintName("FK_Handler_User");
-
-                    b.Navigation("Job");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("ProjectReview.Models.Entities.History", b =>
                 {
                     b.HasOne("ProjectReview.Models.Entities.User", "CreateUser")
@@ -1025,25 +957,6 @@ namespace ProjectReview.Migrations
                     b.Navigation("CreateUser");
 
                     b.Navigation("Profile");
-                });
-
-            modelBuilder.Entity("ProjectReview.Models.Entities.Opinion", b =>
-                {
-                    b.HasOne("ProjectReview.Models.Entities.User", "CreateUser")
-                        .WithMany("Opinions")
-                        .HasForeignKey("CreateUserId")
-                        .IsRequired()
-                        .HasConstraintName("FK_Opinion_User");
-
-                    b.HasOne("ProjectReview.Models.Entities.Job", "Job")
-                        .WithMany("Opinions")
-                        .HasForeignKey("JobId")
-                        .IsRequired()
-                        .HasConstraintName("FK_Opinion_Job");
-
-                    b.Navigation("CreateUser");
-
-                    b.Navigation("Job");
                 });
 
             modelBuilder.Entity("ProjectReview.Models.Entities.Process", b =>
@@ -1206,12 +1119,8 @@ namespace ProjectReview.Migrations
 
             modelBuilder.Entity("ProjectReview.Models.Entities.Job", b =>
                 {
-                    b.Navigation("Handlers");
-
                     b.Navigation("JobDocument")
                         .IsRequired();
-
-                    b.Navigation("Opinions");
 
                     b.Navigation("Processes");
                 });
@@ -1265,8 +1174,6 @@ namespace ProjectReview.Migrations
 
                     b.Navigation("Documents");
 
-                    b.Navigation("Handlers");
-
                     b.Navigation("Histories");
 
                     b.Navigation("HostJobs");
@@ -1274,8 +1181,6 @@ namespace ProjectReview.Migrations
                     b.Navigation("InstructorJobs");
 
                     b.Navigation("JobProfiles");
-
-                    b.Navigation("Opinions");
 
                     b.Navigation("ProcessUsers");
 

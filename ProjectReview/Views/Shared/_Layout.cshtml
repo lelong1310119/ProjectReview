@@ -1,4 +1,9 @@
 ﻿@using ProjectReview.Common;
+@inject IHttpContextAccessor HttpContextAccessor
+
+@{
+    string username = HttpContextAccessor.HttpContext.Session.GetString("username");
+}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -16,6 +21,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.4.2/chosen.css" />
     <link rel="stylesheet" href="~/ProjectReview.styles.css" asp-append-version="true" />
     <script type="text/javascript">
+        $(function () {
+            $('.dropdown-toggle').dropdown();
+        });
         function initMenu() {
             var profile = document.getElementById("profile");
             var input = document.querySelector('.search-field');
@@ -41,78 +49,86 @@
 <body>
     <header class="d-flex align-items-center justify-content-between">
         <img src="https://192.168.96.93:7123/images/logo.png" class="logo"/>
-        <a type="button" asp-action="Logout" asp-controller="Home" class="btn btn-danger m-2" style="height: 40px">Đăng xuất</a>
+        <div class="d-flex align-items-center justify-content-center">
+            <h6 class="text-center text-white me-2 mt-2">@username</h6>
+            <a type="button" class="btn dropdown-toggle dropdown-toggle-split avatar" data-toggle="dropdown" aria-haspopup="true"><img src="https://192.168.96.93:7123/images/user.png" /></a>
+            <div class="dropdown-menu" style="margin-top: 5px">
+                <h6 class="text-center">@username</h6>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item text-center text-danger p-0" asp-action="Logout" asp-area="" asp-controller="Home">Đăng xuất</a>
+            </div>
+        </div>
     </header>
     <div class="main">
         <div class="left main-sidebar">
             <div class="sidebar-inner leftscroll">
                 <div id="sidebar-menu">
                     <ul>
-                        <li class="submenu">
+                        <li class="submenu menu-home">
                             <a asp-area="" asp-controller="Home" asp-action="Index">
                                 <i class="fas fa-bars"></i>
                                 <span> Trang chủ </span>
                             </a>
                         </li>
-                        <li class="submenu">
+                        <li class="submenu menu-documentreceived">
                             <a id="vanbanden" asp-area="" asp-controller="DocumentReceived" asp-action="Index">
                                 <img src="https://192.168.96.93:7123/images/vbden.png" />
                                 <span> Quản lý Văn bản đến</span>
                             </a>
                         </li>
-                        <li class="submenu">
+                        <li class="submenu menu-documentsent">
                             <a id="vanbandi" asp-area="" asp-controller="DocumentSent" asp-action="Index">
                                 <img src="https://192.168.96.93:7123/images/vbdi.png" />
                                 <span> Quản lý Văn bản đi</span>
                             </a>
                         </li>
-                        <li class="submenu">
+                        <li class="submenu menu-profile">
                             <a id="profile" href="#">
                                 <img src="https://192.168.96.93:7123/images/system.png">
                                 <span> Lập hồ sơ </span>
                                 <span class="menu-arrow"></span>
                             </a>
                             <ul class="list-unstyled hidden" id="list-profile">
-                                <li>
+                                <li class="menu-categoryProfile">
                                     <a asp-area="" asp-controller="CategoryProfiles" asp-action="Index"><img src="https://192.168.96.93:7123/images/folder.png"> Danh mục hồ sơ</a>
                                 </li>
-                                <li>
+                                <li class="menu-jobprofile">
                                     <a class="last-item" asp-area="" asp-controller="JobProfiles" asp-action="Index"><img src="https://192.168.96.93:7123/images/hosodm.png"> Hồ sơ công việc</a>
                                 </li>
                             </ul>
                         </li>
-                        <li class="submenu">
+                        <li class="submenu menu-job">
                             <a id="Workflow" asp-area="" asp-controller="Jobs" asp-action="Index">
                                 <img src="https://192.168.96.93:7123/images/tkebaocao.png">
                                 <span> Theo dõi - Xử lý công việc </span>
                             </a>
                         </li>
-                        <li class="submenu">
+                        <li class="submenu menu-category">
                             <a id="menu" href="#">
                                 <img src="https://192.168.96.93:7123/images/system.png">
                                 <span> Hệ thống - Danh mục </span>
                                 <span class="menu-arrow"></span>
                             </a>
                             <ul class="list-unstyled hidden" id="list-menu">
-                                <li>
+                                <li class="menu-documentType">
                                     <a asp-area="" asp-controller="DocumentTypes" asp-action="Index"><img src="https://192.168.96.93:7123/images/loaivanban.png"> Loại văn bản</a>
                                 </li>
-                                <li>
+                                <li class="menu-department">
                                     <a asp-area="" asp-controller="Departments" asp-action="Index"><img src="https://192.168.96.93:7123/images/loaivanban.png"> Danh mục đơn vị, bộ phận</a>
                                 </li>
-                                <li>
+                                <li class="menu-position">
                                     <a asp-area="" asp-controller="Positions" asp-action="Index"><img src="https://192.168.96.93:7123/images/loaivanban.png"> Danh mục chức vụ</a>
                                 </li>
-                                <li>
+                                <li class="menu-rank">
                                     <a asp-area="" asp-controller="Ranks" asp-action="Index"><img src="https://192.168.96.93:7123/images/loaivanban.png"> Danh mục cấp bậc</a>
                                 </li>
                                 @if (RoleCheck.CheckRole("ManageUser"))
                                 {
-                                    <li>
+                                    <li class="menu-user">
                                         <a asp-area="" asp-controller="Users" asp-action="Index"><img src="https://192.168.96.93:7123/images/dsnguoidung.png"> Danh sách cán bộ</a>
                                     </li>
                                 }
-                                <li>
+                                <li class="menu-permission">
                                     <a class="last-item" asp-area="" asp-controller="PermissionGroups" asp-action="Index"><img src="https://192.168.96.93:7123/images/phanquyen.png"> Phân quyền sử dụng</a>
                                 </li>
                             </ul>

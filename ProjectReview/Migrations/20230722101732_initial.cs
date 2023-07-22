@@ -424,55 +424,6 @@ namespace ProjectReview.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Handler",
-                columns: table => new
-                {
-                    UserId = table.Column<long>(type: "bigint", nullable: false),
-                    JobId = table.Column<long>(type: "bigint", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Handler", x => new { x.UserId, x.JobId });
-                    table.ForeignKey(
-                        name: "FK_Handler_Job",
-                        column: x => x.JobId,
-                        principalTable: "Job",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Handler_User",
-                        column: x => x.UserId,
-                        principalTable: "User",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Opinion",
-                columns: table => new
-                {
-                    Id = table.Column<long>(type: "bigint", nullable: false),
-                    Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    FileName = table.Column<string>(type: "nvarchar(400)", maxLength: 400, nullable: true),
-                    FilePath = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CreateDate = table.Column<DateTime>(type: "datetime", nullable: false),
-                    CreateUserId = table.Column<long>(type: "bigint", nullable: false),
-                    JobId = table.Column<long>(type: "bigint", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Opinion", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Opinion_Job",
-                        column: x => x.JobId,
-                        principalTable: "Job",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Opinion_User",
-                        column: x => x.CreateUserId,
-                        principalTable: "User",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Process",
                 columns: table => new
                 {
@@ -663,11 +614,6 @@ namespace ProjectReview.Migrations
                 column: "CreateUserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Handler_JobId",
-                table: "Handler",
-                column: "JobId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_History_CreateUserId",
                 table: "History",
                 column: "CreateUserId");
@@ -713,16 +659,6 @@ namespace ProjectReview.Migrations
                 name: "IX_JobProfile_ProfileId",
                 table: "JobProfile",
                 column: "ProfileId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Opinion_CreateUserId",
-                table: "Opinion",
-                column: "CreateUserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Opinion_JobId",
-                table: "Opinion",
-                column: "JobId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Process_InstructorId",
@@ -815,16 +751,10 @@ namespace ProjectReview.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Handler");
-
-            migrationBuilder.DropTable(
                 name: "History");
 
             migrationBuilder.DropTable(
                 name: "JobDocument");
-
-            migrationBuilder.DropTable(
-                name: "Opinion");
 
             migrationBuilder.DropTable(
                 name: "ProcessUser");

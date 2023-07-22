@@ -18,8 +18,6 @@ namespace ProjectReview.Repositories
 		IProfileDocumentRepository ProfileDocumentRepository { get; }
 		IDocumentRepository DocumentRepository { get; }
 		IJobRepository JobRepository { get; }
-		IJobUserRepository JobUserRepository { get; }
-		IOpinionRepository	OpinionRepository { get; }
 		IProcessRepository ProcessRepository { get; }
 		IHistoryRepository HistoryRepository { get; }
 	}
@@ -41,8 +39,6 @@ namespace ProjectReview.Repositories
 		public IProfileDocumentRepository ProfileDocumentRepository { get; private set; }
 		public IDocumentRepository DocumentRepository { get; private set; }
 		public IJobRepository JobRepository { get; private set; }
-		public IJobUserRepository JobUserRepository { get; private set; }
-		public IOpinionRepository OpinionRepository { get; private set; }
 		public IProcessRepository ProcessRepository { get; private set; }
 		public IHistoryRepository HistoryRepository { get; private set; }
 
@@ -62,8 +58,6 @@ namespace ProjectReview.Repositories
 			ProfileDocumentRepository = new ProfileDocumentRepository(context, mapper);
 			DocumentRepository = new DocumentRepository(context, mapper, currentUser);
 			JobRepository = new JobRepository(context, mapper, currentUser);
-			JobUserRepository = new JobUserRepository(context);
-			OpinionRepository = new OpinionRepository(context, mapper, currentUser);
 			ProcessRepository = new ProcessRepository(context, mapper, currentUser);
 			HistoryRepository = new HistoryRepository(context, mapper, currentUser);
 		}

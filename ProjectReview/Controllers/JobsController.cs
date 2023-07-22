@@ -8,7 +8,6 @@ using Microsoft.EntityFrameworkCore;
 using ProjectReview.Common;
 using ProjectReview.DTO.Histories;
 using ProjectReview.DTO.Jobs;
-using ProjectReview.DTO.Opinions;
 using ProjectReview.DTO.Users;
 using ProjectReview.Models;
 using ProjectReview.Models.Entities;

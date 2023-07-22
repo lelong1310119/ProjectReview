@@ -58,7 +58,7 @@
 											</table><div style="text-align: justify; margin: 30px;">
 												<div class="phieutrinh" style="margin-bottom: 10px"><span id="sokyhieu" style="font-style: italic; font-weight:bold">* Tên, số văn bản: </span>@Model.Content</div>
 												<div class="phieutrinh" style="margin-bottom: 10px"><span id="tomtatnd" style="font-style: italic; font-weight:bold">* Tóm tắt nội dung: </span>@Model.Content</div>
-												<div class="phieutrinh" style="margin-bottom: 10px"><span id="ykienchidao" style="font-style: italic; font-weight:bold">* Ý kiến chỉ đạo:</span>@Model.Note</div>
+												<div class="phieutrinh" style="margin-bottom: 10px"><span id="ykienchidao" style="font-style: italic; font-weight:bold">* Ý kiến chỉ đạo: </span>@Model.Job.Request</div>
 											</div>
 											<table style="width:100%; border-collapse: collapse; margin-top: 50px">
 												<tbody>
@@ -83,7 +83,7 @@
 								<i class="fa-solid fa-arrow-left"></i> Trở về
 							</a>
 							<button onclick="printFunction()" type="button" class="btn btn-print btn-lg btn-primary mx-3 d-flex flex-column align-items-center justify-content-center" style="width: 100px">
-								<img style="padding: 2px" src="https://192.168.96.93:7123/icons/print.png"/>In
+								<img src="https://192.168.96.93:7123/icons/print.png"/>In
 							</button>
 						</div>
                     </div>
@@ -98,12 +98,15 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 	<script>
+		const menu = document.querySelector(".menu-documentsent");
+		menu.classList.add("subdrop");
 		var btnPrint = document.querySelector(".btn-print");
 		btnPrint.addEventListener('click', function (e) {
 			e.preventDefault();
 
 			var divContents = document.querySelector("#NhanDuLieuPhieuTrinh").innerHTML;
 			var prnt = window.open('', '');
+			prnt.document.title = "";
 			prnt.document.write(divContents);
 			prnt.document.close();
 			prnt.print();

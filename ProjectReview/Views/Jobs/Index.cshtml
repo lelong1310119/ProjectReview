@@ -15,13 +15,16 @@
 
 @section Scripts{
 	<script>
+		const menu = document.querySelector(".menu-job");
+		menu.classList.add("subdrop");
 		const input = document.querySelector('.input-page');
 		const btnGo = document.querySelector('.btnGo');
 		const feedback = document.querySelector('.invalid-feedback');
 		const choose = document.querySelector('#selectPageSize')
 		const currentPage = @ViewData["page"];
 		const totalPage = @ViewData["totalPage"];
-		const pageSize = @ViewData["pageSize"]
+		const pageSize = @ViewData["pageSize"];
+		document.getElementById("selectPageSize").value = pageSize;
 
 			choose.addEventListener('change', function (e) {
 				e.preventDefault();
@@ -103,7 +106,7 @@
 						<div class="dataTables_wrapper dt-bootstrap4 no-footer">
 							<div class="row">
 								<div class="col-sm-12">
-									<table id="tblListDonvi" class="table table-bordered table-hover display dataTable no-footer" style="width: 100%;" role="grid" aria-describedby="tblListDonvi_info">
+									<table class="table table-bordered table-hover display dataTable no-footer" style="width: 100%;" role="grid">
 										<thead>
 											<tr class="first-row" role="row">
 												<th class="text-center sorting_disabled" style="width: 28px;">TT</th>
@@ -114,7 +117,7 @@
 												<th class="text-center sorting_disabled" style="width: 80px;">Ngày giao</th>
 												<th class="text-center sorting_disabled" style="width: 150px;">Hạn xử lý</th>
 												<th class="text-center sorting_disabled" style="width: 100px;">Trạng thái</th>
-												<th class="text-center sorting_disabled" style="width: 140px;">Tác vụ</th>
+												<th class="text-center sorting_disabled" style="width: 160px;">Tác vụ</th>
 											</tr>
 										</thead>
 										<tbody>
@@ -171,7 +174,7 @@
 																@if (item.Deadline.Date >= DateTime.Now.Date && (item.CreateUserId == id || item.HostId == id))
 																{
 																	<a type="button" class="btn btn-primary mt-2 mb-2" asp-area="" asp-controller="Jobs" asp-action="Forward" asp-route-id="@item.Id">
-																		Chuyển tiếp
+																		Chuyển
 																	</a>
 																	@*<a type="button" class="btn btn-secondary m-2" asp-area="" asp-controller="Jobs" asp-action="Open" asp-route-id="@item.Id">
 																		Mở lại

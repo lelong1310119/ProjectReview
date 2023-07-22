@@ -14,13 +14,22 @@
 
 @section Scripts{
 	<script>
+		const menu = document.querySelector(".menu-category");
+		const list = document.getElementById("list-menu");
+		const menu2 = document.querySelector(".menu-permission");
+		const arrow = document.querySelector("#menu");
+		arrow.classList.add("subdrop");
+		list.classList.remove("hidden");
+		menu.classList.add("subdrop");
+		menu2.classList.add("active");
 		const input = document.querySelector('.input-page');
 		const btnGo = document.querySelector('.btnGo');
 		const feedback = document.querySelector('.invalid-feedback');
 		const choose = document.querySelector('#selectPageSize')
 		const currentPage = @ViewData["page"];
 		const totalPage = @ViewData["totalPage"];
-		const pageSize = @ViewData["pageSize"]
+		const pageSize = @ViewData["pageSize"];
+		document.getElementById("selectPageSize").value = pageSize;
 
 			choose.addEventListener('change', function (e) {
 				e.preventDefault();
@@ -127,7 +136,7 @@
 						<div class="dataTables_wrapper dt-bootstrap4 no-footer">
 							<div class="row">
 								<div class="col-sm-12">
-									<table id="tblListDonvi" class="table table-bordered table-hover display dataTable no-footer" style="width: 100%;" role="grid" aria-describedby="tblListDonvi_info">
+									<table id="tblListDonvi" class="table table-bordered table-hover display dataTable no-footer" style="width: 100%;" role="grid">
 										<thead>
 											<tr class="first-row" role="row">
 												<th class="text-center sorting_disabled" style="width: 28px;">TT</th>
@@ -180,14 +189,17 @@
 														<td class=" text-center">
 															@if (RoleCheck.CheckRole("ManagePermissionGroup"))
 															{
-																<a type="button" class="btn btn-warning btn-xs" asp-area="" asp-controller="PermissionGroups" asp-action="Edit" asp-route-id="@item.Id">
-																	<i class="fas fa-pencil-alt"></i>
-																</a>
-																@if (item.Status == 0)
+																@if (item.Id != 1)
 																{
-																	<a type="button" class="btn btn-danger btn-xs" onclick="return confirm('Bạn chắc chắn muốn xóa thông tin này?');" asp-area="" asp-controller="PermissionGroups" asp-action="Delete" asp-route-id="@item.Id">
-																		<i class="fas fa-trash-alt"></i>
+																	<a type="button" class="btn btn-warning btn-xs" asp-area="" asp-controller="PermissionGroups" asp-action="Edit" asp-route-id="@item.Id">
+																		<i class="fas fa-pencil-alt"></i>
 																	</a>
+																	@if (item.Status == 0)
+																	{
+																		<a type="button" class="btn btn-danger btn-xs" onclick="return confirm('Bạn chắc chắn muốn xóa thông tin này?');" asp-area="" asp-controller="PermissionGroups" asp-action="Delete" asp-route-id="@item.Id">
+																			<i class="fas fa-trash-alt"></i>
+																		</a>
+																	}
 																}
 															}
 														</td>
@@ -339,7 +351,7 @@
 						<div id="tblListDonvi_wrapper" class="dataTables_wrapper dt-bootstrap4 no-footer">
 							<div class="row"><div class="col-sm-12 col-md-6"><div class="dataTables_length" id="tblListDonvi_length"><label>Đang xem <select name="tblListDonvi_length" aria-controls="tblListDonvi" class="custom-select custom-select-sm form-control form-control-sm"><option value="10">10</option><option value="-1">Tất cả</option></select> mục</label></div></div><div class="col-sm-12 col-md-6"><div id="tblListDonvi_filter" class="dataTables_filter"><label>Tìm kiếm:<input type="search" class="form-control form-control-sm" placeholder="" aria-controls="tblListDonvi"></label></div></div></div><div class="row">
 								<div class="col-sm-12">
-									<table id="tblListDonvi" class="table table-bordered table-hover display dataTable no-footer" style="width: 100%;" role="grid" aria-describedby="tblListDonvi_info">
+									<table id="tblListDonvi" class="table table-bordered table-hover display dataTable no-footer" style="width: 100%;" role="grid">
 										<thead>
 											<tr class="first-row" role="row">
 												<th class="text-center sorting_disabled" rowspan="1" colspan="1" aria-label="TT" style="width: 28px;">TT</th><th class="text-left sorting_disabled" rowspan="1" colspan="1" aria-label="Đơn vị, bộ phận" style="width: 286px;">Đơn vị, bộ phận</th><th class="text-left sorting_disabled" rowspan="1" colspan="1" aria-label="Địa chỉ, nơi làm việc" style="width: 258px;">Địa chỉ, nơi làm việc</th><th class="text-center sorting_disabled" rowspan="1" colspan="1" aria-label="Điện thoại" style="width: 173px;">Điện thoại</th><th class="text-center sorting_disabled" rowspan="1" colspan="1" aria-label="Trạng thái" style="width: 117px;">Trạng thái</th><th class="text-center sorting_disabled" rowspan="1" colspan="1" aria-label="Tác vụ" style="width: 173px;">Tác vụ</th>
