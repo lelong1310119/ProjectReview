@@ -66,6 +66,10 @@ namespace ProjectReview.Repositories
 
 		public async Task Delete(long id)
 		{
+			var permissionrole = await _dataContext.RolePermissions
+											.Where(x => x.PermissionGroupId == id)
+											.ToListAsync();
+			_dataContext.RemoveRange(permissionrole);
 			var result = await _dataContext.PermissionGroups
 							.Where(x => x.Id == id)
 							.FirstOrDefaultAsync();

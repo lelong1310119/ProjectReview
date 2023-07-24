@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using ProjectReview.Common;
 using ProjectReview.DTO.Positions;
 using ProjectReview.DTO.Users;
 using ProjectReview.Paging;
@@ -19,6 +20,10 @@ namespace ProjectReview.Controllers
         // GET: Users
         public async Task<IActionResult> Index(int? page, int? size)
         {
+            if (!RoleCheck.CheckRole("ManageUser"))
+            {
+                return RedirectToAction("Index", "Home");
+            }
             UserFilter filter;
             byte[] filterBytes = HttpContext.Session.Get("userFilter");
             if (filterBytes != null)
@@ -54,6 +59,10 @@ namespace ProjectReview.Controllers
         [HttpPost]
         public async Task<ActionResult> Index([FromForm] UserFilter filter)
         {
+            if (!RoleCheck.CheckRole("ManageUser"))
+            {
+                return RedirectToAction("Index", "Home");
+            }
             var filterBytes = System.Text.Encoding.UTF8.GetBytes(System.Text.Json.JsonSerializer.Serialize(filter));
             HttpContext.Session.Set("userFilter", filterBytes);
             ViewData["page"] = 1;
@@ -71,6 +80,10 @@ namespace ProjectReview.Controllers
         // GET: Users/Create
         public async Task<IActionResult> Create()
         {
+            if (!RoleCheck.CheckRole("ManageUser"))
+            {
+                return RedirectToAction("Index", "Home");
+            }
             ViewData["PositionId"] = new SelectList(await _userService.GetPosition(), "Id", "Name");
             ViewData["PermissionGroupId"] = new SelectList(await _userService.GetPermissionGroup(), "Id", "Name");
             ViewData["RankId"] = new SelectList(await _userService.GetRank(), "Id", "Name");
@@ -104,6 +117,10 @@ namespace ProjectReview.Controllers
         // GET: Users/Edit/5
         public async Task<IActionResult> Edit(long id)
         {
+            if (!RoleCheck.CheckRole("ManageUser"))
+            {
+                return RedirectToAction("Index", "Home");
+            }
             ViewData["PositionId"] = new SelectList(await _userService.GetPosition(), "Id", "Name");
             ViewData["PermissionGroupId"] = new SelectList(await _userService.GetPermissionGroup(), "Id", "Name");
             ViewData["RankId"] = new SelectList(await _userService.GetRank(), "Id", "Name");
@@ -157,5 +174,6 @@ namespace ProjectReview.Controllers
             await _userService.Active(id);
             return RedirectToAction(nameof(Index), new { page, size });
         }
+
     }
 }

@@ -20,10 +20,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.4.2/chosen.css" />
     <link rel="stylesheet" href="~/ProjectReview.styles.css" asp-append-version="true" />
-    <script type="text/javascript">
-        $(function () {
-            $('.dropdown-toggle').dropdown();
-        });
+    <script>
         function initMenu() {
             var profile = document.getElementById("profile");
             var input = document.querySelector('.search-field');
@@ -43,6 +40,9 @@
         }
         document.addEventListener("DOMContentLoaded", function () {
             initMenu();
+        });
+        $(function () {
+            $('.dropdown-toggle').dropdown();
         });
     </script>
 </head>
